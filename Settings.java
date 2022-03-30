@@ -12,7 +12,6 @@ public class Settings {
     // Param carte
 	int carteNumberOfLigns = 12;
     int carteNumberOfColumns = 15;
-//    String filterSelected = "Biome";
     
     //Param players
     int numberOfPlayers = 3;

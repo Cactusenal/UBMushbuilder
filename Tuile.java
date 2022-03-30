@@ -218,8 +218,8 @@ public class Tuile {
 	public void updateProductions() {
 		for (TuileCase[] currentCaseLign : cases) {
             for (TuileCase currentCase : currentCaseLign) {
-            	currentCase.setProdBois();
-            	currentCase.setProdNourriture();
+            	currentCase.setProdFibre();
+            	currentCase.setProdSpore();
             	currentCase.setProdMineral();
             	currentCase.setProdCoins();
             }

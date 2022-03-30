@@ -41,7 +41,7 @@ public class Carte extends JLayeredPane {
     	    		int gridx = lign - 1 + j - i;
     	    		int gridy = j + i;
 
-    	    		add(tuile.tuileBack); //, JLayeredPane.DEFAULT_LAYER);
+    	    		add(tuile.tuileBack);
     	    		tuile.tuileBack.setBounds(gridx*ecartTuile, gridy*ecartTuile, ecartTuile * 2, ecartTuile * 2);        		
     	    		
     	    		// Gestion de la profondeur
