@@ -1,8 +1,11 @@
 package net.codejava;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.io.IOException;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -13,11 +16,18 @@ public class FilterViews {
 	
     String filterSelected = "Biome";
     
+    // Paramètres d'affichage
     HashMap<String, Color> biomeColors = new HashMap<String, Color>();
     HashMap<String, Boolean> fiberDisplayed = new HashMap<String, Boolean>();
     HashMap<String, Boolean> sporeDisplayed = new HashMap<String, Boolean>();
     HashMap<String, Boolean> mineralDisplayed = new HashMap<String, Boolean>();
 //    HashMap<String, Boolean> coinsDisplayed = new HashMap<String, Boolean>();
+    
+	//images datas
+    Image imgEau;
+    Image imgForet;
+    Image imgFarm;
+    Image imgPort;
 
 	public FilterViews(Settings settings) {
 		this.settings = settings;
@@ -43,6 +53,8 @@ public class FilterViews {
 		mineralDisplayed.put("Brume", true);
 		mineralDisplayed.put("Désert", true);
 		mineralDisplayed.put("Hauteurs", true);
+		
+		sizeImages();
 	}
 
 	public void updateCaseView(TuileCase tuileCase) {
@@ -94,18 +106,18 @@ public class FilterViews {
 		caseToBiomeColor(caseBackground, terrain);
 		switch(terrain) {
 	    	case "Brume":
-			    caseBackground.setIcon(new ImageIcon(Main.settings.imgEau));
+			    caseBackground.setIcon(new ImageIcon(imgEau));
 				break;
 	    	case "Foret":
-			    caseBackground.setIcon(new ImageIcon(Main.settings.imgForet));
+			    caseBackground.setIcon(new ImageIcon(imgForet));
 				break;
 		}
 		switch (building) {
 			case "Ferme":
-			    caseBackground.setIcon(new ImageIcon(Main.settings.imgFarm));
+			    caseBackground.setIcon(new ImageIcon(imgFarm));
 	    		break;
 			case "Port":
-			    caseBackground.setIcon(new ImageIcon(Main.settings.imgPort));
+			    caseBackground.setIcon(new ImageIcon(imgPort));
 	    		break;
 		}
 	}
@@ -127,4 +139,22 @@ public class FilterViews {
 		caseBackground.setBackground(playerColor);
 	}
 
+    //IMAGE MANAGEMENT
+    public void sizeImages() {
+    	imgEau = sizeImage("water.png");
+    	imgForet = sizeImage("tree.png");
+    	imgFarm = sizeImage("farm.png");
+    	imgPort = sizeImage("port.png");
+    }
+    
+    Image sizeImage(String imagePath) {
+    	Image scaledImg = null;
+    	try {
+    		Image img = ImageIO.read(getClass().getResource(imagePath));
+    		scaledImg = img.getScaledInstance(30, 30, Image.SCALE_DEFAULT);
+    	} catch (IOException ex) {
+    		Main.settings.AddDebugLog("" + ex);
+    	}
+    	return scaledImg;
+    }
 }

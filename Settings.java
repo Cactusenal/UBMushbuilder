@@ -3,13 +3,9 @@ package net.codejava;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Arrays;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class Settings {
@@ -39,12 +35,6 @@ public class Settings {
     
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
-	
-	//images datas
-    Image imgEau;
-    Image imgForet;
-    Image imgFarm;
-    Image imgPort;
     
     //params selecteurs
     Sliders[] BiomeSliders;
@@ -259,24 +249,5 @@ public class Settings {
     		i ++;
         }
     	return slidersValues;
-    }
-    
-    //IMAGE MANAGEMENT
-    public void sizeImages() {
-    	imgEau = sizeImage("water.png");
-    	imgForet = sizeImage("tree.png");
-    	imgFarm = sizeImage("farm.png");
-    	imgPort = sizeImage("port.png");
-    }
-    
-    Image sizeImage(String imagePath) {
-    	Image scaledImg = null;
-    	try {
-    		Image img = ImageIO.read(getClass().getResource(imagePath));
-    		scaledImg = img.getScaledInstance(30, 30, Image.SCALE_DEFAULT);
-    	} catch (IOException ex) {
-    		Main.settings.AddDebugLog("" + ex);
-    	}
-    	return scaledImg;
     }
 }

@@ -3,7 +3,6 @@ package net.codejava;
 import javax.swing.*;
 
 import java.awt.Dimension;
-import java.awt.event.*;
 
 public class Main 
 {
@@ -18,8 +17,6 @@ public class Main
         JFrame frame = new JFrame("Univ. Builder proto");
         
         settings = new Settings();
-        settings.sizeImages();
-
         settings.createPlayersMenus();
         
         filterViews = new FilterViews(settings);
