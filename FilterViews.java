@@ -8,8 +8,9 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
 public class FilterViews {
-
+	// ACTUALLY UNUSED
 	private Settings settings;
+	
     String filterSelected = "Biome";
     
     HashMap<String, Color> biomeColors = new HashMap<String, Color>();
@@ -42,10 +43,6 @@ public class FilterViews {
 		mineralDisplayed.put("Brume", true);
 		mineralDisplayed.put("Désert", true);
 		mineralDisplayed.put("Hauteurs", true);
-		
-//		coinsDisplayed.put("Brume", true);
-//		coinsDisplayed.put("Plaine", true);
-//		coinsDisplayed.put("Hauteurs", true);
 	}
 
 	public void updateCaseView(TuileCase tuileCase) {
@@ -63,138 +60,28 @@ public class FilterViews {
 				Color playerColor = parent.owner.playerColor;
 				caseToPlayerView(caseBackground, playerColor);
 				break;			
-//			case "Température":
-//				caseBackground.setText("" + temperature);
-////				caseBackground.setVerticalTextPosition(SwingConstants.TOP);
-//				Color color = Main.settings.getTempColor(temperature);
-//				caseBackground.setBackground(color);
-//				break;
 			case "Biome":
 				caseToBiomeView(caseBackground, terrain, building);
-//		    	switch(terrain) {
-//			    	case "Brume":
-//						caseBackground.setBackground(Color.white);
-//					    caseBackground.setIcon(new ImageIcon(Main.settings.imgEau));
-//						break;
-//			    	case "Plaine":
-//						caseBackground.setBackground(Color.yellow);
-//						break;
-//			    	case "Hauteurs":
-//						caseBackground.setBackground(Color.gray);
-//						break;
-//			    	case "Foret":
-//						caseBackground.setBackground(Color.green);
-//					    caseBackground.setIcon(new ImageIcon(Main.settings.imgForet));
-//						break;
-////			    	case "Ville":
-////						caseBackground.setBackground(Color.lightGray);
-////						break;
-//			    	case "Marais":
-//						caseBackground.setBackground(Color.pink);
-//						break;
-//			    	case "Désert":
-//						caseBackground.setBackground(Color.orange);
-//						break;
-//					default:
-//						Main.settings.AddDebugLog("This biome is unknown: " + terrain);
-//		    	}
-//		    	switch (building) {
-//		    		case "Ferme":
-//					    caseBackground.setIcon(new ImageIcon(Main.settings.imgFarm));
-//			    		break;
-//		    		case "Port":
-//					    caseBackground.setIcon(new ImageIcon(Main.settings.imgPort));
-//			    		break;
-//		    	}
 		    	break;
 			case "Fibre":
 				int prodFibre = tuileCase.prodFibre;
-				caseBackground.setText("" + prodFibre);
-				
+				caseBackground.setText("" + prodFibre);		
 				caseToBiomeColor(caseBackground, terrain, fiberDisplayed);
-				
-//				switch(terrain) {
-//		    	case "Brume":
-//					caseBackground.setBackground(Color.white);
-//					break;
-//		    	case "Foret":
-//					caseBackground.setBackground(Color.green);
-//					break;
-//		    	case "Marais":
-//					caseBackground.setBackground(Color.pink);
-//					break;
-//				default:
-//					caseBackground.setBackground(Color.lightGray);
-//				}
 				break;
 			case "Spore":
 				int prodSpore = tuileCase.prodSpore;
 				caseBackground.setText("" + prodSpore);
 				caseToBiomeColor(caseBackground, terrain, sporeDisplayed);
-
-//				switch(terrain) {
-//		    	case "Brume":
-//					caseBackground.setBackground(Color.white);
-//					break;
-//		    	case "Foret":
-//					caseBackground.setBackground(Color.green);
-//					break;
-//		    	case "Plaine":
-//					caseBackground.setBackground(Color.yellow);
-//					break;
-//		    	case "Marais":
-//					caseBackground.setBackground(Color.pink);
-//					break;
-//				default:
-//					caseBackground.setBackground(Color.lightGray);
-//				}
 				break;
 			case "Minéraux":
 				int prodMineral = tuileCase.prodMineral;
 				caseBackground.setText("" + prodMineral);
 				caseToBiomeColor(caseBackground, terrain, mineralDisplayed);
-
-//				switch(terrain) {
-//		    	case "Brume":
-//					caseBackground.setBackground(Color.white);
-//					break;
-//		    	case "Désert":
-//					caseBackground.setBackground(Color.orange);
-//					break;
-//		    	case "Hauteurs":
-//					caseBackground.setBackground(Color.gray);
-//					break;
-//				default:
-//					caseBackground.setBackground(Color.lightGray);
-//				}
 				break;
 			case "MushCoins":
 				int prodCoins = tuileCase.prodCoins;
 				caseBackground.setText("" + prodCoins);
 				caseToBiomeColor(caseBackground, terrain);
-
-//		    	switch(terrain) {
-//			    	case "Brume":
-//						caseBackground.setBackground(Color.white);
-//						break;
-//			    	case "Plaine":
-//						caseBackground.setBackground(Color.yellow);
-//						break;
-//			    	case "Hauteurs":
-//						caseBackground.setBackground(Color.gray);
-//						break;
-//			    	case "Foret":
-//						caseBackground.setBackground(Color.green);
-//						break;
-//			    	case "Marais":
-//						caseBackground.setBackground(Color.pink);
-//						break;
-//			    	case "Désert":
-//						caseBackground.setBackground(Color.orange);
-//						break;
-//					default:
-//						Main.settings.AddDebugLog("This biome is unknown: " + terrain);
-//		    	}
 		    	break;
 		    default:
 				Main.settings.AddDebugLog("This filter is unknown: " + filterSelected);
@@ -207,27 +94,11 @@ public class FilterViews {
 		caseToBiomeColor(caseBackground, terrain);
 		switch(terrain) {
 	    	case "Brume":
-//				caseBackground.setBackground(Color.white);
 			    caseBackground.setIcon(new ImageIcon(Main.settings.imgEau));
 				break;
-//	    	case "Plaine":
-//				caseBackground.setBackground(Color.yellow);
-//				break;
-//	    	case "Hauteurs":
-//				caseBackground.setBackground(Color.gray);
-//				break;
 	    	case "Foret":
-//				caseBackground.setBackground(Color.green);
 			    caseBackground.setIcon(new ImageIcon(Main.settings.imgForet));
 				break;
-//	    	case "Marais":
-//				caseBackground.setBackground(Color.pink);
-//				break;
-//	    	case "Désert":
-//				caseBackground.setBackground(Color.orange);
-//				break;
-//			default:
-//				Main.settings.AddDebugLog("This biome is unknown: " + terrain);
 		}
 		switch (building) {
 			case "Ferme":

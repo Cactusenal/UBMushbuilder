@@ -13,8 +13,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 public class GameController {
-
-	JFrame mainFrame;
 	JPanel controllerPanel = new JPanel(); 
 	Settings settings = null;
 	
@@ -32,8 +30,7 @@ public class GameController {
     JMenuItem tempMenu = new JMenuItem("Températures");
     JMenuItem carteMenu = new JMenuItem("Carte");
 	
-	public GameController(JFrame mainFrame) {
-		this.mainFrame = mainFrame;
+	public GameController() {
 		this.settings = Main.settings;
 		
 		// Construction des sous-menus

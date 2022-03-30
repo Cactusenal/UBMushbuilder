@@ -7,8 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import java.awt.Color;
 
-
-
 public class Player {
 	
 	public String playerName;
