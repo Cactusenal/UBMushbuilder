@@ -1,5 +1,6 @@
 package net.codejava;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -143,5 +144,20 @@ public class GameController {
         controllerPanel.setLayout(new BoxLayout(controllerPanel, BoxLayout.Y_AXIS));
 	}
 	
-	
+	public void clickOnCarteCase(TuileCase tuileCase, Boolean isViewer) {
+    	if (isViewer) {
+			tuileCase.changeTerrain();
+			tuileCase.updateFilterView();
+    	} else if (Main.gameController.buildMode) {
+    		tuileCase.setBuilding();
+    	} else if (Main.filterViews.filterSelected == "Biome" && tuileCase.building == "Generateur") {
+    		Main.filterViews.displayGeneratorPopup();
+    	} else if (tuileCase.xPos == 1 && tuileCase.yPos == 1) {
+			tuileCase.parentTuile.setCopiedTuile(Main.settings.returnActivePlayer().tuileViewer);
+			Main.settings.returnActivePlayer().tuileViewer.randomize(true);    					
+    	} else {
+//    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
+			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
+    	}
+	}
 }

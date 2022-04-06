@@ -44,39 +44,15 @@ public class TuileCase {
     	caseBackground = new JButton("" + temperature);
     	caseBackground.setBackground(Color.blue);
     	caseBackground.setFont(new Font("Monospace", Font.PLAIN, 12));
+    	TuileCase thisCase = this;
     	// bouton listener
-    	if (isViewer) {
-//    		caseBackground.setText(position);
-    		caseBackground.addActionListener(new ActionListener(){
-    			public void actionPerformed(ActionEvent e){
-    				changeTerrain();
-    				updateFilterView();
-    			}
-    		});    		
-    	} else if (xPos == 1 && yPos == 1) {
-//			caseBackground.setBackground(Color.red);
+    	caseBackground.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				Main.gameController.clickOnCarteCase(thisCase, isViewer);
+			}
+		});
+    	if (xPos == 1 && yPos == 1) {
     		caseBackground.setFont(new Font("Monospace", Font.BOLD, 14));
-    		caseBackground.addActionListener(new ActionListener() {
-    			public void actionPerformed(ActionEvent e){
-    				if(Main.gameController.buildMode) {
-    					setBuilding();
-    				} else {
-    					parentTuile.setCopiedTuile(Main.settings.returnActivePlayer().tuileViewer);
-    					Main.settings.returnActivePlayer().tuileViewer.randomize(true);    					
-    				}
-    			}
-    		});
-    	} else {
-    		caseBackground.addActionListener(new ActionListener(){
-    			public void actionPerformed(ActionEvent e){
-//    				int temperatureCase = getTemperature();
-    				if(Main.gameController.buildMode) {
-    					setBuilding();
-    				} else {
-    					Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
-    				}
-    			}
-    		});
     	}
     }
     
