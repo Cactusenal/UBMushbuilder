@@ -23,8 +23,6 @@ public class Player {
     int prodSpore;
     int prodMineral;
     int prodCoins;
-
-	public Tuile[] playerTuiles = null;
 	
 	public Player(String givenName, Color givenColor) {
 		playerName = givenName;

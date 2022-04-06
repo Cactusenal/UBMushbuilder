@@ -3,6 +3,9 @@ package net.codejava;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JLayeredPane;
 
@@ -129,6 +132,7 @@ public class Tuile {
             for (int y = 0; y < 3; y++) {
             	cases[x][y].setTerrain(terrainGrid[x][y]);
             	cases[x][y].building = "";
+            	cases[x][y].buildingParts = null;
             }
         }
 	}
@@ -209,21 +213,23 @@ public class Tuile {
 		return relativeTuile;
 	}
 	
-	public Tuile[] getRelativesCases(int distance) {
-		Tuile[] tuilesList = null;
+	public Tuile[] getTuilesFromDistance(int TuileDistance) {
+		Tuile[] tuilesArray = null;
+		List<Tuile> tuilesList = new ArrayList<Tuile>(Arrays.asList(tuilesArray));
 		int maxColumn = Main.cartePanel.column;
 		int maxLign = Main.cartePanel.lign;
-		int minX = Math.max(0, xPos - distance);
-		int minY = Math.max(0, yPos - distance);
-		int maxX = Math.min(maxColumn, xPos - distance);
-		int maxY = Math.min(maxLign, yPos - distance);
+		int minX = Math.max(0, xPos - TuileDistance);
+		int minY = Math.max(0, yPos - TuileDistance);
+		int maxX = Math.min(maxColumn, xPos - TuileDistance);
+		int maxY = Math.min(maxLign, yPos - TuileDistance);
 
 		for (int x = minX; x < maxX; x++) {
 			for (int y = minY; y < maxY; y++) {
-				tuilesList.push();
+				tuilesList.add(Main.cartePanel.getTuile(x, y));
+			}
 		}
-		
-		return tuilesList;
+		tuilesArray = tuilesList.toArray(tuilesArray);
+		return tuilesArray;
 	}
 	
 	public void updateTempCases() {

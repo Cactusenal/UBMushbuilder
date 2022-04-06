@@ -151,7 +151,7 @@ public class GameController {
     	} else if (Main.gameController.buildMode) {
     		tuileCase.setBuilding();
     	} else if (Main.filterViews.filterSelected == "Biome" && tuileCase.building == "Generateur") {
-    		Main.filterViews.displayGeneratorPopup();
+    		Main.filterViews.displayGeneratorPopup(tuileCase);
     	} else if (tuileCase.xPos == 1 && tuileCase.yPos == 1) {
 			tuileCase.parentTuile.setCopiedTuile(Main.settings.returnActivePlayer().tuileViewer);
 			Main.settings.returnActivePlayer().tuileViewer.randomize(true);    					

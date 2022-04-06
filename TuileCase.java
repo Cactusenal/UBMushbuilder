@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ public class TuileCase {
     int temperature;
     
     String building = "";
+    String[][] buildingParts = null;
     
     int prodFibre;
     int prodSpore;
@@ -337,7 +339,7 @@ public class TuileCase {
 	}
 	
 	public TuileCase[] getTuilesFromDistance(int caseDistance) {
-		TuileCase[] casesArray = null;
+		TuileCase[] casesArray = {};
 		List<TuileCase> casesList = new ArrayList<TuileCase>(Arrays.asList(casesArray));
 		int maxColumn = Main.cartePanel.column * 3;
 		int maxLign = Main.cartePanel.lign * 3;
@@ -345,15 +347,19 @@ public class TuileCase {
 		int yCase = parentTuile.yPos * 3 + yPos;
 		int minX = Math.max(0, xCase - caseDistance);
 		int minY = Math.max(0, yCase - caseDistance);
-		int maxX = Math.min(maxColumn, xCase - caseDistance);
-		int maxY = Math.min(maxLign, yCase - caseDistance);
+		int maxX = Math.min(maxColumn, xCase + caseDistance);
+		int maxY = Math.min(maxLign, yCase + caseDistance);
 
-		for (int x = minX; x < maxX; x++) {
-			for (int y = minY; y < maxY; y++) {
-				casesList.add(Main.cartePanel.getTuile(xCase / 3, yCase / 3).cases[xCase % 3][yCase % 3]);
+		for (int x = minX; x < maxX + 1; x++) {
+			for (int y = minY; y < maxY + 1; y++) {
+				// Main.settings.AddDebugLog("[" + x / 3 + ", " + y / 3 + "], [" + x % 3 + ", " + y % 3 + "]");
+				if ((Math.abs(x - xCase) + Math.abs(y - yCase)) < (caseDistance + 1) && !(x == xCase && y == yCase)) {
+					casesList.add(Main.cartePanel.getTuile(x / 3, y / 3).cases[x % 3][y % 3]);					
+				}
 			}
 		}
 		casesArray = casesList.toArray(casesArray);
+		Main.settings.AddDebugLog("Nombre de cases retournées: " + casesArray.length);
 		return casesArray;
 	}
 	

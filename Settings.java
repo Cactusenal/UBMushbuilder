@@ -184,8 +184,6 @@ public class Settings {
     
     //CARTE SETTINGS
     public void createCartePopup() {
-    	carteDialog.setLayout(new FlowLayout());
-    	
     	carteDialog.setBounds(200, 200, 800, 200);
         
         JLabel lignLabel = new JLabel("Enter the number of ligns for the map");

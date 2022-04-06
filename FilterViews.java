@@ -1,6 +1,8 @@
 package net.codejava;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,6 +10,10 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class FilterViews {
@@ -161,5 +167,29 @@ public class FilterViews {
     		Main.settings.AddDebugLog("" + ex);
     	}
     	return scaledImg;
+    }
+    
+    public void displayGeneratorPopup (TuileCase tuileCase) {
+        JFrame generatorFrame = new JFrame("Generator energy");
+        JDialog generatorDialog = new JDialog(generatorFrame);
+    	    	
+        generatorDialog.setBounds(200, 200, 200, 100);
+        
+        int buildingNumber = 0;
+//        JPanel generatorPanel = new JPanel();
+        
+        for (TuileCase caseFromDistance : tuileCase.getTuilesFromDistance(3)) {
+        	String buildingFromDistance = caseFromDistance.building;
+        	if (buildingFromDistance != "") {
+        		Main.settings.AddDebugLog("" + buildingFromDistance);
+        		JLabel buildingLabel = new JLabel(buildingFromDistance);
+        		generatorDialog.add(buildingLabel);
+        		buildingNumber++;
+        	}
+        }
+
+        generatorDialog.setLayout(new GridLayout(buildingNumber,1));
+
+        generatorDialog.setVisible(true);
     }
 }
