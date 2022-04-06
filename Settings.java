@@ -257,4 +257,10 @@ public class Settings {
         }
     	return slidersValues;
     }
+
+	public void updatePlayersProd() {
+		for(Player player : players) {
+			player.updateRessourceInfos();
+		}
+	}
 }

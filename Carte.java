@@ -83,6 +83,7 @@ public class Carte extends JLayeredPane {
 				tuile.updateProductions();
 			}
 		}
+		mainSettings.updatePlayersProd();
 	}
 	
 	public void updateFilterView() {
@@ -122,7 +123,9 @@ public class Carte extends JLayeredPane {
 		for (Tuile[] tuileLign : tableauTuile) {
 			for (Tuile tuile : tuileLign) {
 				tuile.randomize(false);
-				tuile.owner = mainSettings.getRandomPlayer();
+				Player randomPlayer = mainSettings.getRandomPlayer();
+				tuile.owner = randomPlayer;
+				randomPlayer.placedTuiles.add(tuile);
 			}
 		}		
 	}
