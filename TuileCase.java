@@ -66,16 +66,6 @@ public class TuileCase {
     				}
     			}
     		});
-    	} else if (position == "C") {
-//    		caseBackground.setBackground(Color.red);
-    		caseBackground.setFont(new Font("Monospace", Font.BOLD, 14));
-    		caseBackground.addActionListener(new ActionListener() {
-    			public void actionPerformed(ActionEvent e){
-    				parentTuile.setCopiedTuile(Main.settings.returnActivePlayer().tuileViewer);
-    				Main.settings.returnActivePlayer().tuileViewer.randomize();
-    				Main.settings.AddDebugLog(parentTuile.xPos + ", " + parentTuile.yPos);
-    			}
-    		});
     	} else {
     		caseBackground.addActionListener(new ActionListener(){
     			public void actionPerformed(ActionEvent e){
@@ -110,8 +100,8 @@ public class TuileCase {
 				building = "Port";				
 			}
 		}
-		if (terrain == "Marais") {
-			building = "Port";
+		if (terrain == "Désert") {
+			building = "Generateur";
 		}
 		for (String direction : directions) {
 			TuileCase relativeCase = getRelativeCase(direction);

@@ -28,6 +28,7 @@ public class FilterViews {
     Image imgForet;
     Image imgFarm;
     Image imgPort;
+    Image imgGenerator;
 
 	public FilterViews(Settings settings) {
 		this.settings = settings;
@@ -119,6 +120,9 @@ public class FilterViews {
 			case "Port":
 			    caseBackground.setIcon(new ImageIcon(imgPort));
 	    		break;
+			case "Generateur":
+			    caseBackground.setIcon(new ImageIcon(imgGenerator));
+	    		break;
 		}
 	}
 	
@@ -145,6 +149,7 @@ public class FilterViews {
     	imgForet = sizeImage("tree.png");
     	imgFarm = sizeImage("farm.png");
     	imgPort = sizeImage("port.png");
+    	imgGenerator = sizeImage("generator.png");
     }
     
     Image sizeImage(String imagePath) {
