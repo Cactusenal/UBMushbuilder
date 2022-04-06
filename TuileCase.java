@@ -206,25 +206,13 @@ public class TuileCase {
 	public void setProdFibre() {
 		HashMap<String, String[]> fibreProdRules = new HashMap<String, String[]>();
 		String[] Foret0 = {"Foret", "0", "2"};
-		String[] Foret1 = {"Foret", "1", "1"};
+		String[] Foret1 = {"Foret", "1", "1", "Brume"};
 		fibreProdRules.put("Foret0", Foret0);
 		fibreProdRules.put("Foret1", Foret1);
 		
 		prodFibre = 0;
 		
 		prodFibre += getProdFromHashMap(fibreProdRules);
-		
-//		if (terrain == "Foret") {
-//			prodFibre += 2;			
-//		}
-//		if (terrain != "Brume") {
-//			for (String direction : directions) {
-//				TuileCase relativeCase = getRelativeCase(direction);
-//				if (relativeCase != null && relativeCase.terrain == "Foret") {
-//					prodFibre += 1;
-//				}
-//			}
-//		}
 	}
 	
 	public void setProdSpore() {
@@ -242,36 +230,6 @@ public class TuileCase {
 		
 		prodSpore += getProdFromHashMap(sporeProdRules);
 		
-		
-//		String[] directions = {"X+", "X-", "Y+", "Y-"};
-//		prodSpore = 0;
-//		boolean isWettable = true;
-//		switch (terrain) {
-//			case "Foret":
-//				prodSpore += 1;
-//				break;
-//			case "Marais":
-//				prodSpore += 2;
-//				break;
-//			case "Plaine":
-//				prodSpore += 1;
-//				break;
-//			default:
-//				isWettable = false;
-//		}
-//		for (String direction : directions) {
-//			TuileCase relativeCase = getRelativeCase(direction);
-//			if(building == "Port" || isWettable) {
-//				if (relativeCase != null && relativeCase.terrain == "Brume") {
-//					prodSpore += 1;
-//				}
-//			}
-//			if (building != "") {
-//				if (relativeCase != null && relativeCase.building == "Ferme") {
-//					prodSpore += 1;
-//				}
-//			}
-//		}
 		switch (building) {
 			case "Ferme":
 				prodSpore *= 2;
@@ -328,16 +286,28 @@ public class TuileCase {
 		String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
         // Convert String Array to List
         List<String> possibleBiomesList = Arrays.asList(possibleBiomes);
-        // ruleValuesExample = ["biome/terrain", "distance", "valeur de production"];
+        // ruleValuesExample = ["biome/terrain", "distance", "valeur de production", "terrains,oula,regle,nesappliquepas"];
 		
         prod = 0;
 		for (String ruleName : baseProductionRules.keySet()) {
 			String[] ruleValues = baseProductionRules.get(ruleName);
+			
 			String caseType = ruleValues[0];
 			int distanceValue = Integer.parseInt(ruleValues[1]);
 			int prodValue = Integer.parseInt(ruleValues[2]);
+			String[] biomeToNotApplyString = ruleValues.length > 3 ? ruleValues[3].split(",") : null;
+			
 			Boolean isBiome = possibleBiomesList.contains(caseType);
 			String typeToCompare = isBiome ? terrain : building;
+			List<String> biomesToNotApply = null;
+			Boolean applyOnAllBiome = false;				
+			if (biomeToNotApplyString != null) {
+				biomesToNotApply = Arrays.asList(biomeToNotApplyString);
+			}
+			else {
+				applyOnAllBiome = true;
+			}
+			
 			if (distanceValue == 0 && caseType == typeToCompare) {
 				prod += prodValue;
 			}
@@ -346,7 +316,7 @@ public class TuileCase {
 					TuileCase relativeCase = getRelativeCase(direction);
 					if (relativeCase != null) {
 						typeToCompare = isBiome ? relativeCase.terrain : relativeCase.building;
-						if (caseType == typeToCompare) {
+						if (caseType == typeToCompare && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
 							prod += prodValue;
 						}
 					}
