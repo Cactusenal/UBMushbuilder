@@ -209,6 +209,23 @@ public class Tuile {
 		return relativeTuile;
 	}
 	
+	public Tuile[] getRelativesCases(int distance) {
+		Tuile[] tuilesList = null;
+		int maxColumn = Main.cartePanel.column;
+		int maxLign = Main.cartePanel.lign;
+		int minX = Math.max(0, xPos - distance);
+		int minY = Math.max(0, yPos - distance);
+		int maxX = Math.min(maxColumn, xPos - distance);
+		int maxY = Math.min(maxLign, yPos - distance);
+
+		for (int x = minX; x < maxX; x++) {
+			for (int y = minY; y < maxY; y++) {
+				tuilesList.push();
+		}
+		
+		return tuilesList;
+	}
+	
 	public void updateTempCases() {
         for (TuileCase[] currentCaseLign : cases) {
             for (TuileCase currentCase : currentCaseLign) {
