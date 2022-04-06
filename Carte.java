@@ -117,4 +117,13 @@ public class Carte extends JLayeredPane {
     	setLayout(new GridLayout(ligns, columns));
         setPreferredSize(new Dimension(columns * caseSize, ligns * caseSize));
 	}
+
+	public void randomize() {
+		for (Tuile[] tuileLign : tableauTuile) {
+			for (Tuile tuile : tuileLign) {
+				tuile.randomize(false);
+				tuile.owner = mainSettings.getRandomPlayer();
+			}
+		}		
+	}
 }

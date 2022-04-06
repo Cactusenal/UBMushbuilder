@@ -62,7 +62,7 @@ public class TuileCase {
     					setBuilding();
     				} else {
     					parentTuile.setCopiedTuile(Main.settings.returnActivePlayer().tuileViewer);
-    					Main.settings.returnActivePlayer().tuileViewer.randomize();    					
+    					Main.settings.returnActivePlayer().tuileViewer.randomize(true);    					
     				}
     			}
     		});

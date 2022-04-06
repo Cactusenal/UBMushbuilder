@@ -25,6 +25,7 @@ public class Main
 
         // Définition de la carte
         cartePanel = new Carte(settings);
+        cartePanel.randomize();
         cartePanel.updateWorldView();
         
         // PANNEAU DROIT

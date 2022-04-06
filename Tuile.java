@@ -133,16 +133,18 @@ public class Tuile {
         }
 	}
 
-	public int randomize() {
+	public int randomize(Boolean isViewer) {
         for (TuileCase[] currentCaseLign : cases) {
             for (TuileCase currentCase : currentCaseLign) {
             	currentCase.changeTerrain();
             }
         }
         int temp = setRandomTemperature();
-		updateTempCases();
-		updateProductions();
-		updateFilterView();
+        if (isViewer) {
+        	updateTempCases();
+        	updateProductions();
+        	updateFilterView();        	
+        }
 //		Main.settings.AddDebugLog("Tuile temp is " + getTemperature());
 		return temp;
 	}

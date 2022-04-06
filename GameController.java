@@ -96,7 +96,7 @@ public class GameController {
 		createB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	//settings.AddDebugLog("Création de tuile");
-            	settings.returnActivePlayer().tuileViewer.randomize();
+            	settings.returnActivePlayer().tuileViewer.randomize(true);
 //        		temperatureLabel.setText("Tuile temp is " + tuileViewer.randomize() + "°C");
             	//settings.AddDebugLog("" + slider.getValue());
             }

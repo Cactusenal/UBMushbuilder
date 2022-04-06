@@ -93,6 +93,14 @@ public class Settings {
     	return null;
     }
     
+    public Player getRandomPlayer() {
+		int Min = 0;
+		int Max = numberOfPlayers - 1;
+		int playerIndex = Min + (int)(Math.random() * (Max - Min + 1));
+//		Main.temperatureLabel.setText("Tuile temp is " + temperature + "°C");
+		return players[playerIndex];
+    }
+    
     //UNUSED TEMP
     public void createTempPopup() {
     	tempDialog.setLayout(new FlowLayout());

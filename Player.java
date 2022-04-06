@@ -49,7 +49,7 @@ public class Player {
         panel.add(rBtn);
 		panel.add(tuileViewer.tuileBack);
         panel.add(ressourceLabel);
-        tuileViewer.randomize();
+        tuileViewer.randomize(true);
 	}
 	
 	public int getPlayerProd(String ressourceToGet) {
