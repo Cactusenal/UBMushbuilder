@@ -336,6 +336,27 @@ public class TuileCase {
 		return relativeTuileCase;
 	}
 	
+	public TuileCase[] getTuilesFromDistance(int caseDistance) {
+		TuileCase[] casesArray = null;
+		List<TuileCase> casesList = new ArrayList<TuileCase>(Arrays.asList(casesArray));
+		int maxColumn = Main.cartePanel.column * 3;
+		int maxLign = Main.cartePanel.lign * 3;
+		int xCase = parentTuile.xPos * 3 + xPos;
+		int yCase = parentTuile.yPos * 3 + yPos;
+		int minX = Math.max(0, xCase - caseDistance);
+		int minY = Math.max(0, yCase - caseDistance);
+		int maxX = Math.min(maxColumn, xCase - caseDistance);
+		int maxY = Math.min(maxLign, yCase - caseDistance);
+
+		for (int x = minX; x < maxX; x++) {
+			for (int y = minY; y < maxY; y++) {
+				casesList.add(Main.cartePanel.getTuile(xCase / 3, yCase / 3).cases[xCase % 3][yCase % 3]);
+			}
+		}
+		casesArray = casesList.toArray(casesArray);
+		return casesArray;
+	}
+	
 	public void updateFilterView() {
 		Main.filterViews.updateCaseView(this);
 	}
