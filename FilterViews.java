@@ -175,7 +175,7 @@ public class FilterViews {
         int buildingNumber = 0;
 //        JPanel generatorPanel = new JPanel();
         
-        for (TuileCase caseFromDistance : tuileCase.getTuilesFromDistance(3)) {
+        for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(3)) {
         	String buildingFromDistance = caseFromDistance.building;
         	if (buildingFromDistance != "") {
         		Main.settings.AddDebugLog("" + buildingFromDistance);

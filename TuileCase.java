@@ -244,11 +244,10 @@ public class TuileCase {
 	
 	public int getProdFromHashMap(HashMap<String, String[]> baseProductionRules) {
 		int prod = 0;
-		String[] directions = {"X+", "X-", "Y+", "Y-"};
 		String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
         // Convert String Array to List
         List<String> possibleBiomesList = Arrays.asList(possibleBiomes);
-        // ruleValuesExample = ["biome/terrain", "distance", "valeur de production", "terrains,oula,regle,nesappliquepas"];
+        // ruleValuesExample = ["biome/building", "distance", "valeur de production", "terrains,oula,regle,nesappliquepas"];
 		
         prod = 0;
 		for (String ruleName : baseProductionRules.keySet()) {
@@ -273,9 +272,9 @@ public class TuileCase {
 			if (distanceValue == 0 && caseType == typeToCompare) {
 				prod += prodValue;
 			}
-			if (distanceValue == 1) {
-				for (String direction : directions) {
-					TuileCase relativeCase = getRelativeCase(direction);
+			else if (distanceValue > 0) {
+				TuileCase[] tuilesWithinDistance = getCasesFromDistance(distanceValue);
+				for (TuileCase relativeCase : tuilesWithinDistance) {
 					if (relativeCase != null) {
 						typeToCompare = isBiome ? relativeCase.terrain : relativeCase.building;
 						if (caseType == typeToCompare && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
@@ -332,28 +331,34 @@ public class TuileCase {
 		return relativeTuileCase;
 	}
 	
-	public TuileCase[] getTuilesFromDistance(int caseDistance) {
+	public TuileCase[] getCasesFromDistance(int caseDistance) {
 		TuileCase[] casesArray = {};
 		List<TuileCase> casesList = new ArrayList<TuileCase>(Arrays.asList(casesArray));
-		int maxColumn = Main.cartePanel.column * 3;
-		int maxLign = Main.cartePanel.lign * 3;
+		int maxColumn = parentTuile.isViewTuile ? 3 : Main.cartePanel.column * 3;
+		int maxLign = parentTuile.isViewTuile ? 3 : Main.cartePanel.lign * 3;
 		int xCase = parentTuile.xPos * 3 + xPos;
 		int yCase = parentTuile.yPos * 3 + yPos;
 		int minX = Math.max(0, xCase - caseDistance);
 		int minY = Math.max(0, yCase - caseDistance);
-		int maxX = Math.min(maxColumn, xCase + caseDistance);
-		int maxY = Math.min(maxLign, yCase + caseDistance);
+		int maxX = Math.min(maxColumn -1, xCase + caseDistance);
+		int maxY = Math.min(maxLign - 1, yCase + caseDistance);
 
 		for (int x = minX; x < maxX + 1; x++) {
 			for (int y = minY; y < maxY + 1; y++) {
 				// Main.settings.AddDebugLog("[" + x / 3 + ", " + y / 3 + "], [" + x % 3 + ", " + y % 3 + "]");
 				if ((Math.abs(x - xCase) + Math.abs(y - yCase)) < (caseDistance + 1) && !(x == xCase && y == yCase)) {
-					casesList.add(Main.cartePanel.getTuile(x / 3, y / 3).cases[x % 3][y % 3]);					
+//					 && (!this.parentTuile.isViewTuile || (x / 3 == parentTuile.xPos && y / 3 == parentTuile.yPos))
+					if (this.parentTuile.isViewTuile) {
+						casesList.add(parentTuile.cases[x][y]);
+					}
+					else {
+						casesList.add(Main.cartePanel.getTuile(x / 3, y / 3).cases[x % 3][y % 3]);
+					}
 				}
 			}
 		}
 		casesArray = casesList.toArray(casesArray);
-		Main.settings.AddDebugLog("Nombre de cases retournées: " + casesArray.length);
+//		Main.settings.AddDebugLog("Nombre de cases retournées: " + casesArray.length);
 		return casesArray;
 	}
 	
