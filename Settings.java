@@ -204,64 +204,6 @@ public class Settings {
         carteDialog.setLayout(new GridLayout(3,2));
     }
     
-    public void showCartePopup() {
-    	carteDialog.setVisible(true);
-    }
-
-    //TEMP SETTINGS
-    //UNUSED TEMP
-    public void createTempPopup() {
-    	tempDialog.setLayout(new FlowLayout());
-    	
-    	tempDialog.setBounds(200, 200, 900, 200);
-    	
-    	JLabel jLabel = new JLabel("Press apply button to apply settings and update temp view");
-    	
-    	JPanel tempPanel = new JPanel();
-    	createTempSliders(tempPanel);
-    	
-    	JButton jButton = new JButton("Apply");
-    	jButton.addActionListener(new ActionListener() {
-    		@Override
-    		public void actionPerformed(ActionEvent e) {
-    			Main.cartePanel.updateFilterView();
-    		}
-    	});
-    	
-    	tempDialog.add(tempPanel);
-    	tempDialog.add(jLabel);
-    	tempDialog.add(jButton);
-    }
-    
-    public void showTempPopup() {
-    	tempDialog.setVisible(true);
-    }
-    void createTempSliders(JPanel sliderPanel) {
-        //Sliders
-    	TempSliders = new Sliders[tempLevels.length];
-        int i = 0;
-        for (String[] tempLevel : tempLevels) {
-        	Sliders slider = new Sliders(tempLevel[0], minTemp, maxTemp, Integer.parseInt(tempLevel[2]));
-        	sliderPanel.add(slider);
-        	TempSliders[i] = slider;
-        	i++;
-        }
-    }
-    
-    Color getTempColor(int temperature) {
-    	int[] tempValues = getSlidersValue(TempSliders);
-    	if (temperature <= tempValues[0]) {
-    		return Color.blue;
-    	} else if (temperature <= tempValues[1]) {
-    		return Color.cyan;
-    	} else if (temperature >= tempValues[3]) {
-    		return Color.red;
-    	} else if (temperature > tempValues[2]) {
-    		return Color.yellow;
-    	} else {
-    		return Color.green;
-    	}
-    }
 
     int[] getSlidersValue(Sliders[] sliders) {
         // TO DO: Use map function instead
@@ -277,5 +219,10 @@ public class Settings {
     // POWER
 	public int getPowerCons(String buildingName) {
 		return Integer.parseInt(buildingRules.get(buildingName)[0]);
+	}
+	
+	//MISC
+	public void showCartePopup() {
+		carteDialog.setVisible(true);
 	}
 }

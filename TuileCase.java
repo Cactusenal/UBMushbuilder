@@ -20,7 +20,6 @@ public class TuileCase {
     
     int xPos;
     int yPos;
-    int temperature;
     
     String building = "";
     String[][] buildingParts = null;
@@ -38,8 +37,7 @@ public class TuileCase {
     	casePosition = position;
     	xPos = x;
     	yPos = y;
-    	temperature = parentTuile.temperature;
-    	caseBackground = new JButton("" + temperature);
+    	caseBackground = new JButton("");
     	caseBackground.setBackground(Color.blue);
     	caseBackground.setFont(new Font("Monospace", Font.PLAIN, 12));
     	TuileCase thisCase = this;
@@ -99,56 +97,6 @@ public class TuileCase {
 	
 	public void setTerrain(String newTerrain) {
 		terrain = newTerrain;
-	}
-	
-	public int getTemperature() {
-		// Cassé, to fix to use
-		
-		int calculatedTemperature = 0;
-		int parentTuileTemp = parentTuile.getTemperature();
-		
-		switch(casePosition) {
-			case "C":
-				calculatedTemperature = parentTuileTemp;
-				break;
-			case "N", "E", "S", "O": 
-				Tuile tuileACote = parentTuile.getRelativeTuile(casePosition);
-				if(tuileACote != null) {
-					calculatedTemperature = (parentTuileTemp * 3 + tuileACote.getTemperature())/4;
-				} else {
-					calculatedTemperature = parentTuileTemp;
-				}
-//				Main.settings.AddDebugLog("[caseBackground.getTemperature] " + tempAcote);
-				break;
-			case "NO", "NE", "SO", "SE":
-				Tuile tuileACote1 = parentTuile.getRelativeTuile("" + casePosition.charAt(0));
-				Tuile tuileACote2 = parentTuile.getRelativeTuile("" + casePosition.charAt(1));
-				calculatedTemperature = parentTuileTemp * 2; // + tempAcote1 + tempAcote2)/4;
-				int divider = 2;
-				if (tuileACote1 != null) {
-					calculatedTemperature += tuileACote1.getTemperature();
-					divider++;
-				}
-				if (tuileACote2 != null) {
-					calculatedTemperature += tuileACote2.getTemperature();
-					divider++;
-				}
-				calculatedTemperature /= divider;
-//				Main.settings.AddDebugLog("[caseBackground.getTemperature] " + );
-				break;
-			default:
-				Main.settings.AddDebugLog("This position is unknown: " + casePosition);
-		}
-		
-		return calculatedTemperature;
-	}
-	
-	public void setTemperature(int temp) {
-		temperature = temp;
-	}
-	
-	public void updateTemp() {
-		setTemperature(getTemperature());
 	}
 	
 	public int getRessource(String ressourceToGet) {

@@ -19,7 +19,6 @@ public class Tuile {
 	TuileCase[][] cases = new TuileCase [3][3];
 
 	boolean isViewTuile;
-	int temperature;
 	
 	int ecartCase = 40;
 	int tuileDim = ecartCase * 6;
@@ -32,7 +31,6 @@ public class Tuile {
 		
 		xPos = x;
 		yPos = y;
-		temperature = 20;
 		isViewTuile = isViewer;
 		
 		//New panel
@@ -92,9 +90,7 @@ public class Tuile {
 
 		// Update Tuile infos
 		setTerrain(tuileToCopy.getTerrain());
-		setTemperature(tuileToCopy.getTemperature());
 
-		updateTempCases();
 		updateProductions();
 		
 		// Update view and surrounding cases
@@ -103,7 +99,6 @@ public class Tuile {
 		for (String direction : directions) {
 			Tuile closeTuile = getRelativeTuile(direction);
 			if (closeTuile != null) {
-				closeTuile.updateTempCases();
 				closeTuile.updateProductions();
 				closeTuile.updateFilterView();
 				closeTuile.owner.updateRessourceInfos();
@@ -145,28 +140,11 @@ public class Tuile {
         }
 //        int temp = setRandomTemperature();
         if (isViewer) {
-        	updateTempCases();
         	updateProductions();
         	updateFilterView();        	
         }
 //		Main.settings.AddDebugLog("Tuile temp is " + getTemperature());
 //		return temp;
-	}
-	
-	public int getTemperature() {
-		return temperature;
-	}
-	
-	public void setTemperature(int temp) {
-		temperature = temp;
-	}
-	
-	public int setRandomTemperature() {
-		int Min = Main.settings.minTemp;
-		int Max = Main.settings.maxTemp;
-		temperature = Min + (int)(Math.random() * (Max - Min + 1));
-//		Main.temperatureLabel.setText("Tuile temp is " + temperature + "°C");
-		return temperature;
 	}
 	
 	public void turnClockWise() {
@@ -230,14 +208,6 @@ public class Tuile {
 		}
 		tuilesArray = tuilesList.toArray(tuilesArray);
 		return tuilesArray;
-	}
-	
-	public void updateTempCases() {
-        for (TuileCase[] currentCaseLign : cases) {
-            for (TuileCase currentCase : currentCaseLign) {
-            	currentCase.updateTemp();
-            }
-        }
 	}
 	
 	public void updateProductions() {

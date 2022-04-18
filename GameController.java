@@ -25,7 +25,6 @@ public class GameController {
     JMenuItem newf = new JMenuItem("Nouveau");
     JMenuItem save = new JMenuItem("Enregistrer");
     JMenuItem biomeMenu = new JMenuItem("Biomes");
-    JMenuItem tempMenu = new JMenuItem("Températures");
     JMenuItem carteMenu = new JMenuItem("Carte");
 	
 	public GameController() {
@@ -35,7 +34,6 @@ public class GameController {
 	    file.add(newf);
 	    file.add(save);
 	    setMenu.add(biomeMenu);
-	    setMenu.add(tempMenu);
 	    setMenu.add(carteMenu);
 	    menu.add(file);
 	    menu.add(setMenu);
@@ -50,7 +48,6 @@ public class GameController {
 	    
 	    //Sliders
 	    settings.createBiomePopup();
-	    settings.createTempPopup();
 	    settings.createCartePopup();
 	    //Menu de création
 	    JButton createB = new JButton("Créer une tuile");
@@ -71,11 +68,6 @@ public class GameController {
 				settings.showBiomePopup();
 			}
 		});
-		tempMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	settings.showTempPopup();
-            }
-        });
 		carteMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	settings.showCartePopup();
