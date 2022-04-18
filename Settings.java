@@ -47,11 +47,9 @@ public class Settings {
     Sliders[] BiomeSliders;
     Sliders[] TempSliders;
     JFrame biomeFrame = new JFrame("Biomes settings");
-    JFrame tempFrame = new JFrame("Temperatures settings");
     JFrame carteFrame = new JFrame("Carte settings");
     JFrame prodFrame = new JFrame("Production settings");
     JDialog biomeDialog = new JDialog(biomeFrame);
-    JDialog tempDialog = new JDialog(tempFrame);
     JDialog carteDialog = new JDialog(carteFrame);
     JDialog prodDialog = new JDialog(prodFrame);
     
@@ -214,7 +212,43 @@ public class Settings {
 
     
     // PRODUCTION
+    public void createProdPopup() {
+    	prodDialog.setBounds(200, 200, 800, 200);
+    	
+    	JLabel fibreProduction = new JLabel("Production des fibres");
+    	
+//    	for ()
+        
+//        JLabel lignLabel = new JLabel("Enter the number of ligns for the map");
+//        JTextArea lignText = new JTextArea("" + carteNumberOfLigns);
+//        
+//        JLabel columnLabel = new JLabel("Enter the number of columns for the map");
+//        JTextArea columnText = new JTextArea("" + carteNumberOfColumns);
+//        
+//        JLabel buttonLabel = new JLabel("Press apply button to apply settings and create a new map");
+//        JButton jButton = new JButton("Apply");
+//        jButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//            	carteNumberOfLigns = Integer.parseInt(lignText.getText());
+//            	carteNumberOfColumns = Integer.parseInt(columnText.getText());
+//            	Main.cartePanel.resetSize(carteNumberOfLigns, carteNumberOfColumns);
+//            	Main.cartePanel.updateFilterView();
+//            }
+//        });
+//
+//        carteDialog.add(lignLabel);
+//        carteDialog.add(lignText);
+//        carteDialog.add(columnLabel);
+//        carteDialog.add(columnText);
+//        carteDialog.add(buttonLabel);
+//        carteDialog.add(jButton);
+//        
+//        carteDialog.setLayout(new GridLayout(3,2));
+    }
     
+    public void showProdPopup() {
+    	prodDialog.setVisible(true);
+    }
 
     // POWER
 	public int getPowerCons(String buildingName) {

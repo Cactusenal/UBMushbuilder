@@ -26,6 +26,7 @@ public class GameController {
     JMenuItem save = new JMenuItem("Enregistrer");
     JMenuItem biomeMenu = new JMenuItem("Biomes");
     JMenuItem carteMenu = new JMenuItem("Carte");
+    JMenuItem prodMenu = new JMenuItem("Productions");
 	
 	public GameController() {
 		this.settings = Main.settings;
@@ -35,6 +36,7 @@ public class GameController {
 	    file.add(save);
 	    setMenu.add(biomeMenu);
 	    setMenu.add(carteMenu);
+	    setMenu.add(prodMenu);
 	    menu.add(file);
 	    menu.add(setMenu);
 	    menu.add(help);
@@ -71,6 +73,11 @@ public class GameController {
 		carteMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	settings.showCartePopup();
+            }
+        });	
+		prodMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	settings.showProdPopup();
             }
         });
 		filterSelector.addActionListener(new ActionListener() {
