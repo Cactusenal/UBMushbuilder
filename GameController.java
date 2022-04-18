@@ -75,7 +75,7 @@ public class GameController {
         });
 		filterSelector.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	String filter = "" + filterSelector.getItemAt(filterSelector.getSelectedIndex());
+            	String filter = (String) filterSelector.getItemAt(filterSelector.getSelectedIndex());
 //            	settings.AddDebugLog(filter);
             	Main.filterViews.filterSelected = filter;
             	Main.cartePanel.updateFilterView();

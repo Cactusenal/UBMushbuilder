@@ -40,7 +40,8 @@ public class Settings {
 	// building datas
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
 	String[] farmRules = {"10", ""};
-	String[] portRules = {"10", ""};
+	String[] portRules = {"20", ""};
+	String[] generatorRules = {"0", ""};
     
     //params selecteurs
     Sliders[] BiomeSliders;
@@ -59,6 +60,7 @@ public class Settings {
     public Settings() {
     	buildingRules.put("Ferme", farmRules);
     	buildingRules.put("Port", portRules);
+    	buildingRules.put("Generator", generatorRules);
     }
 
     //DEBUG
@@ -218,7 +220,11 @@ public class Settings {
 
     // POWER
 	public int getPowerCons(String buildingName) {
-		return Integer.parseInt(buildingRules.get(buildingName)[0]);
+		if (buildingRules.containsKey(buildingName)) {
+			return Integer.parseInt(buildingRules.get(buildingName)[0]);			
+		} else {
+			return 0;
+		}
 	}
 	
 	//MISC

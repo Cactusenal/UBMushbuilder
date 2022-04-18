@@ -37,7 +37,7 @@ public class TuileCase {
     	casePosition = position;
     	xPos = x;
     	yPos = y;
-    	caseBackground = new JButton("");
+    	caseBackground = new JButton();
     	caseBackground.setBackground(Color.blue);
     	caseBackground.setFont(new Font("Monospace", Font.PLAIN, 12));
     	TuileCase thisCase = this;

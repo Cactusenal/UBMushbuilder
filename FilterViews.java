@@ -187,7 +187,7 @@ public class FilterViews {
         
         for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(3)) {
         	String buildingFromDistance = caseFromDistance.building;
-        	if (buildingFromDistance != "") {
+        	if (buildingFromDistance != "" && Main.settings.getPowerCons(buildingFromDistance) > 0) {
         		// Getting building position
         		Integer buildX = caseFromDistance.parentTuile.xPos * 3 + caseFromDistance.xPos;
         		Integer buildY = caseFromDistance.parentTuile.yPos * 3 + caseFromDistance.yPos;
@@ -216,7 +216,7 @@ public class FilterViews {
         
         
         if (buildingNumber == 0) {
-    		JLabel noBuildingLabel = new JLabel("No building in the area");
+    		JLabel noBuildingLabel = new JLabel("No building to power in the area");
     		generatorDialog.add(noBuildingLabel);
         }
         else {
