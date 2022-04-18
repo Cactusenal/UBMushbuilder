@@ -49,9 +49,11 @@ public class Settings {
     JFrame biomeFrame = new JFrame("Biomes settings");
     JFrame tempFrame = new JFrame("Temperatures settings");
     JFrame carteFrame = new JFrame("Carte settings");
+    JFrame prodFrame = new JFrame("Production settings");
     JDialog biomeDialog = new JDialog(biomeFrame);
     JDialog tempDialog = new JDialog(tempFrame);
     JDialog carteDialog = new JDialog(carteFrame);
+    JDialog prodDialog = new JDialog(prodFrame);
     
     JTextArea debugText = new JTextArea();
     JTextArea dataText = new JTextArea();
@@ -206,17 +208,13 @@ public class Settings {
         carteDialog.setLayout(new GridLayout(3,2));
     }
     
-
-    int[] getSlidersValue(Sliders[] sliders) {
-        // TO DO: Use map function instead
-    	int[] slidersValues = new int[sliders.length];
-    	int i = 0;
-    	for (Sliders slider : sliders) {
-    		slidersValues[i] = slider.getValue();
-    		i ++;
-        }
-    	return slidersValues;
+    public void showCartePopup() {
+    	carteDialog.setVisible(true);
     }
+
+    
+    // PRODUCTION
+    
 
     // POWER
 	public int getPowerCons(String buildingName) {
@@ -228,7 +226,14 @@ public class Settings {
 	}
 	
 	//MISC
-	public void showCartePopup() {
-		carteDialog.setVisible(true);
+	int[] getSlidersValue(Sliders[] sliders) {
+		// TO DO: Use map function instead
+		int[] slidersValues = new int[sliders.length];
+		int i = 0;
+		for (Sliders slider : sliders) {
+			slidersValues[i] = slider.getValue();
+			i ++;
+		}
+		return slidersValues;
 	}
 }
