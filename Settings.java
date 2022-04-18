@@ -19,16 +19,6 @@ public class Settings {
     int numberOfPlayers = 3;
     public Player[] players = new Player[numberOfPlayers];
     Color[] playersColors = {Color.blue, Color.red, Color.green};
-    
-    // UNUSED: temp datas/params
-    int minTemp = -15;
-    int maxTemp = 45;
-    public String[][] tempLevels = new String[][] {
-    	{"Temp très basse : bleu", "0", "5"},
-    	{"Temp basse: cyan", "1", "15"},
-    	{"Temp haute: jaune", "2", "25"},
-    	{"Temp très haute: rouge", "3", "35"}
-    };
 	
     //DATAS
     String [] possibleFilters = {"Biome", "Player", "Fibre", "Spore", "Minéraux", "MushCoins"};
@@ -36,6 +26,8 @@ public class Settings {
     
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
+	HashMap<String, String[]> fibreProdRules = new HashMap<String, String[]>();
+	HashMap<String, String[]> sporeProdRules = new HashMap<String, String[]>();
 	
 	// building datas
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
@@ -55,12 +47,34 @@ public class Settings {
     
     JTextArea debugText = new JTextArea();
     JTextArea dataText = new JTextArea();
+
     
     //CONSTRUCTEUR
     public Settings() {
     	buildingRules.put("Ferme", farmRules);
     	buildingRules.put("Port", portRules);
     	buildingRules.put("Generator", generatorRules);
+    	
+    	initProdSettings();
+    }
+    
+    // Setting initialisation
+    void initProdSettings() {
+    	// Fibre
+		String[] FForet0 = {"Foret", "0", "2"};
+		String[] FForet1 = {"Foret", "1", "1", "Brume"};
+		fibreProdRules.put("Foret0", FForet0);
+		fibreProdRules.put("Foret1", FForet1);
+		
+		// Spore
+		String[] Foret0 = {"Foret", "0", "1"};
+		String[] Marais0 = {"Marais", "0", "2"};
+		String[] Plaine0 = {"Plaine", "0", "1"};
+		String[] Port1 = {"Port", "1", "1"};
+		sporeProdRules.put("Foret0", Foret0);
+		sporeProdRules.put("Marais0", Marais0);
+		sporeProdRules.put("Plaine0", Plaine0);
+		sporeProdRules.put("Port1", Port1);
     }
 
     //DEBUG

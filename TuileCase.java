@@ -116,31 +116,15 @@ public class TuileCase {
 	}
 	
 	public void setProdFibre() {
-		HashMap<String, String[]> fibreProdRules = new HashMap<String, String[]>();
-		String[] Foret0 = {"Foret", "0", "2"};
-		String[] Foret1 = {"Foret", "1", "1", "Brume"};
-		fibreProdRules.put("Foret0", Foret0);
-		fibreProdRules.put("Foret1", Foret1);
-		
 		prodFibre = 0;
 		
-		prodFibre += getProdFromHashMap(fibreProdRules);
+		prodFibre += getProdFromHashMap(Main.settings.fibreProdRules);
 	}
 	
 	public void setProdSpore() {
-		HashMap<String, String[]> sporeProdRules = new HashMap<String, String[]>();
-		String[] Foret0 = {"Foret", "0", "1"};
-		String[] Marais0 = {"Marais", "0", "2"};
-		String[] Plaine0 = {"Plaine", "0", "1"};
-		String[] Port1 = {"Port", "1", "1"};
-		sporeProdRules.put("Foret0", Foret0);
-		sporeProdRules.put("Marais0", Marais0);
-		sporeProdRules.put("Plaine0", Plaine0);
-		sporeProdRules.put("Port1", Port1);
-		
 		prodSpore = 0;
 		
-		prodSpore += getProdFromHashMap(sporeProdRules);
+		prodSpore += getProdFromHashMap(Main.settings.sporeProdRules);
 		
 		switch (building) {
 			case "Ferme":
