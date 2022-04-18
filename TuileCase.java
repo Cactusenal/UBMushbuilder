@@ -25,6 +25,8 @@ public class TuileCase {
     String building = "";
     String[][] buildingParts = null;
     
+    public Object[][] buildingsPowered = {};
+    
     int prodFibre;
     int prodSpore;
     int prodMineral;

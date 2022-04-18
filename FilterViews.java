@@ -3,11 +3,18 @@ package net.codejava;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -167,25 +174,79 @@ public class FilterViews {
     }
     
     public void displayGeneratorPopup (TuileCase tuileCase) {
-        JFrame generatorFrame = new JFrame("Generator energy");
+        // General popup graphic params
+    	JFrame generatorFrame = new JFrame("Generator energy");
         JDialog generatorDialog = new JDialog(generatorFrame);
     	    	
-        generatorDialog.setBounds(200, 200, 200, 100);
+        generatorDialog.setBounds(200, 200, 500, 100);
         
+        // List of possible buildings to power creation
         int buildingNumber = 0;
 //        JPanel generatorPanel = new JPanel();
+        List<Object[]> buildingsToPowerList = new ArrayList<Object[]>();
         
         for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(3)) {
         	String buildingFromDistance = caseFromDistance.building;
         	if (buildingFromDistance != "") {
+        		// Getting building position
+        		Integer buildX = caseFromDistance.parentTuile.xPos * 3 + caseFromDistance.xPos;
+        		Integer buildY = caseFromDistance.parentTuile.yPos * 3 + caseFromDistance.yPos;
         		Main.settings.AddDebugLog("" + buildingFromDistance);
-        		JLabel buildingLabel = new JLabel(buildingFromDistance);
+        		JLabel buildingLabel = new JLabel(buildingFromDistance + " (" + buildX + "," + buildY +  ")");
+        		// Getting how much power is needed
+        		Integer powerCons = Main.settings.getPowerCons(buildingFromDistance);
+                JCheckBox powerCheckBox = new JCheckBox("" + powerCons);
         		generatorDialog.add(buildingLabel);
+        		generatorDialog.add(powerCheckBox);
+        		Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
+        		//buildingsToPower[buildingNumber] = buildingLine;
+        		buildingsToPowerList.add(buildingLine);
         		buildingNumber++;
+        		// Check if the building is already powered by this generator, and check box if so
+        		for (Object [] buildingPowered : tuileCase.buildingsPowered) {
+        			// TODO: Check for non possible buildings
+        			// TODO: Check for building already powered
+        			if ((String)buildingPowered[0] == buildingFromDistance && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
+        				powerCheckBox.setSelected((boolean) buildingPowered[3]);
+        			}
+        		}
         	}
         }
+        
+        
+        
+        if (buildingNumber == 0) {
+    		JLabel noBuildingLabel = new JLabel("No building in the area");
+    		generatorDialog.add(noBuildingLabel);
+        }
+        else {
+        	Object[][] buildingsToPower = new Object[buildingsToPowerList.size()][4];
+        	buildingsToPowerList.toArray(buildingsToPower);
+        	JButton applyPower = new JButton("Apply power connections");
+    		generatorDialog.add(applyPower);
+    		applyPower.addActionListener(new ActionListener(){
+    			// Apply the list of powered building to generator
+    			public void actionPerformed(ActionEvent e){
+    		        List<Object[]> buildingsPoweredList = new ArrayList<Object[]>();
+    				for (Object [] buildingLine : buildingsToPower) {
+    					Boolean isPoweredHere = ((AbstractButton) buildingLine[3]).isSelected();
+    					if (isPoweredHere) {
+    						buildingLine[3] = isPoweredHere;
+    						buildingsPoweredList.add(buildingLine);
+    						
+    		        		Main.settings.AddDebugLog("Powering this building" + buildingLine[0]);
+    					}
+    				}
+    				// Set buildingsPowered from constructed list
+    				Object [][] buildingsPoweredArray =  new Object[buildingsPoweredList.size()][4];
+    				buildingsPoweredList.toArray(buildingsPoweredArray);
+		        	tuileCase.buildingsPowered = buildingsPoweredArray;
+		            generatorDialog.setVisible(false);
+    			}
+    		});
+        }
 
-        generatorDialog.setLayout(new GridLayout(buildingNumber,1));
+        generatorDialog.setLayout(new GridLayout(buildingNumber + 1, 2));
 
         generatorDialog.setVisible(true);
     }

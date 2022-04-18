@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.HashMap;
+
 import javax.swing.*;
 
 public class Settings {
@@ -34,6 +36,11 @@ public class Settings {
     
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
+	
+	// building datas
+	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
+	String[] farmRules = {"10", ""};
+	String[] portRules = {"10", ""};
     
     //params selecteurs
     Sliders[] BiomeSliders;
@@ -47,6 +54,12 @@ public class Settings {
     
     JTextArea debugText = new JTextArea();
     JTextArea dataText = new JTextArea();
+    
+    //CONSTRUCTEUR
+    public Settings() {
+    	buildingRules.put("Ferme", farmRules);
+    	buildingRules.put("Port", portRules);
+    }
 
     //DEBUG
     void AddDebugLog(String message) {
@@ -260,5 +273,9 @@ public class Settings {
 		for(Player player : players) {
 			player.updateRessourceInfos();
 		}
+	}
+	
+	public int getPowerCons(String buildingName) {
+		return Integer.parseInt(buildingRules.get(buildingName)[0]);
 	}
 }
