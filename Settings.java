@@ -114,39 +114,17 @@ public class Settings {
 		return players[playerIndex];
     }
     
-    //UNUSED TEMP
-    public void createTempPopup() {
-    	tempDialog.setLayout(new FlowLayout());
-
-    	tempDialog.setBounds(200, 200, 900, 200);
-
-        JLabel jLabel = new JLabel("Press apply button to apply settings and update temp view");
-        
-        JPanel tempPanel = new JPanel();
-        createTempSliders(tempPanel);
-        
-        JButton jButton = new JButton("Apply");
-        jButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	Main.cartePanel.updateFilterView();
-            }
-        });
-
-        tempDialog.add(tempPanel);
-        tempDialog.add(jLabel);
-        tempDialog.add(jButton);
-    }
-    
-    public void showTempPopup() {
-        tempDialog.setVisible(true);
+    public void updatePlayersProd() {
+    	for(Player player : players) {
+    		player.updateRessourceInfos();
+    	}
     }
     
     //BIOME SETTINGS
     public void createBiomePopup() {
     	biomeDialog.setLayout(new FlowLayout());
     	
-    	biomeDialog.setBounds(200, 200, 1500, 200);
+    	biomeDialog.setBounds(150, 200, 1300, 200);
         
         JPanel biomePanel = new JPanel();
         createBiomeSliders(biomePanel);
@@ -231,6 +209,33 @@ public class Settings {
     }
 
     //TEMP SETTINGS
+    //UNUSED TEMP
+    public void createTempPopup() {
+    	tempDialog.setLayout(new FlowLayout());
+    	
+    	tempDialog.setBounds(200, 200, 900, 200);
+    	
+    	JLabel jLabel = new JLabel("Press apply button to apply settings and update temp view");
+    	
+    	JPanel tempPanel = new JPanel();
+    	createTempSliders(tempPanel);
+    	
+    	JButton jButton = new JButton("Apply");
+    	jButton.addActionListener(new ActionListener() {
+    		@Override
+    		public void actionPerformed(ActionEvent e) {
+    			Main.cartePanel.updateFilterView();
+    		}
+    	});
+    	
+    	tempDialog.add(tempPanel);
+    	tempDialog.add(jLabel);
+    	tempDialog.add(jButton);
+    }
+    
+    public void showTempPopup() {
+    	tempDialog.setVisible(true);
+    }
     void createTempSliders(JPanel sliderPanel) {
         //Sliders
     	TempSliders = new Sliders[tempLevels.length];
@@ -269,12 +274,7 @@ public class Settings {
     	return slidersValues;
     }
 
-	public void updatePlayersProd() {
-		for(Player player : players) {
-			player.updateRessourceInfos();
-		}
-	}
-	
+    // POWER
 	public int getPowerCons(String buildingName) {
 		return Integer.parseInt(buildingRules.get(buildingName)[0]);
 	}
