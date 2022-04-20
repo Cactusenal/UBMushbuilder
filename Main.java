@@ -3,6 +3,7 @@ package net.codejava;
 import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Point;
 
 
 public class Main 
@@ -32,7 +33,13 @@ public class Main
         // PANNEAU DROIT
         JPanel viewPanel = new JPanel(); 
         JScrollPane scrPanel = new JScrollPane(cartePanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrPanel.setPreferredSize(new Dimension(1300, 800));
+        scrPanel.setPreferredSize(new Dimension(1130, 790));
+        
+        // Center the scroll pane
+        JViewport jvp = new JViewport();
+        jvp = scrPanel.getViewport();
+        jvp.setViewPosition(new Point(900,0));
+
         viewPanel.add(scrPanel);
 
         // créer un séparateur de panneau
