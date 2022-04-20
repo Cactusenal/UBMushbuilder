@@ -1,10 +1,9 @@
 package net.codejava;
 
 import javax.swing.*;
-
 import java.awt.Dimension;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
+import java.awt.Frame;
+
 
 public class Main 
 {
@@ -48,8 +47,7 @@ public class Main
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         
-        GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice device = graphics.getDefaultScreenDevice();
-        device.setFullScreenWindow(frame);
+        int state = frame.getExtendedState();
+        frame.setExtendedState(state | Frame.MAXIMIZED_BOTH);
     }
 }
