@@ -38,10 +38,6 @@ public class Player {
 		rBtn.setForeground(playerColor);
 		//Tuile à poser
 		tuileViewer = new Tuile(true, this, 0, 0);
-		
-//		Gestion temperature
-//		temperatureLabel = new JLabel ();
-//    	temperatureLabel.setText("Tuile temp is " + temp + "°C");
 	}
 	
 	public void addMenu(JPanel panel) {

@@ -160,7 +160,6 @@ public class Settings {
 		int Min = 0;
 		int Max = numberOfPlayers - 1;
 		int playerIndex = Min + (int)(Math.random() * (Max - Min + 1));
-//		Main.temperatureLabel.setText("Tuile temp is " + temperature + "°C");
 		return players[playerIndex];
     }
     
@@ -262,43 +261,34 @@ public class Settings {
     // PRODUCTION
     public void createProdPopup() {
     	prodDialog.setBounds(200, 50, 1000, 700);
-    	// Sub-panel Name
-    	JLabel fibreProductionLabel = new JLabel("Production des fibres");
-    	prodDialog.add(fibreProductionLabel);
-//    	// Get sub-panel content
-    	fibreTextAreaFields = setSubProdPanel(fibreProdPanel, fibreProdRules);
-    	prodDialog.add(fibreProdPanel);
-//    	// Sub-panel Name
-//    	JLabel sporeProductionLabel = new JLabel("Production des spores");
-//    	prodDialog.add(sporeProductionLabel);
-//    	// Get sub-panel content
-//    	sporeTextAreaFields = setSubProdPanel(sporeProdPanel, sporeProdRules);
-//    	prodDialog.add(sporeProdPanel);
     	
-//    	for (Object [] prodData: prodDatas) {
-//    		// Sub-panel Name
-//    		JLabel subProductionLabel = new JLabel((String) prodData[0]);
-//    		prodDialog.add(subProductionLabel);
-//    		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
-//    		JPanel subProdPanel = (JPanel) prodData[2];
-//    		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
-//    		
-//    		// Get sub-panel content
-//    		subTextAreaFields = setSubProdPanel(subProdPanel, subProdRules);
-//    		prodDialog.add(subProdPanel);
-//    	}
+    	for (Object [] prodData: prodDatas) {
+    		// Sub-panel Name
+    		JLabel subProductionLabel = new JLabel((String) prodData[0]);
+    		prodDialog.add(subProductionLabel);
+    		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
+    		JPanel subProdPanel = (JPanel) prodData[2];
+    		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
+    		
+    		// Get sub-panel content
+    		subTextAreaFields = setSubProdPanel(subProdPanel, subProdRules);
+    		prodDialog.add(subProdPanel);
+    	}
     	
         JButton applyButton = new JButton("Apply");
         applyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	fibreProdRules = getProdRulesFromTextAreas(fibreTextAreaFields);
-//            	for (Object [] prodData: prodDatas) {
-//            		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
-//            		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
-//            		subProdRules = getProdRulesFromTextAreas(subTextAreaFields);
-//            	}
+            	sporeProdRules = getProdRulesFromTextAreas(sporeTextAreaFields);
+            	sucProdRules = getProdRulesFromTextAreas(sucTextAreaFields);
+            	phosphoProdRules = getProdRulesFromTextAreas(phosphoTextAreaFields);
 
+            	for (Player player : players) {
+            		player.tuileViewer.updateProductions();
+            		player.tuileViewer.updateFilterView();
+            	}
             	Main.cartePanel.updateWorldView();
+
             	prodDialog.setVisible(false);
             }
         });
@@ -357,14 +347,10 @@ public class Settings {
 		
     	for (String ruleName : TextAreaFields.keySet()) {
     		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
-    		Main.settings.AddDebugLog("rule name: " + ruleFromTextFields[0].getText());
-    		Main.settings.AddDebugLog("field: " + ruleFromTextFields[1].getText() + ", length: " + ruleFromTextFields[1].getText().length());
     		if (ruleFromTextFields[1].getText().length() > 0 && ruleFromTextFields[2].getText().length() > 0 && ruleFromTextFields[3].getText().length() > 0) {
-        		Main.settings.AddDebugLog("rule added");
     			String[] newRule = new String[rulesLength];
     			for (Integer i = 0; i < rulesLength; i ++) {
     				newRule[i] = ruleFromTextFields[i + 1].getText();
-    	    		Main.settings.AddDebugLog("field: " + ruleFromTextFields[i + 1].getText() + ", length: " + ruleFromTextFields[i + 1].getText().length());
     			}
     			newProdRules.put(ruleFromTextFields[0].getText(), newRule);    			
     		}
