@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
+
 import java.awt.Color;
 
 public class Player {
@@ -18,7 +20,7 @@ public class Player {
 	
 	ArrayList<Tuile> placedTuiles = new ArrayList<Tuile>();
 	
-	public JLabel ressourceLabel;
+	public JTextArea ressourceLabel;
     int prodFibre;
     int prodSpore;
     int prodSuc;
@@ -30,7 +32,9 @@ public class Player {
 		playerColor = givenColor;
 		
 		// Gestion ressouces
-		ressourceLabel = new JLabel("");
+		ressourceLabel = new JTextArea("");
+		ressourceLabel.setEditable(false);
+		ressourceLabel.setOpaque(false);
 	}
 
 	public void createMenu() {
@@ -61,6 +65,6 @@ public class Player {
 		prodSuc = getPlayerProd("prodSuc");
 		prodPhospho = getPlayerProd("prodPhospho");
 		prodCoins = getPlayerProd("prodCoins");
-		ressourceLabel.setText("Spore: " + prodSpore + ", Fibre: " + prodFibre + ", Suc: " + prodSuc + ", Phosphorite: "+ prodPhospho + ", MushCoins: " + prodCoins);
+		ressourceLabel.setText("Spore: " + prodSpore + ", Fibre: " + prodFibre + ", Suc: " + prodSuc + ",\n Phosphorite: "+ prodPhospho + ", MushCoins: " + prodCoins);
 	}
 }

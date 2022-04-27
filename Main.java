@@ -33,12 +33,12 @@ public class Main
         // PANNEAU DROIT
         JPanel viewPanel = new JPanel(); 
         JScrollPane scrPanel = new JScrollPane(cartePanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrPanel.setPreferredSize(new Dimension(1130, 790));
+        scrPanel.setPreferredSize(new Dimension(1300, 790));
         
         // Center the scroll pane
         JViewport jvp = new JViewport();
         jvp = scrPanel.getViewport();
-        jvp.setViewPosition(new Point(900,0));
+        jvp.setViewPosition(new Point(800,0));
 
         viewPanel.add(scrPanel);
 
@@ -54,6 +54,7 @@ public class Main
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         
+        // Plein ecran
         int state = frame.getExtendedState();
         frame.setExtendedState(state | Frame.MAXIMIZED_BOTH);
     }
