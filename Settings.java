@@ -36,9 +36,15 @@ public class Settings {
 	
 	// building datas
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
-	String[] farmRules = {"10", ""};
-	String[] portRules = {"20", ""};
-	String[] generatorRules = {"0", ""};
+	String[] dummyRule = {"10", ""};
+	String[] farmRule = {"10", ""};
+	String[] portRule = {"20", ""};
+	String[] generatorRule = {"0", ""};
+	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
+	String[] dummyCondition = {"biomes,were,to,place", "nearby,biomes,or,buildings", "price in ressources"};
+	String[] farmCondition = {"Plaine,Marais", "", ""};
+	String[] portCondition = {"Brume", "Brume", ""};
+	String[] generatorCondition = {"0", ""};
     
     //params selecteurs
     Sliders[] BiomeSliders;
@@ -74,9 +80,9 @@ public class Settings {
     
     //CONSTRUCTEUR
     public Settings() {
-    	buildingRules.put("Ferme", farmRules);
-    	buildingRules.put("Port", portRules);
-    	buildingRules.put("Generator", generatorRules);
+    	buildingRules.put("Ferme", farmRule);
+    	buildingRules.put("Port", portRule);
+    	buildingRules.put("Generator", generatorRule);
     	
     	initProdSettings();
     }
@@ -319,7 +325,7 @@ public class Settings {
         buttonPanel.setLayout(new GridLayout(1, 2));
         
         prodDialog.add(buttonPanel);    	
-        prodDialog.setLayout(new GridLayout(2, 1));
+        prodDialog.setLayout(new GridLayout(1, 1));
     }
     
     HashMap<String, JTextArea[]> setSubProdPanel(JPanel subProdPanel, HashMap<String, String[]> prodRules) {
