@@ -44,7 +44,7 @@ public class Settings {
 	String[] dummyCondition = {"biomes,were,to,place", "nearby,biomes,or,buildings", "price in ressources"};
 	String[] farmCondition = {"Plaine,Marais", "", ""};
 	String[] portCondition = {"Brume", "Brume", ""};
-	String[] generatorCondition = {"0", ""};
+	String[] generatorCondition = {"Désert,Plaine", "", ""};
     
     //params selecteurs
     Sliders[] BiomeSliders;
@@ -80,9 +80,7 @@ public class Settings {
     
     //CONSTRUCTEUR
     public Settings() {
-    	buildingRules.put("Ferme", farmRule);
-    	buildingRules.put("Port", portRule);
-    	buildingRules.put("Generator", generatorRule);
+    	initBuildingsSettings();
     	
     	initProdSettings();
     }
@@ -116,6 +114,16 @@ public class Settings {
 		//Phosphorite
 		String[] PHauteurs1 = {"Hauteurs", "0", "1"};
 		phosphoProdRules.put("PHauteurs1", PHauteurs1);
+    }
+    
+    void initBuildingsSettings() {
+    	buildingRules.put("Ferme", farmRule);
+    	buildingRules.put("Port", portRule);
+    	buildingRules.put("Generateur", generatorRule);
+    	
+    	buildingConditions.put("Ferme", farmCondition);
+    	buildingConditions.put("Port", portCondition);
+    	buildingConditions.put("Generateur", generatorCondition);
     }
 
     //DEBUG

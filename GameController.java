@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.AbstractButton;
@@ -166,20 +168,92 @@ public class GameController {
     	if (isViewer) {
 			tuileCase.changeTerrain();
 			tuileCase.updateFilterView();
-    	} else if (Main.gameController.buildMode) {
-    		tuileCase.setBuilding();
+    	} else if (buildMode) {
+    		displayBuildingPopup(tuileCase);
     	} else if (Main.filterViews.filterSelected == "Biome" && tuileCase.building == "Generateur") {
     		displayGeneratorPopup(tuileCase);
     	} else if (tuileCase.xPos == 1 && tuileCase.yPos == 1) {
-			tuileCase.parentTuile.setCopiedTuile(Main.settings.returnActivePlayer().tuileViewer);
-			Main.settings.returnActivePlayer().tuileViewer.randomize(true);    					
+			tuileCase.parentTuile.setCopiedTuile(settings.returnActivePlayer().tuileViewer);
+			settings.returnActivePlayer().tuileViewer.randomize(true);    					
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
 //			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
-			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
+			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
 			tuileCase.setProdFibre();
-			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
+			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
+	}
+	
+	public void displayBuildingPopup (TuileCase tuileCase) {
+		// General popup graphic params
+    	JFrame buildFrame = new JFrame("What to build?");
+        JDialog buildDialog = new JDialog(buildFrame);
+
+        buildDialog.setBounds(200, 200, 500, 100);
+        
+        // List of possible buildings to construct
+        HashMap<String, String[]> buildingConditions = settings.buildingConditions;
+        String[] directions = {"X+", "X-", "Y+", "Y-"};
+        Integer buildableNumber = 0;
+        for (String buildCondName : buildingConditions.keySet()) {
+    		boolean isBiomeOk = false;
+    		boolean isNearbyOk = true;
+        	String[] buildCond = buildingConditions.get(buildCondName);
+    		String[] biomesAuthorized = buildCond[0].split(",");
+    		String[] nearbyRequired = buildCond[1].split(",");
+    		for (String biome : biomesAuthorized) {
+    			if (tuileCase.terrain.equals(biome)) {
+    				isBiomeOk = true;
+    				break;
+    			}
+    		}
+    		if (nearbyRequired.length > 0) {
+    			isNearbyOk = false;
+    	        List<String> possibleBiomesList = Arrays.asList(settings.possibleBiomes);
+    			for (String direction : directions) {
+    				TuileCase relativeCase = tuileCase.getRelativeCase(direction);
+	    			for (String condition : nearbyRequired) {
+	    				if (possibleBiomesList.contains(condition)) {
+	    					if (condition.equals(relativeCase.terrain)) {
+	    						isNearbyOk = true;
+	    						break;
+	    					}
+    					} else {
+	    					if (condition.equals(relativeCase.building)) {
+	    						isNearbyOk = true;
+	    						break;
+	    					}
+    					}
+	    			}
+	    			if (isNearbyOk) {break;}
+    			}
+    		}
+    		if (isBiomeOk && isNearbyOk) {
+    			JLabel buildingName = new JLabel(buildCondName);
+    			JButton buidButton = new JButton("Construire");
+    			buidButton.addActionListener(new ActionListener() {
+    	            public void actionPerformed(ActionEvent e) {
+    	            	tuileCase.building = buildCondName;
+    	                buildDialog.setVisible(false);
+    	                // Update nearby prods
+    	        		for (String direction : directions) {
+    	        			TuileCase relativeCase = tuileCase.getRelativeCase(direction);
+    	        			if (relativeCase != null) {
+    	        				relativeCase.parentTuile.updateProductions();
+    	        				relativeCase.parentTuile.owner.updateRessourceInfos();
+    	        				relativeCase.updateFilterView();
+    	        			}
+    	        		}
+    	        		tuileCase.updateFilterView();
+    	            }
+    	        });	
+    			buildDialog.add(buildingName);
+    			buildDialog.add(buidButton);
+    			buildableNumber++;
+    		}
+        }
+        buildDialog.setLayout(new GridLayout(buildableNumber, 2));
+        buildDialog.setVisible(true);
 	}
 	
     public void displayGeneratorPopup (TuileCase tuileCase) {
@@ -195,14 +269,14 @@ public class GameController {
         
         for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(3)) {
         	String buildingFromDistance = caseFromDistance.building;
-        	if (buildingFromDistance != "" && Main.settings.getPowerCons(buildingFromDistance) > 0) {
+        	if (buildingFromDistance != "" && settings.getPowerCons(buildingFromDistance) > 0) {
         		// Getting building position
         		Integer buildX = caseFromDistance.parentTuile.xPos * 3 + caseFromDistance.xPos;
         		Integer buildY = caseFromDistance.parentTuile.yPos * 3 + caseFromDistance.yPos;
-        		Main.settings.AddDebugLog("" + buildingFromDistance);
+        		settings.AddDebugLog("" + buildingFromDistance);
         		JLabel buildingLabel = new JLabel(buildingFromDistance + " (" + buildX + "," + buildY +  ")");
         		// Getting how much power is needed
-        		Integer powerCons = Main.settings.getPowerCons(buildingFromDistance);
+        		Integer powerCons = settings.getPowerCons(buildingFromDistance);
                 JCheckBox powerCheckBox = new JCheckBox("" + powerCons);
         		generatorDialog.add(buildingLabel);
         		generatorDialog.add(powerCheckBox);
@@ -220,8 +294,6 @@ public class GameController {
         		}
         	}
         }
-        
-        
         
         if (buildingNumber == 0) {
     		JLabel noBuildingLabel = new JLabel("No building to power in the area");
@@ -242,7 +314,7 @@ public class GameController {
     						buildingLine[3] = isPoweredHere;
     						buildingsPoweredList.add(buildingLine);
     						
-    		        		Main.settings.AddDebugLog("Powering this building" + buildingLine[0]);
+    		        		settings.AddDebugLog("Powering this building" + buildingLine[0]);
     					}
     				}
     				// Set buildingsPowered from constructed list
@@ -253,9 +325,7 @@ public class GameController {
     			}
     		});
         }
-
         generatorDialog.setLayout(new GridLayout(buildingNumber + 1, 2));
-
         generatorDialog.setVisible(true);
     }
 }

@@ -52,40 +52,6 @@ public class TuileCase {
     		caseBackground.setFont(new Font("Monospace", Font.BOLD, 14));
     	}
     }
-    
-	
-	void setBuilding() {
-		String[] directions = {"X+", "X-", "Y+", "Y-"};
-		if (terrain == "Plaine") {
-			building = "Ferme";
-		}
-		if (terrain == "Brume") {
-			boolean isCoastal = false;
-			for (String direction : directions) {
-				TuileCase relativeCase = getRelativeCase(direction);
-				if (relativeCase != null && relativeCase.terrain != "Brume") {
-					isCoastal = true;
-					break;
-				}
-			}
-			if (isCoastal) {
-				building = "Port";				
-			}
-		}
-		if (terrain == "Désert") {
-			building = "Generateur";
-		}
-		for (String direction : directions) {
-			TuileCase relativeCase = getRelativeCase(direction);
-			if (relativeCase != null) {
-				relativeCase.parentTuile.updateProductions();
-				relativeCase.parentTuile.owner.updateRessourceInfos();
-				relativeCase.updateFilterView();
-			}
-		}
-		updateFilterView();
-	}
-
 
 	void changeTerrain() {
     	setTerrain(Main.settings.getRandomTerrainValue());
@@ -136,25 +102,6 @@ public class TuileCase {
 	
 	public void setProdSuc() {
     	prodSuc = getProdFromHashMap(Main.settings.sucProdRules);
-
-//		String[] directions = {"X+", "X-", "Y+", "Y-"};
-//		prodSuc = 0;
-//		switch (terrain) {
-//			case "Désert":
-//				prodSuc += 1;
-//				break;
-//			case "Hauteurs":
-//				prodSuc += 1;
-//				break;
-//		}
-//		if (terrain != "Brume") {
-//			for (String direction : directions) {
-//				TuileCase relativeCase = getRelativeCase(direction);
-//				if (relativeCase != null && relativeCase.terrain == "Hauteurs") {
-//					prodSuc += 1;
-//				}
-//			}
-//		}
 	}
 	
 	public void setProdPhospho() {
