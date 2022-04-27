@@ -56,7 +56,6 @@ public class TuileCase {
 	
 	void setBuilding() {
 		String[] directions = {"X+", "X-", "Y+", "Y-"};
-		Main.gameController.buildMode = false;
 		if (terrain == "Plaine") {
 			building = "Ferme";
 		}

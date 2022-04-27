@@ -1,5 +1,6 @@
 package net.codejava;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
@@ -110,6 +111,7 @@ public class GameController {
             public void actionPerformed(ActionEvent e) {
             	//settings.AddDebugLog("Trun");
             	buildMode = !buildMode;
+            	buildB.setBackground(buildMode? Color.green : Color.red);
             }
         });	
 		testB.addActionListener(new ActionListener() {
