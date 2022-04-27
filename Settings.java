@@ -1,7 +1,6 @@
 package net.codejava;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -32,6 +31,7 @@ public class Settings {
 	HashMap<String, String[]> sporeProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> sucProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> phosphoProdRules = new HashMap<String, String[]>();
+	HashMap<String, String[]> coinProdRules = new HashMap<String, String[]>();
 	Integer rulesLength = 4;
 	
 	// building datas
@@ -65,12 +65,15 @@ public class Settings {
 	HashMap<String, JTextArea[]> sucTextAreaFields = new HashMap<String, JTextArea[]>();
 	JPanel phosphoProdPanel = new JPanel();
 	HashMap<String, JTextArea[]> phosphoTextAreaFields = new HashMap<String, JTextArea[]>();
+	JPanel coinProdPanel = new JPanel();
+	HashMap<String, JTextArea[]> coinTextAreaFields = new HashMap<String, JTextArea[]>();
 	// Tableau des infos de prod
 	Object[][] prodDatas = {
 			{"Production des fibres", fibreProdRules, fibreProdPanel, fibreTextAreaFields},
 			{"Production des spores", sporeProdRules, sporeProdPanel, sporeTextAreaFields},
 			{"Production du suc", sucProdRules, sucProdPanel, sucTextAreaFields},
-			{"Production de phosphorite", phosphoProdRules, phosphoProdPanel, phosphoTextAreaFields}
+			{"Production de phosphorite", phosphoProdRules, phosphoProdPanel, phosphoTextAreaFields},
+			{"Production de Mushcoins", coinProdRules, coinProdPanel, coinTextAreaFields}
 	};
 
     
@@ -114,6 +117,12 @@ public class Settings {
 		//Phosphorite
 		String[] PHauteurs1 = {"Hauteurs", "0", "1"};
 		phosphoProdRules.put("PHauteurs1", PHauteurs1);
+		
+		//MushCoins
+		String[] CPort = {"Port", "0", "2"};
+		String[] CFarm = {"Ferme", "0", "1"};
+		coinProdRules.put("CPort", CPort);
+		coinProdRules.put("CFarm", CFarm);
     }
     
     void initBuildingsSettings() {
@@ -333,7 +342,7 @@ public class Settings {
         buttonPanel.setLayout(new GridLayout(1, 2));
         
         prodDialog.add(buttonPanel);    	
-        prodDialog.setLayout(new GridLayout(1, 1));
+        prodDialog.setLayout(new GridLayout(1, 2));
     }
     
     HashMap<String, JTextArea[]> setSubProdPanel(JPanel subProdPanel, HashMap<String, String[]> prodRules) {
@@ -402,6 +411,7 @@ public class Settings {
     	sporeProdRules = getProdRulesFromTextAreas(sporeTextAreaFields);
     	sucProdRules = getProdRulesFromTextAreas(sucTextAreaFields);
     	phosphoProdRules = getProdRulesFromTextAreas(phosphoTextAreaFields);
+    	coinProdRules = getProdRulesFromTextAreas(coinTextAreaFields);
 
     	for (Player player : players) {
     		player.tuileViewer.updateProductions();
@@ -411,11 +421,11 @@ public class Settings {
     }
     
     public void showProdPopup() {
-    	// TODO: use prodDatas tableau
     	fibreTextAreaFields = setSubProdPanel(fibreProdPanel, fibreProdRules);
     	sporeTextAreaFields = setSubProdPanel(sporeProdPanel, sporeProdRules);
     	sucTextAreaFields = setSubProdPanel(sucProdPanel, sucProdRules);
     	phosphoTextAreaFields = setSubProdPanel(phosphoProdPanel, phosphoProdRules);
+    	coinTextAreaFields = setSubProdPanel(coinProdPanel, coinProdRules);
     	prodDialog.setVisible(true);
     }
 

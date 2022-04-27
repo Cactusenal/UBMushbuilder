@@ -109,22 +109,7 @@ public class TuileCase {
 	}
 	
 	public void setProdCoins() {
-//		String[] directions = {"X+", "X-", "Y+", "Y-"};
-		prodCoins = 0;
-		switch (building) {
-			case "Port":
-				prodCoins += 2;
-				break;
-			case "Ferme":
-				prodCoins += 1;
-				break;
-		}
-//		for (String direction : directions) {
-//			caseBackground relativeCase = getRelativeCase(direction);
-//			if (relativeCase != null && relativeCase.terrain == "Hauteurs") {
-//				prodSuc += 1;
-//			}
-//		}
+		prodCoins = getProdFromHashMap(Main.settings.coinProdRules);
 	}
 	
 	public Integer getProdFromHashMap(HashMap<String, String[]> baseProductionRules) {
