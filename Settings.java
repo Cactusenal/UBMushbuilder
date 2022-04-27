@@ -1,5 +1,6 @@
 package net.codejava;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -25,6 +26,14 @@ public class Settings {
     String [] possibleFilters = {"Biome", "Player", "Fibre", "Spore", "Suc", "Phosphorite", "MushCoins"};
     String[] directions = {"NO", "N", "NE", "O", "C", "E", "SO", "S", "SE"};
     
+    //params selecteurs
+    Sliders[] BiomeSliders;
+    Sliders[] TempSliders;
+    JFrame biomeFrame = new JFrame("Biomes settings");
+    JFrame carteFrame = new JFrame("Carte settings");
+    JDialog biomeDialog = new JDialog(biomeFrame);
+    JDialog carteDialog = new JDialog(carteFrame);
+
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
 	HashMap<String, String[]> fibreProdRules = new HashMap<String, String[]>();
@@ -32,30 +41,9 @@ public class Settings {
 	HashMap<String, String[]> sucProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> phosphoProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> coinProdRules = new HashMap<String, String[]>();
-	Integer rulesLength = 4;
-	
-	// building datas
-	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
-	String[] dummyRule = {"10", ""};
-	String[] farmRule = {"10", ""};
-	String[] portRule = {"20", ""};
-	String[] generatorRule = {"0", ""};
-	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
-	String[] dummyCondition = {"biomes,were,to,place", "nearby,biomes,or,buildings", "price in ressources"};
-	String[] farmCondition = {"Plaine,Marais", "", ""};
-	String[] portCondition = {"Brume", "Brume", ""};
-	String[] generatorCondition = {"Désert,Plaine", "", ""};
-    
-    //params selecteurs
-    Sliders[] BiomeSliders;
-    Sliders[] TempSliders;
-    JFrame biomeFrame = new JFrame("Biomes settings");
-    JFrame carteFrame = new JFrame("Carte settings");
-    JFrame prodFrame = new JFrame("Production settings");
-    JDialog biomeDialog = new JDialog(biomeFrame);
-    JDialog carteDialog = new JDialog(carteFrame);
-    
+	Integer prodRulesLength = 4;
     // Prod rules dialogs
+    JFrame prodFrame = new JFrame("Production settings");
     JDialog prodDialog = new JDialog(prodFrame);
     JPanel fibreProdPanel = new JPanel();
 	HashMap<String, JTextArea[]> fibreTextAreaFields = new HashMap<String, JTextArea[]>();
@@ -75,11 +63,27 @@ public class Settings {
 			{"Production de phosphorite", phosphoProdRules, phosphoProdPanel, phosphoTextAreaFields},
 			{"Production de Mushcoins", coinProdRules, coinProdPanel, coinTextAreaFields}
 	};
+	
+	// building datas
+	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
+	String[] dummyRule = {"10", ""};
+	String[] farmRule = {"10", ""};
+	String[] portRule = {"20", ""};
+	String[] generatorRule = {"0", ""};
+	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
+	String[] dummyCondition = {"biomes,were,to,place", "nearby,biomes,or,buildings", "price in ressources"};
+	String[] farmCondition = {"Plaine,Marais", "", ""};
+	String[] portCondition = {"Brume", "Brume", ""};
+	String[] generatorCondition = {"Désert,Plaine", "", ""};
+	Integer buildRulesLength = 3;
+	// buildings dialog
+    JFrame buildFrame = new JFrame("Buildings settings");
+    JDialog buildDialog = new JDialog(buildFrame);
+    JPanel buildPanel = new JPanel();
+	HashMap<String, JTextArea[]> buildTextAreaFields = new HashMap<String, JTextArea[]>();
 
-    
+    // Debugger
     JTextArea debugText = new JTextArea();
-    JTextArea dataText = new JTextArea();
-
     
     //CONSTRUCTEUR
     public Settings() {
@@ -291,23 +295,19 @@ public class Settings {
     	
     	JLabel titleLabel = new JLabel("Production rules");
     	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome d'où la règle s'applique | Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas");
-//		titleLabel.setSize(titleLabel.getPreferredSize());
     	leftPanel.add(titleLabel);
-		titleLabel.setSize(200, 50);
-
 		rightPanel.add(rulesTemplateLabel);
 
     	for (Object [] prodData: prodDatas) {
     		// Sub-panel Name
     		JLabel subProductionLabel = new JLabel((String) prodData[0]);
-//    		subProductionLabel.setSize(subProductionLabel.getPreferredSize());
     		leftPanel.add(subProductionLabel);
     		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
     		JPanel subProdPanel = (JPanel) prodData[2];
     		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
     		
     		// Get sub-panel content
-    		subTextAreaFields = setSubProdPanel(subProdPanel, subProdRules);
+    		subTextAreaFields = setInputPanel(subProdPanel, subProdRules, prodRulesLength);
     		rightPanel.add(subProdPanel);
     	}
     	
@@ -315,6 +315,12 @@ public class Settings {
         applyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	applyRulesAndUpdateProds();
+            	// TODO: adding new rule field when new one is entered
+            	fibreTextAreaFields = setInputPanel(fibreProdPanel, fibreProdRules, prodRulesLength);
+            	sporeTextAreaFields = setInputPanel(sporeProdPanel, sporeProdRules, prodRulesLength);
+            	sucTextAreaFields = setInputPanel(sucProdPanel, sucProdRules, prodRulesLength);
+            	phosphoTextAreaFields = setInputPanel(phosphoProdPanel, phosphoProdRules, prodRulesLength);
+            	coinTextAreaFields = setInputPanel(coinProdPanel, coinProdRules, prodRulesLength);
             }
         });
 
@@ -341,11 +347,139 @@ public class Settings {
         buttonPanel.add(applyAndExitButton);    	
         buttonPanel.setLayout(new GridLayout(1, 2));
         
-        prodDialog.add(buttonPanel);    	
-        prodDialog.setLayout(new GridLayout(1, 2));
+        prodDialog.add(buttonPanel, BorderLayout.SOUTH);    	
     }
     
-    HashMap<String, JTextArea[]> setSubProdPanel(JPanel subProdPanel, HashMap<String, String[]> prodRules) {
+    HashMap<String, String[]> getProdRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields) {
+		HashMap<String, String[]> newProdRules = new HashMap<String, String[]>();
+		
+    	for (String ruleName : TextAreaFields.keySet()) {
+    		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
+    		if (ruleFromTextFields[1].getText().length() > 0 && ruleFromTextFields[2].getText().length() > 0 && ruleFromTextFields[3].getText().length() > 0) {
+    			String[] newRule = new String[prodRulesLength];
+    			for (Integer i = 0; i < prodRulesLength; i ++) {
+    				newRule[i] = ruleFromTextFields[i + 1].getText();
+    			}
+    			newProdRules.put(ruleFromTextFields[0].getText(), newRule);
+    		}
+    	}
+    	return newProdRules;
+    }
+    
+    void applyRulesAndUpdateProds() {
+    	fibreProdRules = getProdRulesFromTextAreas(fibreTextAreaFields);
+    	sporeProdRules = getProdRulesFromTextAreas(sporeTextAreaFields);
+    	sucProdRules = getProdRulesFromTextAreas(sucTextAreaFields);
+    	phosphoProdRules = getProdRulesFromTextAreas(phosphoTextAreaFields);
+    	coinProdRules = getProdRulesFromTextAreas(coinTextAreaFields);
+
+    	for (Player player : players) {
+    		player.tuileViewer.updateProductions();
+    		player.tuileViewer.updateFilterView();
+    	}
+    	Main.cartePanel.updateWorldView();
+    }
+    
+    public void showProdPopup() {
+    	fibreTextAreaFields = setInputPanel(fibreProdPanel, fibreProdRules, prodRulesLength);
+    	sporeTextAreaFields = setInputPanel(sporeProdPanel, sporeProdRules, prodRulesLength);
+    	sucTextAreaFields = setInputPanel(sucProdPanel, sucProdRules, prodRulesLength);
+    	phosphoTextAreaFields = setInputPanel(phosphoProdPanel, phosphoProdRules, prodRulesLength);
+    	coinTextAreaFields = setInputPanel(coinProdPanel, coinProdRules, prodRulesLength);
+    	prodDialog.setVisible(true);
+    }
+    
+    // BUILDINGS
+    public void createBuildPopup() {
+    	buildDialog.setBounds(50, 50, 1400, 700);
+    	
+    	JPanel leftPanel = new JPanel();
+    	JPanel rightPanel = new JPanel();
+    	
+    	JLabel titleLabel = new JLabel("Building rules");
+    	JLabel rulesTemplateLabel = new JLabel("Nom du batiment | Biome où l'on peut poser le batiment | Biome ou batiment devant se situer à côté | (WIP) Coût du batiment");
+    	leftPanel.add(titleLabel);
+		rightPanel.add(rulesTemplateLabel);
+
+		JLabel buildingRulesLabel = new JLabel("Conditions de placement des buildings");
+		leftPanel.add(buildingRulesLabel);
+		
+		// Get sub-panel content
+		buildTextAreaFields = setInputPanel(buildPanel, buildingConditions, buildRulesLength);
+		rightPanel.add(buildPanel);
+    	
+        JButton applyButton = new JButton("Apply");
+        applyButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	updateBuildingConditions();
+            	// TODO: adding new rule field when new one is entered
+        		buildTextAreaFields = setInputPanel(buildPanel, buildingConditions, buildRulesLength);
+            }
+        });
+
+        JButton applyAndExitButton = new JButton("Apply and Exit");
+        applyAndExitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	updateBuildingConditions();
+            	buildDialog.setVisible(false);
+            }
+        });
+        
+        leftPanel.setLayout(new GridLayout(2, 1));
+    	rightPanel.setLayout(new GridLayout(2, 1));
+
+        // créer un séparateur de panneau
+        JSplitPane sep = new JSplitPane(SwingConstants.VERTICAL, leftPanel, rightPanel); 
+        // définir l'orientation du séparateur
+        sep.setOrientation(SwingConstants.VERTICAL);
+        // Ajouter le séparateur
+        buildDialog.add(sep);
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(applyButton);    	
+        buttonPanel.add(applyAndExitButton);    	
+        buttonPanel.setLayout(new GridLayout(1, 2));
+        
+        buildDialog.add(buttonPanel, BorderLayout.SOUTH);    	
+    }
+
+    HashMap<String, String[]> getBuildRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields) {
+		HashMap<String, String[]> newProdRules = new HashMap<String, String[]>();
+		
+    	for (String ruleName : TextAreaFields.keySet()) {
+    		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
+    		// TODO: Check if ressource price is okay (3e field)
+    		if (ruleFromTextFields[1].getText().length() > 0) { // && ruleFromTextFields[2].getText().length() > 0 && ruleFromTextFields[3].getText().length() > 0) {
+    			String[] newRule = new String[buildRulesLength];
+    			for (Integer i = 0; i < buildRulesLength; i ++) {
+    				newRule[i] = ruleFromTextFields[i + 1].getText();
+    			}
+    			newProdRules.put(ruleFromTextFields[0].getText(), newRule);
+    		}
+    	}
+    	return newProdRules;
+    }
+    
+    void updateBuildingConditions() {
+    	buildingConditions = getBuildRulesFromTextAreas(buildTextAreaFields);
+    }
+
+    public void showBuildPopup() {
+		buildTextAreaFields = setInputPanel(buildPanel, buildingConditions, buildRulesLength);
+    	buildDialog.setVisible(true);
+    }
+    
+    // POWER
+	public int getPowerCons(String buildingName) {
+		if (buildingRules.containsKey(buildingName)) {
+			return Integer.parseInt(buildingRules.get(buildingName)[0]);			
+		} else {
+			return 0;
+		}
+	}
+	
+	//MISC
+   HashMap<String, JTextArea[]> setInputPanel(JPanel subProdPanel, HashMap<String, String[]> prodRules, Integer rulesLength) {
     	HashMap<String, JTextArea[]> TextAreaFields = new HashMap<String, JTextArea[]>();
     	subProdPanel.removeAll();
     	
@@ -389,56 +523,7 @@ public class Settings {
     	
     	return TextAreaFields;
     }
-    
-    HashMap<String, String[]> getProdRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields) {
-		HashMap<String, String[]> newProdRules = new HashMap<String, String[]>();
-		
-    	for (String ruleName : TextAreaFields.keySet()) {
-    		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
-    		if (ruleFromTextFields[1].getText().length() > 0 && ruleFromTextFields[2].getText().length() > 0 && ruleFromTextFields[3].getText().length() > 0) {
-    			String[] newRule = new String[rulesLength];
-    			for (Integer i = 0; i < rulesLength; i ++) {
-    				newRule[i] = ruleFromTextFields[i + 1].getText();
-    			}
-    			newProdRules.put(ruleFromTextFields[0].getText(), newRule);    			
-    		}
-    	}
-    	return newProdRules;
-    }
-    
-    void applyRulesAndUpdateProds() {
-    	fibreProdRules = getProdRulesFromTextAreas(fibreTextAreaFields);
-    	sporeProdRules = getProdRulesFromTextAreas(sporeTextAreaFields);
-    	sucProdRules = getProdRulesFromTextAreas(sucTextAreaFields);
-    	phosphoProdRules = getProdRulesFromTextAreas(phosphoTextAreaFields);
-    	coinProdRules = getProdRulesFromTextAreas(coinTextAreaFields);
-
-    	for (Player player : players) {
-    		player.tuileViewer.updateProductions();
-    		player.tuileViewer.updateFilterView();
-    	}
-    	Main.cartePanel.updateWorldView();
-    }
-    
-    public void showProdPopup() {
-    	fibreTextAreaFields = setSubProdPanel(fibreProdPanel, fibreProdRules);
-    	sporeTextAreaFields = setSubProdPanel(sporeProdPanel, sporeProdRules);
-    	sucTextAreaFields = setSubProdPanel(sucProdPanel, sucProdRules);
-    	phosphoTextAreaFields = setSubProdPanel(phosphoProdPanel, phosphoProdRules);
-    	coinTextAreaFields = setSubProdPanel(coinProdPanel, coinProdRules);
-    	prodDialog.setVisible(true);
-    }
-
-    // POWER
-	public int getPowerCons(String buildingName) {
-		if (buildingRules.containsKey(buildingName)) {
-			return Integer.parseInt(buildingRules.get(buildingName)[0]);			
-		} else {
-			return 0;
-		}
-	}
-	
-	//MISC
+	   
 	int[] getSlidersValue(Sliders[] sliders) {
 		// TO DO: Use map function instead
 		int[] slidersValues = new int[sliders.length];

@@ -39,6 +39,7 @@ public class GameController {
     JMenuItem biomeMenu = new JMenuItem("Biomes");
     JMenuItem carteMenu = new JMenuItem("Carte");
     JMenuItem prodMenu = new JMenuItem("Productions");
+    JMenuItem buildMenu = new JMenuItem("Constructions");
 	
 	public GameController() {
 		this.settings = Main.settings;
@@ -49,6 +50,7 @@ public class GameController {
 	    setMenu.add(biomeMenu);
 	    setMenu.add(carteMenu);
 	    setMenu.add(prodMenu);
+	    setMenu.add(buildMenu);
 	    menu.add(file);
 	    menu.add(setMenu);
 	    menu.add(help);
@@ -60,10 +62,11 @@ public class GameController {
 	    JComboBox filterSelector = new JComboBox(settings.possibleFilters);
 	    controllerPanel.add(filterSelector);
 	    
-	    //Sliders
+	    //Settings popup
 	    settings.createBiomePopup();
 	    settings.createCartePopup();
 	    settings.createProdPopup();
+	    settings.createBuildPopup();
 	    //Menu de création
 	    JButton createB = new JButton("Créer une tuile");
 	    JButton turnRB = new JButton("Tourner à droite");
@@ -91,6 +94,11 @@ public class GameController {
 		prodMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	settings.showProdPopup();
+            }
+        });
+		buildMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	settings.showBuildPopup();
             }
         });
 		filterSelector.addActionListener(new ActionListener() {
