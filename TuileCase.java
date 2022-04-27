@@ -18,18 +18,19 @@ public class TuileCase {
     Tuile parentTuile;
     String casePosition;
     
-    int xPos;
-    int yPos;
+    Integer xPos;
+    Integer yPos;
     
     String building = "";
     String[][] buildingParts = null;
     
     public Object[][] buildingsPowered = {};
     
-    int prodFibre;
-    int prodSpore;
-    int prodMineral;
-    int prodCoins;
+    Integer prodFibre;
+    Integer prodSpore;
+    Integer prodSuc;
+    Integer prodPhospho;
+    Integer prodCoins;
     
     //Constructeur
     public TuileCase(Tuile tuileFrom, JLayeredPane panel, String position, int x, int y, boolean isViewer) {
@@ -105,8 +106,10 @@ public class TuileCase {
 				return prodFibre;
 			case "prodSpore":
 				return prodSpore;
-			case "prodMineral":
-				return prodMineral;
+			case "prodSuc":
+				return prodSuc;
+			case "prodPhospho":
+				return prodPhospho;
 			case "prodCoins":
 				return prodCoins;
 			default:
@@ -116,15 +119,11 @@ public class TuileCase {
 	}
 	
 	public void setProdFibre() {
-		prodFibre = 0;
-		
-		prodFibre += getProdFromHashMap(Main.settings.fibreProdRules);
+    	prodFibre = getProdFromHashMap(Main.settings.fibreProdRules);
 	}
 	
 	public void setProdSpore() {
-		prodSpore = 0;
-		
-		prodSpore += getProdFromHashMap(Main.settings.sporeProdRules);
+		prodSpore = getProdFromHashMap(Main.settings.sporeProdRules);
 		
 		switch (building) {
 			case "Ferme":
@@ -136,25 +135,31 @@ public class TuileCase {
 		}
 	}
 	
-	public void setProdMineral() {
-		String[] directions = {"X+", "X-", "Y+", "Y-"};
-		prodMineral = 0;
-		switch (terrain) {
-			case "Désert":
-				prodMineral += 1;
-				break;
-			case "Hauteurs":
-				prodMineral += 1;
-				break;
-		}
-		if (terrain != "Brume") {
-			for (String direction : directions) {
-				TuileCase relativeCase = getRelativeCase(direction);
-				if (relativeCase != null && relativeCase.terrain == "Hauteurs") {
-					prodMineral += 1;
-				}
-			}
-		}
+	public void setProdSuc() {
+    	prodSuc = getProdFromHashMap(Main.settings.sucProdRules);
+
+//		String[] directions = {"X+", "X-", "Y+", "Y-"};
+//		prodSuc = 0;
+//		switch (terrain) {
+//			case "Désert":
+//				prodSuc += 1;
+//				break;
+//			case "Hauteurs":
+//				prodSuc += 1;
+//				break;
+//		}
+//		if (terrain != "Brume") {
+//			for (String direction : directions) {
+//				TuileCase relativeCase = getRelativeCase(direction);
+//				if (relativeCase != null && relativeCase.terrain == "Hauteurs") {
+//					prodSuc += 1;
+//				}
+//			}
+//		}
+	}
+	
+	public void setProdPhospho() {
+    	prodPhospho = getProdFromHashMap(Main.settings.phosphoProdRules);
 	}
 	
 	public void setProdCoins() {
@@ -171,29 +176,29 @@ public class TuileCase {
 //		for (String direction : directions) {
 //			caseBackground relativeCase = getRelativeCase(direction);
 //			if (relativeCase != null && relativeCase.terrain == "Hauteurs") {
-//				prodMineral += 1;
+//				prodSuc += 1;
 //			}
 //		}
 	}
 	
-	public int getProdFromHashMap(HashMap<String, String[]> baseProductionRules) {
-		int prod = 0;
+	public Integer getProdFromHashMap(HashMap<String, String[]> baseProductionRules) {
+		Integer prod = 0;
 		String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
         // Convert String Array to List
         List<String> possibleBiomesList = Arrays.asList(possibleBiomes);
         // ruleValuesExample = ["biome/building", "distance", "valeur de production", "terrains,oula,regle,nesappliquepas"];
-		
-        prod = 0;
 		for (String ruleName : baseProductionRules.keySet()) {
 			String[] ruleValues = baseProductionRules.get(ruleName);
-			
+			// Extract rules infos
 			String caseType = ruleValues[0];
-			int distanceValue = Integer.parseInt(ruleValues[1]);
-			int prodValue = Integer.parseInt(ruleValues[2]);
+			Integer distanceValue = Integer.parseInt(ruleValues[1]);
+			Integer prodValue = Integer.parseInt(ruleValues[2]);
+//			Main.settings.AddDebugLog("[getProdFromHashMap]: prodValue: " + prodValue);
 			String[] biomeToNotApplyString = ruleValues.length > 3 ? ruleValues[3].split(",") : null;
-			
+			// Determine if it is biome or building rule
 			Boolean isBiome = possibleBiomesList.contains(caseType);
 			String typeToCompare = isBiome ? terrain : building;
+			// Determine on wich biomes to apply
 			List<String> biomesToNotApply = null;
 			Boolean applyOnAllBiome = false;				
 			if (biomeToNotApplyString != null) {
@@ -202,22 +207,26 @@ public class TuileCase {
 			else {
 				applyOnAllBiome = true;
 			}
-			
-			if (distanceValue == 0 && caseType == typeToCompare) {
+			// Calculate productions
+			if (distanceValue == 0 && caseType.equals(typeToCompare)) {
 				prod += prodValue;
+//				Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
 			}
 			else if (distanceValue > 0) {
 				TuileCase[] tuilesWithinDistance = getCasesFromDistance(distanceValue);
 				for (TuileCase relativeCase : tuilesWithinDistance) {
 					if (relativeCase != null) {
 						typeToCompare = isBiome ? relativeCase.terrain : relativeCase.building;
-						if (caseType == typeToCompare && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
+						if (caseType.equals(typeToCompare) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
 							prod += prodValue;
+//							Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
 						}
 					}
 				}
 			}
 		}
+//		Main.settings.AddDebugLog("[getProdFromHashMap]: prod: " + prod);
+
 		return prod;
 	}
 	

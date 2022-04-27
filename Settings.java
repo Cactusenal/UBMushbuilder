@@ -2,6 +2,7 @@ package net.codejava;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,13 +22,16 @@ public class Settings {
     Color[] playersColors = {Color.blue, Color.red, Color.green};
 	
     //DATAS
-    String [] possibleFilters = {"Biome", "Player", "Fibre", "Spore", "Minéraux", "MushCoins"};
+    String [] possibleFilters = {"Biome", "Player", "Fibre", "Spore", "Suc", "Phosphorite", "MushCoins"};
     String[] directions = {"NO", "N", "NE", "O", "C", "E", "SO", "S", "SE"};
     
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
 	HashMap<String, String[]> fibreProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> sporeProdRules = new HashMap<String, String[]>();
+	HashMap<String, String[]> sucProdRules = new HashMap<String, String[]>();
+	HashMap<String, String[]> phosphoProdRules = new HashMap<String, String[]>();
+	Integer rulesLength = 4;
 	
 	// building datas
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
@@ -43,7 +47,25 @@ public class Settings {
     JFrame prodFrame = new JFrame("Production settings");
     JDialog biomeDialog = new JDialog(biomeFrame);
     JDialog carteDialog = new JDialog(carteFrame);
+    
+    // Prod rules dialogs
     JDialog prodDialog = new JDialog(prodFrame);
+    JPanel fibreProdPanel = new JPanel();
+	HashMap<String, JTextArea[]> fibreTextAreaFields = new HashMap<String, JTextArea[]>();
+	JPanel sporeProdPanel = new JPanel();
+	HashMap<String, JTextArea[]> sporeTextAreaFields = new HashMap<String, JTextArea[]>();
+	JPanel sucProdPanel = new JPanel();
+	HashMap<String, JTextArea[]> sucTextAreaFields = new HashMap<String, JTextArea[]>();
+	JPanel phosphoProdPanel = new JPanel();
+	HashMap<String, JTextArea[]> phosphoTextAreaFields = new HashMap<String, JTextArea[]>();
+	// Tableau des infos de prod
+	Object[][] prodDatas = {
+			{"Production des fibres", fibreProdRules, fibreProdPanel, fibreTextAreaFields},
+			{"Production des spores", sporeProdRules, sporeProdPanel, sporeTextAreaFields},
+			{"Production du suc", sucProdRules, sucProdPanel, sucTextAreaFields},
+			{"Production de phosphorite", phosphoProdRules, phosphoProdPanel, phosphoTextAreaFields}
+	};
+
     
     JTextArea debugText = new JTextArea();
     JTextArea dataText = new JTextArea();
@@ -75,6 +97,18 @@ public class Settings {
 		sporeProdRules.put("Marais0", Marais0);
 		sporeProdRules.put("Plaine0", Plaine0);
 		sporeProdRules.put("Port1", Port1);
+		
+		//Suc
+		String[] SDesert0 = {"Désert", "0", "1"};
+		String[] SHauteurs0 = {"Hauteurs", "0", "1"};
+		String[] SHauteurs1 = {"Hauteurs", "1", "1", "Brume"};
+		sucProdRules.put("SDesert0", SDesert0);
+		sucProdRules.put("SHauteurs0", SHauteurs0);
+		sucProdRules.put("SHauteurs1", SHauteurs1);
+		
+		//Phosphorite
+		String[] PHauteurs1 = {"Hauteurs", "0", "1"};
+		phosphoProdRules.put("PHauteurs1", PHauteurs1);
     }
 
     //DEBUG
@@ -85,7 +119,7 @@ public class Settings {
     void ClearDebugLog() {
     	debugText.setText("");
     }
-    
+     
     //PLAYERS
     public void createPlayersMenus() {
         for (var index = 0; index < numberOfPlayers; index++) {
@@ -227,40 +261,123 @@ public class Settings {
     
     // PRODUCTION
     public void createProdPopup() {
-    	prodDialog.setBounds(200, 200, 800, 200);
+    	prodDialog.setBounds(200, 50, 1000, 700);
+    	// Sub-panel Name
+    	JLabel fibreProductionLabel = new JLabel("Production des fibres");
+    	prodDialog.add(fibreProductionLabel);
+//    	// Get sub-panel content
+    	fibreTextAreaFields = setSubProdPanel(fibreProdPanel, fibreProdRules);
+    	prodDialog.add(fibreProdPanel);
+//    	// Sub-panel Name
+//    	JLabel sporeProductionLabel = new JLabel("Production des spores");
+//    	prodDialog.add(sporeProductionLabel);
+//    	// Get sub-panel content
+//    	sporeTextAreaFields = setSubProdPanel(sporeProdPanel, sporeProdRules);
+//    	prodDialog.add(sporeProdPanel);
     	
-    	JLabel fibreProduction = new JLabel("Production des fibres");
+//    	for (Object [] prodData: prodDatas) {
+//    		// Sub-panel Name
+//    		JLabel subProductionLabel = new JLabel((String) prodData[0]);
+//    		prodDialog.add(subProductionLabel);
+//    		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
+//    		JPanel subProdPanel = (JPanel) prodData[2];
+//    		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
+//    		
+//    		// Get sub-panel content
+//    		subTextAreaFields = setSubProdPanel(subProdPanel, subProdRules);
+//    		prodDialog.add(subProdPanel);
+//    	}
     	
-//    	for ()
-        
-//        JLabel lignLabel = new JLabel("Enter the number of ligns for the map");
-//        JTextArea lignText = new JTextArea("" + carteNumberOfLigns);
-//        
-//        JLabel columnLabel = new JLabel("Enter the number of columns for the map");
-//        JTextArea columnText = new JTextArea("" + carteNumberOfColumns);
-//        
-//        JLabel buttonLabel = new JLabel("Press apply button to apply settings and create a new map");
-//        JButton jButton = new JButton("Apply");
-//        jButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//            	carteNumberOfLigns = Integer.parseInt(lignText.getText());
-//            	carteNumberOfColumns = Integer.parseInt(columnText.getText());
-//            	Main.cartePanel.resetSize(carteNumberOfLigns, carteNumberOfColumns);
-//            	Main.cartePanel.updateFilterView();
-//            }
-//        });
-//
-//        carteDialog.add(lignLabel);
-//        carteDialog.add(lignText);
-//        carteDialog.add(columnLabel);
-//        carteDialog.add(columnText);
-//        carteDialog.add(buttonLabel);
-//        carteDialog.add(jButton);
-//        
-//        carteDialog.setLayout(new GridLayout(3,2));
+        JButton applyButton = new JButton("Apply");
+        applyButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fibreProdRules = getProdRulesFromTextAreas(fibreTextAreaFields);
+//            	for (Object [] prodData: prodDatas) {
+//            		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
+//            		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
+//            		subProdRules = getProdRulesFromTextAreas(subTextAreaFields);
+//            	}
+
+            	Main.cartePanel.updateWorldView();
+            	prodDialog.setVisible(false);
+            }
+        });
+        prodDialog.add(applyButton);    	
+//        carteDialog.add(applyAndExitButton);    	
+    	prodDialog.setLayout(new GridLayout(5, 1));
+    }
+    
+    HashMap<String, JTextArea[]> setSubProdPanel(JPanel subProdPanel, HashMap<String, String[]> prodRules) {
+    	HashMap<String, JTextArea[]> TextAreaFields = new HashMap<String, JTextArea[]>();
+    	subProdPanel.removeAll();
+    	
+    	// TODO: remove dummy
+		JTextArea dummyTextField = new JTextArea("test");
+		Font boldFont= new Font(dummyTextField.getFont().getName(), Font.BOLD, dummyTextField.getFont().getSize());
+    	
+    	for (String ruleName : prodRules.keySet()) {
+			// Get present rules
+    		String[] ruleValues = prodRules.get(ruleName);
+    		// Fill rule name
+			JTextArea ruleNameTextField = new JTextArea(ruleName);
+			ruleNameTextField.setFont(boldFont);
+			subProdPanel.add(ruleNameTextField);
+			// Create array with all text area fields
+			JTextArea[] textAreaArray = new JTextArea[rulesLength + 1];
+			textAreaArray[0] = ruleNameTextField;
+			for (Integer i = 0; i < rulesLength; i ++) {
+				// Get rules data to fill text area fields
+				String ruleValue = i < ruleValues.length ? ruleValues[i] : "";
+				JTextArea ruleTextField = new JTextArea(ruleValue);
+				subProdPanel.add(ruleTextField);
+				textAreaArray[i + 1] = ruleTextField;
+			}
+			TextAreaFields.put(ruleNameTextField.getText(), textAreaArray);
+    	}
+    	// Adding an empty line for a new rule
+		JTextArea[] emptyTextAreaArray = new JTextArea[rulesLength + 1];
+		JTextArea emptyTextAreaName = new JTextArea("New rule ?");
+		emptyTextAreaArray[0] = emptyTextAreaName;
+		emptyTextAreaName.setFont(boldFont);
+		subProdPanel.add(emptyTextAreaName);
+		for (Integer i = 0; i < rulesLength; i ++) {
+			JTextArea ruleTextField = new JTextArea("");
+			subProdPanel.add(ruleTextField);
+			emptyTextAreaArray[i + 1] = ruleTextField;
+		}
+		TextAreaFields.put(emptyTextAreaName.getText(), emptyTextAreaArray);
+
+    	subProdPanel.setLayout(new GridLayout(prodRules.size() + 1, rulesLength + 1));
+    	
+    	return TextAreaFields;
+    }
+    
+    HashMap<String, String[]> getProdRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields) {
+		HashMap<String, String[]> newProdRules = new HashMap<String, String[]>();
+		
+    	for (String ruleName : TextAreaFields.keySet()) {
+    		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
+    		Main.settings.AddDebugLog("rule name: " + ruleFromTextFields[0].getText());
+    		Main.settings.AddDebugLog("field: " + ruleFromTextFields[1].getText() + ", length: " + ruleFromTextFields[1].getText().length());
+    		if (ruleFromTextFields[1].getText().length() > 0 && ruleFromTextFields[2].getText().length() > 0 && ruleFromTextFields[3].getText().length() > 0) {
+        		Main.settings.AddDebugLog("rule added");
+    			String[] newRule = new String[rulesLength];
+    			for (Integer i = 0; i < rulesLength; i ++) {
+    				newRule[i] = ruleFromTextFields[i + 1].getText();
+    	    		Main.settings.AddDebugLog("field: " + ruleFromTextFields[i + 1].getText() + ", length: " + ruleFromTextFields[i + 1].getText().length());
+    			}
+    			newProdRules.put(ruleFromTextFields[0].getText(), newRule);    			
+    		}
+    	}
+    	return newProdRules;
     }
     
     public void showProdPopup() {
+    	// TODO: use prodDatas tableau
+    	fibreTextAreaFields = setSubProdPanel(fibreProdPanel, fibreProdRules);
+    	sporeTextAreaFields = setSubProdPanel(sporeProdPanel, sporeProdRules);
+    	sucTextAreaFields = setSubProdPanel(sucProdPanel, sucProdRules);
+    	phosphoTextAreaFields = setSubProdPanel(phosphoProdPanel, phosphoProdRules);
     	prodDialog.setVisible(true);
     }
 

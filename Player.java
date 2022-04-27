@@ -21,7 +21,8 @@ public class Player {
 	public JLabel ressourceLabel;
     int prodFibre;
     int prodSpore;
-    int prodMineral;
+    int prodSuc;
+    int prodPhospho;
     int prodCoins;
 	
 	public Player(String givenName, Color givenColor) {
@@ -61,8 +62,9 @@ public class Player {
 	public void updateRessourceInfos() {
 		prodFibre = getPlayerProd("prodFibre");
 		prodSpore = getPlayerProd("prodSpore");
-		prodMineral = getPlayerProd("prodMineral");
+		prodSuc = getPlayerProd("prodSuc");
+		prodPhospho = getPlayerProd("prodPhospho");
 		prodCoins = getPlayerProd("prodCoins");
-		ressourceLabel.setText("Spore: " + prodSpore + ", Fibre: " + prodFibre + ", Minéral: " + prodMineral + ", MushCoins: " + prodCoins);
+		ressourceLabel.setText("Spore: " + prodSpore + ", Fibre: " + prodFibre + ", Suc: " + prodSuc + ", Phosphorite: "+ prodPhospho + ", MushCoins: " + prodCoins);
 	}
 }

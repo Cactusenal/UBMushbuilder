@@ -51,6 +51,7 @@ public class GameController {
 	    //Sliders
 	    settings.createBiomePopup();
 	    settings.createCartePopup();
+	    settings.createProdPopup();
 	    //Menu de création
 	    JButton createB = new JButton("Créer une tuile");
 	    JButton turnRB = new JButton("Tourner à droite");
@@ -117,7 +118,16 @@ public class GameController {
 //            	settings.AddDebugLog("tableau [2 , 3] Cvalue is " + cartePanel.tableauTuile[2][3].cases[4].getTerrain());
 //            	settings.AddDebugLog("" + GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts( ));
 //            	settings.AddDebugLog("tableau [2 , 3] temp value is " + cartePanel.tableauTuile[2][3].getTemperature());
-            	settings.AddDebugLog(settings.returnActivePlayer().playerName);
+//            	settings.AddDebugLog(settings.returnActivePlayer().playerName);
+            	for (String ruleName : settings.fibreProdRules.keySet()) {
+        			// Get present rules
+            		String[] ruleValues = settings.fibreProdRules.get(ruleName);
+            		settings.AddDebugLog("Rule name: " + ruleName);
+            		settings.AddDebugLog("" + ruleValues[0]);
+            		settings.AddDebugLog("" + ruleValues[1]);
+            		settings.AddDebugLog("" + ruleValues[2]);
+            		settings.AddDebugLog("" + (ruleValues.length > 3 ? ruleValues[3] : ""));
+            	}
             }
         });	
 		clearB.addActionListener(new ActionListener() {
@@ -154,7 +164,10 @@ public class GameController {
 			Main.settings.returnActivePlayer().tuileViewer.randomize(true);    					
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
-			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
+//			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
+			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
+			tuileCase.setProdFibre();
+			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
 	}
 }

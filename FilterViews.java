@@ -30,7 +30,8 @@ public class FilterViews {
     HashMap<String, Color> biomeColors = new HashMap<String, Color>();
     HashMap<String, Boolean> fiberDisplayed = new HashMap<String, Boolean>();
     HashMap<String, Boolean> sporeDisplayed = new HashMap<String, Boolean>();
-    HashMap<String, Boolean> mineralDisplayed = new HashMap<String, Boolean>();
+    HashMap<String, Boolean> sucDisplayed = new HashMap<String, Boolean>();
+    HashMap<String, Boolean> phosphoDisplayed = new HashMap<String, Boolean>();
 //    HashMap<String, Boolean> coinsDisplayed = new HashMap<String, Boolean>();
     
 	//images datas
@@ -61,9 +62,13 @@ public class FilterViews {
 		sporeDisplayed.put("Plaine", true);
 		sporeDisplayed.put("Marais", true);
 		
-		mineralDisplayed.put("Brume", true);
-		mineralDisplayed.put("Désert", true);
-		mineralDisplayed.put("Hauteurs", true);
+		sucDisplayed.put("Brume", true);
+		sucDisplayed.put("Désert", true);
+		sucDisplayed.put("Hauteurs", true);
+		
+		phosphoDisplayed.put("Brume", true);
+		phosphoDisplayed.put("Désert", true);
+		phosphoDisplayed.put("Hauteurs", true);
 		
 		sizeImages();
 	}
@@ -96,10 +101,15 @@ public class FilterViews {
 				caseBackground.setText("" + prodSpore);
 				caseToBiomeColor(caseBackground, terrain, sporeDisplayed);
 				break;
-			case "Minéraux":
-				int prodMineral = tuileCase.prodMineral;
-				caseBackground.setText("" + prodMineral);
-				caseToBiomeColor(caseBackground, terrain, mineralDisplayed);
+			case "Suc":
+				int prodSuc = tuileCase.prodSuc;
+				caseBackground.setText("" + prodSuc);
+				caseToBiomeColor(caseBackground, terrain, sucDisplayed);
+				break;
+			case "Phosphorite":
+				int prodPhospho = tuileCase.prodPhospho;
+				caseBackground.setText("" + prodPhospho);
+				caseToBiomeColor(caseBackground, terrain, phosphoDisplayed);
 				break;
 			case "MushCoins":
 				int prodCoins = tuileCase.prodCoins;

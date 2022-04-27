@@ -215,7 +215,8 @@ public class Tuile {
             for (TuileCase currentCase : currentCaseLign) {
             	currentCase.setProdFibre();
             	currentCase.setProdSpore();
-            	currentCase.setProdMineral();
+            	currentCase.setProdSuc();
+            	currentCase.setProdPhospho();
             	currentCase.setProdCoins();
             }
         }
