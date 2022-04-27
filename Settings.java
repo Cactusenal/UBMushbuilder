@@ -260,41 +260,65 @@ public class Settings {
     
     // PRODUCTION
     public void createProdPopup() {
-    	prodDialog.setBounds(200, 50, 1000, 700);
+    	prodDialog.setBounds(50, 50, 1400, 700);
     	
+    	JPanel leftPanel = new JPanel();
+    	JPanel rightPanel = new JPanel();
+    	
+    	JLabel titleLabel = new JLabel("Production rules");
+    	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome d'où la règle s'applique | Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas");
+//		titleLabel.setSize(titleLabel.getPreferredSize());
+    	leftPanel.add(titleLabel);
+		titleLabel.setSize(200, 50);
+
+		rightPanel.add(rulesTemplateLabel);
+
     	for (Object [] prodData: prodDatas) {
     		// Sub-panel Name
     		JLabel subProductionLabel = new JLabel((String) prodData[0]);
-    		prodDialog.add(subProductionLabel);
+//    		subProductionLabel.setSize(subProductionLabel.getPreferredSize());
+    		leftPanel.add(subProductionLabel);
     		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
     		JPanel subProdPanel = (JPanel) prodData[2];
     		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
     		
     		// Get sub-panel content
     		subTextAreaFields = setSubProdPanel(subProdPanel, subProdRules);
-    		prodDialog.add(subProdPanel);
+    		rightPanel.add(subProdPanel);
     	}
     	
         JButton applyButton = new JButton("Apply");
         applyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	fibreProdRules = getProdRulesFromTextAreas(fibreTextAreaFields);
-            	sporeProdRules = getProdRulesFromTextAreas(sporeTextAreaFields);
-            	sucProdRules = getProdRulesFromTextAreas(sucTextAreaFields);
-            	phosphoProdRules = getProdRulesFromTextAreas(phosphoTextAreaFields);
+            	applyRulesAndUpdateProds();
+            }
+        });
 
-            	for (Player player : players) {
-            		player.tuileViewer.updateProductions();
-            		player.tuileViewer.updateFilterView();
-            	}
-            	Main.cartePanel.updateWorldView();
-
+        JButton applyAndExitButton = new JButton("Apply and Exit");
+        applyAndExitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	applyRulesAndUpdateProds();
             	prodDialog.setVisible(false);
             }
         });
-        prodDialog.add(applyButton);    	
-//        carteDialog.add(applyAndExitButton);    	
-    	prodDialog.setLayout(new GridLayout(5, 1));
+        
+        leftPanel.setLayout(new GridLayout(prodDatas.length + 1, 1));
+    	rightPanel.setLayout(new GridLayout(prodDatas.length + 1, 1));
+
+        // créer un séparateur de panneau
+        JSplitPane sep = new JSplitPane(SwingConstants.VERTICAL, leftPanel, rightPanel); 
+        // définir l'orientation du séparateur
+        sep.setOrientation(SwingConstants.VERTICAL);
+        // Ajouter le séparateur
+        prodDialog.add(sep);
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(applyButton);    	
+        buttonPanel.add(applyAndExitButton);    	
+        buttonPanel.setLayout(new GridLayout(1, 2));
+        
+        prodDialog.add(buttonPanel);    	
+        prodDialog.setLayout(new GridLayout(2, 1));
     }
     
     HashMap<String, JTextArea[]> setSubProdPanel(JPanel subProdPanel, HashMap<String, String[]> prodRules) {
@@ -356,6 +380,19 @@ public class Settings {
     		}
     	}
     	return newProdRules;
+    }
+    
+    void applyRulesAndUpdateProds() {
+    	fibreProdRules = getProdRulesFromTextAreas(fibreTextAreaFields);
+    	sporeProdRules = getProdRulesFromTextAreas(sporeTextAreaFields);
+    	sucProdRules = getProdRulesFromTextAreas(sucTextAreaFields);
+    	phosphoProdRules = getProdRulesFromTextAreas(phosphoTextAreaFields);
+
+    	for (Player player : players) {
+    		player.tuileViewer.updateProductions();
+    		player.tuileViewer.updateFilterView();
+    	}
+    	Main.cartePanel.updateWorldView();
     }
     
     public void showProdPopup() {
