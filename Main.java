@@ -12,11 +12,12 @@ public class Main
 	public static GameController gameController = null;
 	public static Carte cartePanel;
 	public static FilterViews filterViews;
+	public static JFrame frame = new JFrame("Univ. Builder proto");
     	
 	public static void main(String[] args) 
     {
         // Définissez le frame
-        JFrame frame = new JFrame("Univ. Builder proto");
+//        JFrame frame = new JFrame("Univ. Builder proto");
         
         settings = new Settings();
         settings.createPlayersMenus();

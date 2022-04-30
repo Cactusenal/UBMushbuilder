@@ -40,6 +40,9 @@ public class GameController {
     JMenuItem carteMenu = new JMenuItem("Carte");
     JMenuItem prodMenu = new JMenuItem("Productions");
     JMenuItem buildMenu = new JMenuItem("Constructions");
+    // ComboBoxes
+    JComboBox<String> filterSelector;
+    JComboBox<String> biomeSelector;
 	
 	public GameController() {
 		this.settings = Main.settings;
@@ -58,10 +61,13 @@ public class GameController {
 	    // créer un panneau
 	    controllerPanel.add(menu);
 	    
-	    //ComboBox
-	    JComboBox filterSelector = new JComboBox(settings.possibleFilters);
+	    //ComboBoxes
+	    filterSelector = new JComboBox<String>(settings.possibleFilters);
 	    controllerPanel.add(filterSelector);
-	    
+	    String[] biomeTypes = settings.biomeTypes.keySet().toArray(String[]::new);
+	    biomeSelector = new JComboBox<String>(biomeTypes);
+	    controllerPanel.add(biomeSelector);
+
 	    //Settings popup
 	    settings.createBiomePopup();
 	    settings.createCartePopup();

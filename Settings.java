@@ -2,7 +2,6 @@ package net.codejava;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -11,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class Settings {
     // Param carte
@@ -36,6 +36,8 @@ public class Settings {
 
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
+	HashMap<String, Integer[]>  biomeTypes = new HashMap<String, Integer[]>();
+	Integer[] allBiomesType = {25, 25, 25, 25, 25, 25};
 	HashMap<String, String[]> fibreProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> sporeProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> sucProdRules = new HashMap<String, String[]>();
@@ -87,6 +89,8 @@ public class Settings {
     
     //CONSTRUCTEUR
     public Settings() {
+    	biomeTypes.put("Tout biomes", allBiomesType);
+    	
     	initBuildingsSettings();
     	
     	initProdSettings();
@@ -199,14 +203,37 @@ public class Settings {
     
     //BIOME SETTINGS
     public void createBiomePopup() {
-    	biomeDialog.setLayout(new FlowLayout());
-    	
-    	biomeDialog.setBounds(150, 200, 1300, 200);
+    	biomeDialog.setBounds(150, 200, 1300, 600);
         
         JPanel biomePanel = new JPanel();
         createBiomeSliders(biomePanel);
-//    	biomeDialog.setLayout(new GridLayout(5,3));
+        
+        JPanel biomeTypeCrea = new JPanel();
+        JTextArea biomeTypeTextArea = new JTextArea("Nouveau type de biome");
+        JButton biomeTypeSave = new JButton("Créer nouveau type de biome");
+
+        // Create the table model
+        DefaultTableModel model = new DefaultTableModel(possibleBiomes, 0);
+        JTable biomeTable = new JTable(model);
+		// Fill table
+        for (String biomeTypeName : biomeTypes.keySet()) {
+    		Integer[] biomeValues = biomeTypes.get(biomeTypeName);
+        	fillTableWithBiomeDatas(biomeTypeName, biomeValues, model);
+        }
+        
+        biomeTypeSave.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	biomeTypeCreation(biomeTypeTextArea, model);
+            }
+		});
+        biomeTypeCrea.add(biomeTypeTextArea);
+        biomeTypeCrea.add(biomeTypeSave);
+        biomeTypeCrea.setLayout(new GridLayout(1, 2));
+        
         biomeDialog.add(biomePanel);
+        biomeDialog.add(biomeTypeCrea);
+        biomeDialog.add(biomeTable);
+        biomeDialog.setLayout(new GridLayout(3, 1));
     }
     
     public void showBiomePopup() {
@@ -225,9 +252,46 @@ public class Settings {
         }
     }
     
+    void biomeTypeCreation(JTextArea biomeTypeTextArea, DefaultTableModel model) {
+    	String biomeTypeName = biomeTypeTextArea.getText();
+    	if (biomeTypeName.length() == 0) {
+    		JOptionPane.showMessageDialog(Main.frame,
+    			    "Biome type name must not be empty",
+    			    "Inane warning",
+    			    JOptionPane.WARNING_MESSAGE);
+    	} else if(biomeTypes.containsKey(biomeTypeName)) {
+    		JOptionPane.showMessageDialog(Main.frame,
+    			    "Biome type name is already used",
+    			    "Inane warning",
+    			    JOptionPane.WARNING_MESSAGE);
+    	} else {
+    		Integer[] biomeValues = getSlidersValue(BiomeSliders);
+    		biomeTypes.put(biomeTypeName, biomeValues);
+    		fillTableWithBiomeDatas(biomeTypeName, biomeValues, model);
+    		Main.gameController.biomeSelector.addItem(biomeTypeName);
+    	}
+    }
+    
+    void fillTableWithBiomeDatas (String biomeTypeName, Integer[] biomeValues, DefaultTableModel model) {
+		Object[] biomeDatas = new Object[biomeValues.length + 1];
+		biomeDatas[0] = biomeTypeName;
+		int index = 1;
+		for (Integer biomeValue : biomeValues) {
+			biomeDatas[index] = biomeValue;
+			index++;
+		}
+        model.addRow(biomeDatas);
+    }
+    
     String getRandomTerrainValue() {
-    	int[] terrainValues = getSlidersValue(BiomeSliders);
-    	int sum = Arrays.stream(terrainValues).sum();
+    	Integer[] terrainValues;
+    	if (Main.gameController != null) {
+    		String biomeSelectorValue = Main.gameController.biomeSelector.getItemAt(Main.gameController.biomeSelector.getSelectedIndex());
+    		terrainValues = biomeTypes.get(biomeSelectorValue);
+    	} else {
+    		terrainValues = allBiomesType;
+    	}
+    	Integer sum = Arrays.stream(terrainValues).mapToInt(Integer::intValue).sum();
     	
     	int Min = 0;
 		int Max = sum - 1;
@@ -287,7 +351,8 @@ public class Settings {
 
     
     // PRODUCTION
-    public void createProdPopup() {
+    @SuppressWarnings("unchecked")
+	public void createProdPopup() {
     	prodDialog.setBounds(50, 50, 1400, 700);
     	
     	JPanel leftPanel = new JPanel();
@@ -524,9 +589,9 @@ public class Settings {
     	return TextAreaFields;
     }
 	   
-	int[] getSlidersValue(Sliders[] sliders) {
+	Integer[] getSlidersValue(Sliders[] sliders) {
 		// TO DO: Use map function instead
-		int[] slidersValues = new int[sliders.length];
+		Integer[] slidersValues = new Integer[sliders.length];
 		int i = 0;
 		for (Sliders slider : sliders) {
 			slidersValues[i] = slider.getValue();
