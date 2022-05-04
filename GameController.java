@@ -282,7 +282,7 @@ public class GameController {
     	        		for (String direction : directions) {
     	        			TuileCase relativeCase = tuileCase.getRelativeCase(direction);
     	        			if (relativeCase != null) {
-    	        				relativeCase.parentTuile.updateProductions();
+    	        				relativeCase.parentTuile.updateTuileProductions();
     	        				relativeCase.parentTuile.owner.updateRessourceInfos();
     	        				relativeCase.updateFilterView();
     	        			}
@@ -364,6 +364,9 @@ public class GameController {
     			// Apply the list of powered building to generator
     			public void actionPerformed(ActionEvent e){
     				applyGeneratorConnections(tuileCase, buildingsToPower, energyProduced);
+    				for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
+    					caseFromDistance.updateCaseProduction();
+    				}
     				generatorDialog.setVisible(false);
     			}
     		});

@@ -140,7 +140,7 @@ public class Settings {
 		phosphoProdRules.put("PHauteurs1", PHauteurs1);
 		
 		//MushCoins
-		String[] CPort = {"Port", "0", "2"};
+		String[] CPort = {"Port+", "0", "2"};
 		String[] CFarm = {"Ferme", "0", "1"};
 		coinProdRules.put("CPort", CPort);
 		coinProdRules.put("CFarm", CFarm);
@@ -386,7 +386,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Production rules");
-    	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome d'où la règle s'applique | Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas");
+    	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome/Batiment d'où la règle s'applique (\"+\" si alimentation requise)| Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 
@@ -467,7 +467,7 @@ public class Settings {
     	coinProdRules = getProdRulesFromTextAreas(coinTextAreaFields);
 
     	for (Player player : players) {
-    		player.tuileViewer.updateProductions();
+    		player.tuileViewer.updateTuileProductions();
     		player.tuileViewer.updateFilterView();
     	}
     	Main.cartePanel.updateWorldView();

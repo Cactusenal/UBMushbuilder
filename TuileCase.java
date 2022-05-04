@@ -65,6 +65,14 @@ public class TuileCase {
 		terrain = newTerrain;
 	}
 	
+	public void updateCaseProduction() {
+    	setProdFibre();
+    	setProdSpore();
+    	setProdSuc();
+    	setProdPhospho();
+    	setProdCoins();
+	}
+	
 	public void setBuilding(String buildName) {
 		if (building.equals("")) {
 			building = buildName;
@@ -147,6 +155,12 @@ public class TuileCase {
 			// Determine if it is biome or building rule
 			Boolean isBiome = possibleBiomesList.contains(caseType);
 			String typeToCompare = isBiome ? terrain : building;
+			// If it is a building, check if energy is necessary
+			Boolean isEnergyDependant = false;
+			if (!isBiome && caseType.contains("+")) {
+				caseType = caseType.replace("+", "");
+				isEnergyDependant = true;
+			}
 			// Determine on wich biomes to apply
 			List<String> biomesToNotApply = null;
 			Boolean applyOnAllBiome = false;				
@@ -158,8 +172,10 @@ public class TuileCase {
 			}
 			// Calculate productions
 			if (distanceValue == 0 && (caseType.equals(typeToCompare) || (!isBiome && buildingParts!= null && buildingParts.contains(caseType)))) {
-				prod += prodValue;
-//				Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
+				if (!isEnergyDependant || checkIfBuildingPowered()) {
+					prod += prodValue;
+//					Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);					
+				}
 			}
 			else if (distanceValue > 0) {
 				TuileCase[] tuilesWithinDistance = getCasesFromDistance(distanceValue);
@@ -167,8 +183,10 @@ public class TuileCase {
 					if (relativeCase != null) {
 						typeToCompare = isBiome ? relativeCase.terrain : relativeCase.building;
 						if ((caseType.equals(typeToCompare) || (!isBiome && relativeCase.buildingParts!= null && relativeCase.buildingParts.contains(caseType))) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
-							prod += prodValue;
-//							Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
+							if (!isEnergyDependant || relativeCase.checkIfBuildingPowered()) {
+								prod += prodValue;
+//							Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);								
+							}
 						}
 					}
 				}

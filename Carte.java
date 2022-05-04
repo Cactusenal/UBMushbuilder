@@ -80,7 +80,7 @@ public class Carte extends JLayeredPane {
 	public void updateWorldProd() {
 		for (Tuile[] tuileLign : tableauTuile) {
 			for (Tuile tuile : tuileLign) {
-				tuile.updateProductions();
+				tuile.updateTuileProductions();
 			}
 		}
 		mainSettings.updatePlayersProd();

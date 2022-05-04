@@ -91,7 +91,7 @@ public class Tuile {
 		// Update Tuile infos
 		setTerrain(tuileToCopy.getTerrain());
 
-		updateProductions();
+		updateTuileProductions();
 		
 		// Update view and surrounding cases
 		updateFilterView();
@@ -99,7 +99,7 @@ public class Tuile {
 		for (String direction : directions) {
 			Tuile closeTuile = getRelativeTuile(direction);
 			if (closeTuile != null) {
-				closeTuile.updateProductions();
+				closeTuile.updateTuileProductions();
 				closeTuile.updateFilterView();
 				closeTuile.owner.updateRessourceInfos();
 			}
@@ -140,7 +140,7 @@ public class Tuile {
         }
 //        int temp = setRandomTemperature();
         if (isViewer) {
-        	updateProductions();
+        	updateTuileProductions();
         	updateFilterView();        	
         }
 //		Main.settings.AddDebugLog("Tuile temp is " + getTemperature());
@@ -210,14 +210,10 @@ public class Tuile {
 		return tuilesArray;
 	}
 	
-	public void updateProductions() {
+	public void updateTuileProductions() {
 		for (TuileCase[] currentCaseLign : cases) {
             for (TuileCase currentCase : currentCaseLign) {
-            	currentCase.setProdFibre();
-            	currentCase.setProdSpore();
-            	currentCase.setProdSuc();
-            	currentCase.setProdPhospho();
-            	currentCase.setProdCoins();
+            	currentCase.updateCaseProduction();
             }
         }
 	}
