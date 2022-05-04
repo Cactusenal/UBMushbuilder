@@ -69,12 +69,12 @@ public class Settings {
 	// building datas
 	// Rules
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
-	String[] dummyRule = {"10", ""};
-	String[] farmRule = {"10", ""};
-	String[] portRule = {"20", ""};
-	String[] generatorRule = {"0", ""};
-	String[] pierRule = {"0", ""};
-	Integer buildRulesLength = 2;
+	String[] dummyRule = {"En.requise", "En.produite", "distance"};
+	String[] farmRule = {"10", "", ""};
+	String[] portRule = {"20", "", ""};
+	String[] generatorRule = {"0", "50", "3"};
+	String[] pierRule = {"0", "", ""};
+	Integer buildRulesLength = 3;
 	// buildings dialog
     JFrame buildRulesFrame = new JFrame("Buildings position settings");
     JDialog buildRulesDialog = new JDialog(buildRulesFrame);
@@ -555,7 +555,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Building rules");
-    	JLabel rulesTemplateLabel = new JLabel("Energie requise | ??? | ??? | ??? ");
+    	JLabel rulesTemplateLabel = new JLabel("Energie requise | Energie produite | Portée");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 

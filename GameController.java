@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -204,15 +204,16 @@ public class GameController {
 			tuileCase.updateFilterView();
     	} else if (buildMode) {
     		displayBuildingPopup(tuileCase);
-    	} else if (Main.filterViews.filterSelected == "Biome" && tuileCase.building == "Generateur") {
+    	} else if (Main.filterViews.filterSelected == "Biome" && tuileCase.building != "" && settings.buildingRules.get(tuileCase.building)[1] != "") {
+//    			tuileCase.building == "Generateur") {
     		displayGeneratorPopup(tuileCase);
     	} else if (tuileCase.xPos == 1 && tuileCase.yPos == 1) {
 			tuileCase.parentTuile.setCopiedTuile(settings.returnActivePlayer().tuileViewer);
 			settings.returnActivePlayer().tuileViewer.randomize(true);    					
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
-			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
-			Main.settings.AddDebugLog("Building part is " + tuileCase.buildingParts.get(0));
+//			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
+//			Main.settings.AddDebugLog("Building part is " + tuileCase.buildingParts.get(0));
 //			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
 	}
@@ -305,14 +306,18 @@ public class GameController {
         // General popup graphic params
     	JFrame generatorFrame = new JFrame("Generator energy");
         JDialog generatorDialog = new JDialog(generatorFrame);
-    	    	
-        generatorDialog.setBounds(200, 200, 500, 100);
+
         
         // List of possible buildings to power creation
-        int buildingNumber = 0;
+        Integer buildingNumber = 0;
         List<Object[]> buildingsToPowerList = new ArrayList<Object[]>();
         
-        for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(3)) {
+        Integer energyProduced = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[1]);
+        Integer generatorRange = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[2]);
+        
+        Integer energyProvided = 0;
+        
+        for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
         	String buildingFromDistance = caseFromDistance.building;
         	if (buildingFromDistance != "" && settings.getPowerCons(buildingFromDistance) > 0) {
         		// Getting building position
@@ -326,7 +331,6 @@ public class GameController {
         		generatorDialog.add(buildingLabel);
         		generatorDialog.add(powerCheckBox);
         		Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
-        		//buildingsToPower[buildingNumber] = buildingLine;
         		buildingsToPowerList.add(buildingLine);
         		buildingNumber++;
         		// Check if the building is already powered by this generator, and check box if so
@@ -335,6 +339,7 @@ public class GameController {
         			// TODO: Check for building already powered
         			if ((String)buildingPowered[0] == buildingFromDistance && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
         				powerCheckBox.setSelected((boolean) buildingPowered[3]);
+        				energyProvided += powerCons;
         			}
         		}
         	}
@@ -349,29 +354,48 @@ public class GameController {
         	buildingsToPowerList.toArray(buildingsToPower);
         	JButton applyPower = new JButton("Apply power connections");
     		generatorDialog.add(applyPower);
+    		generatorDialog.add(new JLabel("(" + energyProvided + "/" + energyProduced + ")"));
     		applyPower.addActionListener(new ActionListener(){
     			// Apply the list of powered building to generator
     			public void actionPerformed(ActionEvent e){
-    		        List<Object[]> buildingsPoweredList = new ArrayList<Object[]>();
-    				for (Object [] buildingLine : buildingsToPower) {
-    					Boolean isPoweredHere = ((AbstractButton) buildingLine[3]).isSelected();
-    					if (isPoweredHere) {
-    						buildingLine[3] = isPoweredHere;
-    						buildingsPoweredList.add(buildingLine);
-    						
-    		        		settings.AddDebugLog("Powering this building" + buildingLine[0]);
-    					}
-    				}
-    				// Set buildingsPowered from constructed list
-    				Object [][] buildingsPoweredArray =  new Object[buildingsPoweredList.size()][4];
-    				buildingsPoweredList.toArray(buildingsPoweredArray);
-		        	tuileCase.buildingsPowered = buildingsPoweredArray;
-		            generatorDialog.setVisible(false);
+    				applyGeneratorConnections(tuileCase, buildingsToPower, energyProduced);
+    				generatorDialog.setVisible(false);    					
     			}
     		});
         }
         generatorDialog.setLayout(new GridLayout(buildingNumber + 1, 2));
+        Integer panelHeight = 100 + (50 * buildingNumber);
+        generatorDialog.setBounds(200, 200, 500, panelHeight);
         generatorDialog.setVisible(true);
+    }
+    
+    public void applyGeneratorConnections(TuileCase generatorCase, Object[][] buildingsToPower, Integer maxEnergy) {
+		Integer energyToProvide = 0;
+		for (Object [] buildingLine : buildingsToPower) {
+			Boolean isPoweredHere = ((JCheckBox) buildingLine[3]).isSelected();
+			if (isPoweredHere) {
+				energyToProvide += settings.getPowerCons((String) buildingLine[0]);
+			}
+		}
+		if (energyToProvide > maxEnergy) {
+    		JOptionPane.showMessageDialog(Main.frame,
+    			    "Too much energy to provide for this generator",
+    			    "Inane warning",
+    			    JOptionPane.WARNING_MESSAGE);
+		} else {
+			// Set buildingsPowered from constructed list
+			List<Object[]> buildingsPoweredList = new ArrayList<Object[]>();
+			for (Object [] buildingLine : buildingsToPower) {
+				Boolean isPoweredHere = ((JCheckBox) buildingLine[3]).isSelected();
+				if (isPoweredHere) {
+					buildingLine[3] = isPoweredHere;
+					buildingsPoweredList.add(buildingLine);
+					}
+			}
+			Object [][] buildingsPoweredArray =  new Object[buildingsPoweredList.size()][4];
+			buildingsPoweredList.toArray(buildingsPoweredArray);
+			generatorCase.buildingsPowered = buildingsPoweredArray;
+		}
     }
     
     public void showGivePopup(Player activePlayer) {
