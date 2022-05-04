@@ -41,7 +41,7 @@ public class GameController {
     JMenuItem carteMenu = new JMenuItem("Carte");
     JMenuItem prodMenu = new JMenuItem("Productions");
     JMenuItem buildConditionMenu = new JMenuItem("Placement des constructions");
-    JMenuItem buildRulesMenu = new JMenuItem("Production des constructions");
+    JMenuItem buildRulesMenu = new JMenuItem("Gestion des constructions");
     // ComboBoxes
     JComboBox<String> filterSelector;
     JComboBox<String> biomeSelector;
@@ -211,10 +211,9 @@ public class GameController {
 			settings.returnActivePlayer().tuileViewer.randomize(true);    					
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
-//			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
-			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
-			tuileCase.setProdFibre();
-			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
+			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
+			Main.settings.AddDebugLog("Building part is " + tuileCase.buildingParts.get(0));
+//			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
 	}
 	
@@ -227,48 +226,57 @@ public class GameController {
         
         // List of possible buildings to construct
         HashMap<String, String[]> buildingConditions = settings.buildingConditions;
+        List<String> possibleBiomesList = Arrays.asList(settings.possibleBiomes);
         String[] directions = {"X+", "X-", "Y+", "Y-"};
         Integer buildableNumber = 0;
         for (String buildCondName : buildingConditions.keySet()) {
-    		boolean isBiomeOk = false;
+    		boolean isCurrentCaseOk = false;
     		boolean isNearbyOk = true;
         	String[] buildCond = buildingConditions.get(buildCondName);
-    		String[] biomesAuthorized = buildCond[0].split(",");
+    		String[] conditionsOnCurrentCase = buildCond[0].split(",");
     		String[] nearbyRequired = buildCond[1].split(",");
-    		for (String biome : biomesAuthorized) {
-    			if (tuileCase.terrain.equals(biome)) {
-    				isBiomeOk = true;
-    				break;
+    		for (String condition : conditionsOnCurrentCase) {
+				if (possibleBiomesList.contains(condition)) {
+					if (condition.equals(tuileCase.terrain)) {
+						isCurrentCaseOk = true;
+						break;
+					}
+				} else {
+					if (condition.equals(tuileCase.building)) {
+						isCurrentCaseOk = true;
+						break;
+					}
     			}
     		}
     		if (nearbyRequired.length > 0) {
     			isNearbyOk = false;
-    	        List<String> possibleBiomesList = Arrays.asList(settings.possibleBiomes);
     			for (String direction : directions) {
     				TuileCase relativeCase = tuileCase.getRelativeCase(direction);
-	    			for (String condition : nearbyRequired) {
-	    				if (possibleBiomesList.contains(condition)) {
-	    					if (condition.equals(relativeCase.terrain)) {
-	    						isNearbyOk = true;
-	    						break;
+	    			if (relativeCase != null) {
+	    				for (String condition : nearbyRequired) {
+	    					if (possibleBiomesList.contains(condition)) {
+	    						if (condition.equals(relativeCase.terrain)) {
+	    							isNearbyOk = true;
+	    							break;
+	    						}
+	    					} else {
+	    						if (condition.equals(relativeCase.building)) {
+	    							isNearbyOk = true;
+	    							break;
+	    						}
 	    					}
-    					} else {
-	    					if (condition.equals(relativeCase.building)) {
-	    						isNearbyOk = true;
-	    						break;
-	    					}
-    					}
+	    				}
+	    				if (isNearbyOk) {break;}	    				
 	    			}
-	    			if (isNearbyOk) {break;}
     			}
     		}
-    		if (isBiomeOk && isNearbyOk) {
+    		if (isCurrentCaseOk && isNearbyOk && !buildCondName.equals(tuileCase.building)) {
     			JLabel buildingName = new JLabel(buildCondName);
     			JButton buidButton = new JButton("Construire");
     			buidButton.addActionListener(new ActionListener() {
     	            public void actionPerformed(ActionEvent e) {
-    	            	tuileCase.building = buildCondName;
-    	                buildCondDialog.setVisible(false);
+    	            	tuileCase.setBuilding(buildCondName);
+    	            	buildCondDialog.setVisible(false);
     	                // Update nearby prods
     	        		for (String direction : directions) {
     	        			TuileCase relativeCase = tuileCase.getRelativeCase(direction);
@@ -285,6 +293,9 @@ public class GameController {
     			buildCondDialog.add(buidButton);
     			buildableNumber++;
     		}
+        }
+        if (buildableNumber == 0) {
+        	buildCondDialog.add(new JLabel("No possible buildings"));
         }
         buildCondDialog.setLayout(new GridLayout(buildableNumber, 2));
         buildCondDialog.setVisible(true);

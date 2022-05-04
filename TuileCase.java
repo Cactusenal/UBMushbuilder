@@ -22,7 +22,7 @@ public class TuileCase {
     Integer yPos;
     
     String building = "";
-    String[][] buildingParts = null;
+    List<String> buildingParts = new ArrayList<String>();
     
     public Object[][] buildingsPowered = {};
     
@@ -63,6 +63,24 @@ public class TuileCase {
 	
 	public void setTerrain(String newTerrain) {
 		terrain = newTerrain;
+	}
+	
+	public void setBuilding(String buildName) {
+		if (building.equals("")) {
+			building = buildName;
+			Main.settings.AddDebugLog("no building");
+		} else {
+			Main.settings.AddDebugLog("build to set: " + buildName);
+			Main.settings.AddDebugLog("present building: " + building);
+			Main.settings.AddDebugLog("buildingConditions: " + Main.settings.buildingConditions.get(buildName)[0]);
+
+			if (Main.settings.buildingConditions.get(buildName)[0].equals(building)) {
+				buildingParts.add(buildName);
+			} else {
+				building = buildName;
+				buildingParts.clear();
+			}
+		}
 	}
 	
 	public int getRessource(String ressourceToGet) {
@@ -139,7 +157,7 @@ public class TuileCase {
 				applyOnAllBiome = true;
 			}
 			// Calculate productions
-			if (distanceValue == 0 && caseType.equals(typeToCompare)) {
+			if (distanceValue == 0 && (caseType.equals(typeToCompare) || (!isBiome && buildingParts!= null && buildingParts.contains(caseType)))) {
 				prod += prodValue;
 //				Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
 			}
@@ -148,7 +166,7 @@ public class TuileCase {
 				for (TuileCase relativeCase : tuilesWithinDistance) {
 					if (relativeCase != null) {
 						typeToCompare = isBiome ? relativeCase.terrain : relativeCase.building;
-						if (caseType.equals(typeToCompare) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
+						if ((caseType.equals(typeToCompare) || (!isBiome && relativeCase.buildingParts!= null && relativeCase.buildingParts.contains(caseType))) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
 							prod += prodValue;
 //							Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
 						}

@@ -73,6 +73,7 @@ public class Settings {
 	String[] farmRule = {"10", ""};
 	String[] portRule = {"20", ""};
 	String[] generatorRule = {"0", ""};
+	String[] pierRule = {"0", ""};
 	Integer buildRulesLength = 2;
 	// buildings dialog
     JFrame buildRulesFrame = new JFrame("Buildings position settings");
@@ -81,9 +82,10 @@ public class Settings {
 	HashMap<String, JTextArea[]> buildRulesTextAreaFields = new HashMap<String, JTextArea[]>();
 	// Conditions
 	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
-	String[] dummyCondition = {"biomes,were,to,place", "nearby,biomes,or,buildings", "price in ressources"};
+	String[] dummyCondition = {"biomes/buildings,were,to,place", "nearby,biomes,or,buildings", "price in ressources"};
 	String[] farmCondition = {"Plaine,Marais", "", ""};
 	String[] portCondition = {"Brume", "Brume", ""};
+	String[] pierCondition = {"Port", "", ""};
 	String[] generatorCondition = {"Désert,Plaine", "", ""};
 	Integer buildConditionsLength = 3;
 	// buildings dialog
@@ -116,11 +118,11 @@ public class Settings {
 		String[] Foret0 = {"Foret", "0", "1"};
 		String[] Marais0 = {"Marais", "0", "2"};
 		String[] Plaine0 = {"Plaine", "0", "1"};
-		String[] Port1 = {"Port", "1", "1"};
+		String[] SPPier0 = {"Jetée", "1", "1"};
 		sporeProdRules.put("Foret0", Foret0);
 		sporeProdRules.put("Marais0", Marais0);
 		sporeProdRules.put("Plaine0", Plaine0);
-		sporeProdRules.put("Port1", Port1);
+		sporeProdRules.put("SPPier0", SPPier0);
 		
 		//Suc
 		String[] SDesert0 = {"Désert", "0", "1"};
@@ -145,10 +147,12 @@ public class Settings {
     	buildingRules.put("Ferme", farmRule);
     	buildingRules.put("Port", portRule);
     	buildingRules.put("Generateur", generatorRule);
+    	buildingRules.put("Jetée", pierRule);
     	
     	buildingConditions.put("Ferme", farmCondition);
     	buildingConditions.put("Port", portCondition);
     	buildingConditions.put("Generateur", generatorCondition);
+    	buildingConditions.put("Jetée", pierCondition);
     }
 
     //DEBUG
