@@ -75,6 +75,7 @@ public class Settings {
 	String[] generatorRule = {"0", "50", "3"};
 	String[] pierRule = {"0", "", ""};
 	Integer buildRulesLength = 3;
+	Integer maxGeneratorDistance = 0;
 	// buildings dialog
     JFrame buildRulesFrame = new JFrame("Buildings position settings");
     JDialog buildRulesDialog = new JDialog(buildRulesFrame);
@@ -104,6 +105,8 @@ public class Settings {
     	initBuildingsSettings();
     	
     	initProdSettings();
+    	
+    	computeMaxGeneratorDistance();
     }
     
     // Setting initialisation
@@ -153,6 +156,18 @@ public class Settings {
     	buildingConditions.put("Port", portCondition);
     	buildingConditions.put("Generateur", generatorCondition);
     	buildingConditions.put("Jetée", pierCondition);
+    }
+    
+    void computeMaxGeneratorDistance() {
+    	for (String ruleName : buildingRules.keySet()) {
+    		String[] rule = buildingRules.get(ruleName);
+    		if (rule[2] != "") {
+        		Integer generatorDistance = Integer.parseInt(rule[2]);
+        		if (generatorDistance > maxGeneratorDistance) {
+        			maxGeneratorDistance = generatorDistance;
+        		}
+    		}
+    	}
     }
 
     //DEBUG
@@ -603,6 +618,7 @@ public class Settings {
     
     void updateBuildingRules() {
     	buildingRules = getRulesFromTextAreas(buildRulesTextAreaFields, buildRulesLength);
+    	computeMaxGeneratorDistance();
     }
 
     public void showBuildRulesPopup() {

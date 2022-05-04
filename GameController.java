@@ -321,8 +321,8 @@ public class GameController {
         	String buildingFromDistance = caseFromDistance.building;
         	if (buildingFromDistance != "" && settings.getPowerCons(buildingFromDistance) > 0) {
         		// Getting building position
-        		Integer buildX = caseFromDistance.parentTuile.xPos * 3 + caseFromDistance.xPos;
-        		Integer buildY = caseFromDistance.parentTuile.yPos * 3 + caseFromDistance.yPos;
+        		Integer buildX = caseFromDistance.getCaseXPos();
+        		Integer buildY = caseFromDistance.getCaseYPos();
         		settings.AddDebugLog("" + buildingFromDistance);
         		JLabel buildingLabel = new JLabel(buildingFromDistance + " (" + buildX + "," + buildY +  ")");
         		// Getting how much power is needed
@@ -333,15 +333,20 @@ public class GameController {
         		Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
         		buildingsToPowerList.add(buildingLine);
         		buildingNumber++;
-        		// Check if the building is already powered by this generator, and check box if so
+        		Boolean alreadyPowered = false;
         		for (Object [] buildingPowered : tuileCase.buildingsPowered) {
         			// TODO: Check for non possible buildings
-        			// TODO: Check for building already powered
+        			// Check if the building is already powered by this generator, and check box if so
         			if ((String)buildingPowered[0] == buildingFromDistance && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
+        				// TODO: remove boolean in tuileCase.buildingsPowered object
         				powerCheckBox.setSelected((boolean) buildingPowered[3]);
         				energyProvided += powerCons;
+        				alreadyPowered = true;
+        				break;
         			}
         		}
+    			boolean isPoweredByOther = caseFromDistance.checkIfBuildingPowered();
+    			powerCheckBox.setEnabled(!isPoweredByOther || alreadyPowered);
         	}
         }
         
@@ -359,7 +364,7 @@ public class GameController {
     			// Apply the list of powered building to generator
     			public void actionPerformed(ActionEvent e){
     				applyGeneratorConnections(tuileCase, buildingsToPower, energyProduced);
-    				generatorDialog.setVisible(false);    					
+    				generatorDialog.setVisible(false);
     			}
     		});
         }

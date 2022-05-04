@@ -175,8 +175,35 @@ public class TuileCase {
 			}
 		}
 //		Main.settings.AddDebugLog("[getProdFromHashMap]: prod: " + prod);
-
 		return prod;
+	}
+	
+	public boolean checkIfBuildingPowered() {
+		if (building == "") {
+			Main.settings.AddDebugLog("Unexpected: no building to check if powered");
+			return false;
+		}
+		Integer buildX = getCaseXPos();
+		Integer buildY = getCaseYPos();
+		for (TuileCase inRangeCase : getCasesFromDistance(Main.settings.maxGeneratorDistance)) {
+//			Main.settings.AddDebugLog("[checkIfBuildingPowered] building here is :" + inRangeCase.building);
+			for (Object[] buildingPowered : inRangeCase.buildingsPowered) {
+//				Main.settings.AddDebugLog("[checkIfBuildingPowered] building powered here is :" + (String)buildingPowered[0]);
+				if (building.equals((String)buildingPowered[0]) && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
+//					Main.settings.AddDebugLog("[checkIfBuildingPowered] building powered!");
+					return true;
+    			}
+			}
+		}
+		return false;
+	}
+		
+	Integer getCaseXPos() {
+		return parentTuile.xPos * 3 + xPos;
+	}
+	
+	Integer getCaseYPos() {
+		return parentTuile.yPos * 3 + yPos;
 	}
 	
 	TuileCase getRelativeCase(String orientation) {
