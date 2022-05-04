@@ -67,22 +67,30 @@ public class Settings {
 	};
 	
 	// building datas
+	// Rules
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
 	String[] dummyRule = {"10", ""};
 	String[] farmRule = {"10", ""};
 	String[] portRule = {"20", ""};
 	String[] generatorRule = {"0", ""};
+	Integer buildRulesLength = 2;
+	// buildings dialog
+    JFrame buildRulesFrame = new JFrame("Buildings position settings");
+    JDialog buildRulesDialog = new JDialog(buildRulesFrame);
+    JPanel buildRulesPanel = new JPanel();
+	HashMap<String, JTextArea[]> buildRulesTextAreaFields = new HashMap<String, JTextArea[]>();
+	// Conditions
 	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
 	String[] dummyCondition = {"biomes,were,to,place", "nearby,biomes,or,buildings", "price in ressources"};
 	String[] farmCondition = {"Plaine,Marais", "", ""};
 	String[] portCondition = {"Brume", "Brume", ""};
 	String[] generatorCondition = {"Désert,Plaine", "", ""};
-	Integer buildRulesLength = 3;
+	Integer buildConditionsLength = 3;
 	// buildings dialog
-    JFrame buildFrame = new JFrame("Buildings settings");
-    JDialog buildDialog = new JDialog(buildFrame);
-    JPanel buildPanel = new JPanel();
-	HashMap<String, JTextArea[]> buildTextAreaFields = new HashMap<String, JTextArea[]>();
+    JFrame buildCondFrame = new JFrame("Buildings position settings");
+    JDialog buildCondDialog = new JDialog(buildCondFrame);
+    JPanel buildCondPanel = new JPanel();
+	HashMap<String, JTextArea[]> buildCondTextAreaFields = new HashMap<String, JTextArea[]>();
 
     // Debugger
     JTextArea debugText = new JTextArea();
@@ -369,10 +377,11 @@ public class Settings {
     		leftPanel.add(subProductionLabel);
     		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
     		JPanel subProdPanel = (JPanel) prodData[2];
-    		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
+//    		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
     		
     		// Get sub-panel content
-    		subTextAreaFields = setInputPanel(subProdPanel, subProdRules, prodRulesLength);
+//    		subTextAreaFields = 
+    		setInputPanel(subProdPanel, subProdRules, prodRulesLength);
     		rightPanel.add(subProdPanel);
     	}
     	
@@ -454,14 +463,14 @@ public class Settings {
     	prodDialog.setVisible(true);
     }
     
-    // BUILDINGS
-    public void createBuildPopup() {
-    	buildDialog.setBounds(50, 50, 1400, 700);
+    // BUILDINGS-Condition
+    public void createBuildCondPopup() {
+    	buildCondDialog.setBounds(50, 50, 1400, 700);
     	
     	JPanel leftPanel = new JPanel();
     	JPanel rightPanel = new JPanel();
     	
-    	JLabel titleLabel = new JLabel("Building rules");
+    	JLabel titleLabel = new JLabel("Building conditions");
     	JLabel rulesTemplateLabel = new JLabel("Nom du batiment | Biome où l'on peut poser le batiment | Biome ou batiment devant se situer à côté | (WIP) Coût du batiment");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
@@ -470,15 +479,15 @@ public class Settings {
 		leftPanel.add(buildingRulesLabel);
 		
 		// Get sub-panel content
-		buildTextAreaFields = setInputPanel(buildPanel, buildingConditions, buildRulesLength);
-		rightPanel.add(buildPanel);
+		buildCondTextAreaFields = setInputPanel(buildCondPanel, buildingConditions, buildConditionsLength);
+		rightPanel.add(buildCondPanel);
     	
         JButton applyButton = new JButton("Apply");
         applyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	updateBuildingConditions();
             	// TODO: adding new rule field when new one is entered
-        		buildTextAreaFields = setInputPanel(buildPanel, buildingConditions, buildRulesLength);
+        		buildCondTextAreaFields = setInputPanel(buildCondPanel, buildingConditions, buildConditionsLength);
             }
         });
 
@@ -486,7 +495,7 @@ public class Settings {
         applyAndExitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	updateBuildingConditions();
-            	buildDialog.setVisible(false);
+            	buildCondDialog.setVisible(false);
             }
         });
         
@@ -498,25 +507,25 @@ public class Settings {
         // définir l'orientation du séparateur
         sep.setOrientation(SwingConstants.VERTICAL);
         // Ajouter le séparateur
-        buildDialog.add(sep);
+        buildCondDialog.add(sep);
         
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(applyButton);    	
         buttonPanel.add(applyAndExitButton);    	
         buttonPanel.setLayout(new GridLayout(1, 2));
         
-        buildDialog.add(buttonPanel, BorderLayout.SOUTH);    	
+        buildCondDialog.add(buttonPanel, BorderLayout.SOUTH);    	
     }
 
-    HashMap<String, String[]> getBuildRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields) {
+    HashMap<String, String[]> getRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields, Integer rulesLength) {
 		HashMap<String, String[]> newProdRules = new HashMap<String, String[]>();
 		
     	for (String ruleName : TextAreaFields.keySet()) {
     		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
     		// TODO: Check if ressource price is okay (3e field)
     		if (ruleFromTextFields[1].getText().length() > 0) { // && ruleFromTextFields[2].getText().length() > 0 && ruleFromTextFields[3].getText().length() > 0) {
-    			String[] newRule = new String[buildRulesLength];
-    			for (Integer i = 0; i < buildRulesLength; i ++) {
+    			String[] newRule = new String[rulesLength];
+    			for (Integer i = 0; i < rulesLength; i ++) {
     				newRule[i] = ruleFromTextFields[i + 1].getText();
     			}
     			newProdRules.put(ruleFromTextFields[0].getText(), newRule);
@@ -526,12 +535,75 @@ public class Settings {
     }
     
     void updateBuildingConditions() {
-    	buildingConditions = getBuildRulesFromTextAreas(buildTextAreaFields);
+    	buildingConditions = getRulesFromTextAreas(buildCondTextAreaFields, buildConditionsLength);
+    }
+    
+    public void showBuildConditionPopup() {
+		buildCondTextAreaFields = setInputPanel(buildCondPanel, buildingConditions, buildConditionsLength);
+    	buildCondDialog.setVisible(true);
+    }
+    
+    //BUILDINGS-Rules
+    public void createBuildRulesPopup() {
+    	buildRulesDialog.setBounds(50, 50, 1400, 700);
+    	
+    	JPanel leftPanel = new JPanel();
+    	JPanel rightPanel = new JPanel();
+    	
+    	JLabel titleLabel = new JLabel("Building rules");
+    	JLabel rulesTemplateLabel = new JLabel("Energie requise | ??? | ??? | ??? ");
+    	leftPanel.add(titleLabel);
+		rightPanel.add(rulesTemplateLabel);
+
+		JLabel buildingRulesLabel = new JLabel("Règles de gestion des buildings");
+		leftPanel.add(buildingRulesLabel);
+		
+		// Get sub-panel content
+		buildRulesTextAreaFields = setInputPanel(buildRulesPanel, buildingRules, buildRulesLength);
+		rightPanel.add(buildRulesPanel);
+    	
+        JButton applyButton = new JButton("Apply");
+        applyButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	updateBuildingRules();
+            	// TODO: adding new rule field when new one is entered
+        		buildRulesTextAreaFields = setInputPanel(buildRulesPanel, buildingRules, buildRulesLength);
+            }
+        });
+
+        JButton applyAndExitButton = new JButton("Apply and Exit");
+        applyAndExitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	updateBuildingRules();
+            	buildRulesDialog.setVisible(false);
+            }
+        });
+        
+        leftPanel.setLayout(new GridLayout(2, 1));
+    	rightPanel.setLayout(new GridLayout(2, 1));
+
+        // créer un séparateur de panneau
+        JSplitPane sep = new JSplitPane(SwingConstants.VERTICAL, leftPanel, rightPanel); 
+        // définir l'orientation du séparateur
+        sep.setOrientation(SwingConstants.VERTICAL);
+        // Ajouter le séparateur
+        buildRulesDialog.add(sep);
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(applyButton);    	
+        buttonPanel.add(applyAndExitButton);    	
+        buttonPanel.setLayout(new GridLayout(1, 2));
+        
+        buildRulesDialog.add(buttonPanel, BorderLayout.SOUTH);    	
+    }
+    
+    void updateBuildingRules() {
+    	buildingRules = getRulesFromTextAreas(buildRulesTextAreaFields, buildRulesLength);
     }
 
-    public void showBuildPopup() {
-		buildTextAreaFields = setInputPanel(buildPanel, buildingConditions, buildRulesLength);
-    	buildDialog.setVisible(true);
+    public void showBuildRulesPopup() {
+    	buildRulesTextAreaFields = setInputPanel(buildRulesPanel, buildingRules, buildRulesLength);
+    	buildRulesDialog.setVisible(true);
     }
     
     // POWER

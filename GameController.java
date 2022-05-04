@@ -21,6 +21,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 public class GameController {
 	JPanel controllerPanel = new JPanel(); 
@@ -39,7 +40,8 @@ public class GameController {
     JMenuItem biomeMenu = new JMenuItem("Biomes");
     JMenuItem carteMenu = new JMenuItem("Carte");
     JMenuItem prodMenu = new JMenuItem("Productions");
-    JMenuItem buildMenu = new JMenuItem("Constructions");
+    JMenuItem buildConditionMenu = new JMenuItem("Placement des constructions");
+    JMenuItem buildRulesMenu = new JMenuItem("Production des constructions");
     // ComboBoxes
     JComboBox<String> filterSelector;
     JComboBox<String> biomeSelector;
@@ -53,7 +55,8 @@ public class GameController {
 	    setMenu.add(biomeMenu);
 	    setMenu.add(carteMenu);
 	    setMenu.add(prodMenu);
-	    setMenu.add(buildMenu);
+	    setMenu.add(buildConditionMenu);
+	    setMenu.add(buildRulesMenu);
 	    menu.add(file);
 	    menu.add(setMenu);
 	    menu.add(help);
@@ -72,13 +75,15 @@ public class GameController {
 	    settings.createBiomePopup();
 	    settings.createCartePopup();
 	    settings.createProdPopup();
-	    settings.createBuildPopup();
+	    settings.createBuildCondPopup();
+	    settings.createBuildRulesPopup();
 	    //Menu de création
 	    JButton createB = new JButton("Créer une tuile");
 	    JButton turnRB = new JButton("Tourner à droite");
 	    JButton buildB = new JButton("Construire");
 	    JButton testB = new JButton("Test");
 	    JButton clearB = new JButton("Clear");
+	    JButton giveRessourcesB = new JButton("Give");
 	    
         // action listeners
 		newf.addActionListener(new ActionListener() {
@@ -102,9 +107,14 @@ public class GameController {
             	settings.showProdPopup();
             }
         });
-		buildMenu.addActionListener(new ActionListener() {
+		buildConditionMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	settings.showBuildPopup();
+            	settings.showBuildConditionPopup();
+            }
+        });
+		buildRulesMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	settings.showBuildRulesPopup();
             }
         });
 		filterSelector.addActionListener(new ActionListener() {
@@ -161,14 +171,24 @@ public class GameController {
             public void actionPerformed(ActionEvent e) {
             	settings.ClearDebugLog();
             }
+        });	
+		giveRessourcesB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	showGivePopup(settings.returnActivePlayer());
+            }
         });
 		
         // boutons
-        controllerPanel.add(createB);
-        controllerPanel.add(turnRB);
-        controllerPanel.add(buildB);
-        controllerPanel.add(testB);
-        controllerPanel.add(clearB);
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(createB);
+		buttonPanel.add(turnRB);
+		buttonPanel.add(buildB);
+		buttonPanel.add(testB);
+		buttonPanel.add(clearB);
+		buttonPanel.add(giveRessourcesB);
+		buttonPanel.setLayout(new GridLayout(3, 2));
+		
+		controllerPanel.add(buttonPanel);
         
         settings.addPlayersMenus(controllerPanel);
         
@@ -200,10 +220,10 @@ public class GameController {
 	
 	public void displayBuildingPopup (TuileCase tuileCase) {
 		// General popup graphic params
-    	JFrame buildFrame = new JFrame("What to build?");
-        JDialog buildDialog = new JDialog(buildFrame);
+    	JFrame buildCondFrame = new JFrame("What to build?");
+        JDialog buildCondDialog = new JDialog(buildCondFrame);
 
-        buildDialog.setBounds(200, 200, 500, 100);
+        buildCondDialog.setBounds(200, 200, 500, 100);
         
         // List of possible buildings to construct
         HashMap<String, String[]> buildingConditions = settings.buildingConditions;
@@ -248,7 +268,7 @@ public class GameController {
     			buidButton.addActionListener(new ActionListener() {
     	            public void actionPerformed(ActionEvent e) {
     	            	tuileCase.building = buildCondName;
-    	                buildDialog.setVisible(false);
+    	                buildCondDialog.setVisible(false);
     	                // Update nearby prods
     	        		for (String direction : directions) {
     	        			TuileCase relativeCase = tuileCase.getRelativeCase(direction);
@@ -261,13 +281,13 @@ public class GameController {
     	        		tuileCase.updateFilterView();
     	            }
     	        });	
-    			buildDialog.add(buildingName);
-    			buildDialog.add(buidButton);
+    			buildCondDialog.add(buildingName);
+    			buildCondDialog.add(buidButton);
     			buildableNumber++;
     		}
         }
-        buildDialog.setLayout(new GridLayout(buildableNumber, 2));
-        buildDialog.setVisible(true);
+        buildCondDialog.setLayout(new GridLayout(buildableNumber, 2));
+        buildCondDialog.setVisible(true);
 	}
 	
     public void displayGeneratorPopup (TuileCase tuileCase) {
@@ -341,5 +361,52 @@ public class GameController {
         }
         generatorDialog.setLayout(new GridLayout(buildingNumber + 1, 2));
         generatorDialog.setVisible(true);
+    }
+    
+    public void showGivePopup(Player activePlayer) {
+    	JDialog giveDialog = new JDialog();
+    	giveDialog.setBounds(200, 200, 800, 600);
+    	
+        JLabel titleLabel = new JLabel("Enter the ressoures to give to " + activePlayer.playerName);
+
+        JPanel prodToAddPanel = new JPanel();
+        
+        prodToAddPanel.add(new JLabel("Spore"));
+        JTextArea sporeTextArea = new JTextArea ("" + activePlayer.givenProdSpore);
+        prodToAddPanel.add(sporeTextArea);
+        prodToAddPanel.add(new JLabel("Fibre"));
+        JTextArea fibreTextArea = new JTextArea ("" + activePlayer.givenProdFibre);
+        prodToAddPanel.add(fibreTextArea);
+        prodToAddPanel.add(new JLabel("Suc"));
+        JTextArea sucTextArea = new JTextArea ("" + activePlayer.givenProdSuc);
+        prodToAddPanel.add(sucTextArea);
+        prodToAddPanel.add(new JLabel("Phosphorite"));
+        JTextArea phosphoTextArea = new JTextArea ("" + activePlayer.givenProdPhospho);
+        prodToAddPanel.add(phosphoTextArea);
+        prodToAddPanel.add(new JLabel("MushCoins"));
+        JTextArea coinsTextArea = new JTextArea ("" + activePlayer.givenProdCoins);
+        prodToAddPanel.add(coinsTextArea);
+        
+        prodToAddPanel.setLayout(new GridLayout(5, 2));
+        
+        JButton jButton = new JButton("Apply");
+        jButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	activePlayer.givenProdSpore = Integer.parseInt(sporeTextArea.getText());
+            	activePlayer.givenProdFibre = Integer.parseInt(fibreTextArea.getText());
+            	activePlayer.givenProdSuc = Integer.parseInt(sucTextArea.getText());
+            	activePlayer.givenProdPhospho = Integer.parseInt(phosphoTextArea.getText());
+            	activePlayer.givenProdCoins = Integer.parseInt(coinsTextArea.getText());
+            	activePlayer.updateRessourceInfos();
+                giveDialog.setVisible(false);
+            }
+        });
+
+        giveDialog.add(titleLabel);
+        giveDialog.add(prodToAddPanel);
+        giveDialog.add(jButton);
+        
+        giveDialog.setLayout(new GridLayout(3, 1));
+        giveDialog.setVisible(true);
     }
 }
