@@ -213,7 +213,7 @@ public class TuileCase {
 		if (building == "") {
 			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building to check if powered");
 			return false;
-		} else if (Arrays.stream(buildingParts).anyMatch(buildingName :: equals)) {
+		} else if (buildingParts.length > 0 && Arrays.stream(buildingParts).anyMatch(buildingName :: equals)) {
 			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building or building part with this name on this case");
 		}
 		Integer buildX = getCaseXPos();

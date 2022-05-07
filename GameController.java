@@ -341,42 +341,64 @@ public class GameController {
         for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
         	String buildingFromDistance = caseFromDistance.building;
         	// TODO: allow generator to power building parts with building requiring no power
-        	if (buildingFromDistance != "" && settings.getPowerCons(buildingFromDistance) > 0) {
-        		// Getting building position
+        	if (buildingFromDistance != "") {
+        		// Getting buildings case position
         		Integer buildX = caseFromDistance.getCaseXPos();
         		Integer buildY = caseFromDistance.getCaseYPos();
-        		settings.AddDebugLog("" + buildingFromDistance);
-        		JLabel buildingLabel = new JLabel(buildingFromDistance + " (" + buildX + "," + buildY +  ")");
-        		// Getting how much power is needed
-        		Integer powerCons = settings.getPowerCons(buildingFromDistance);
-                JCheckBox powerCheckBox = new JCheckBox("" + powerCons);
-        		generatorDialog.add(buildingLabel);
-        		generatorDialog.add(powerCheckBox);
-        		Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
-        		buildingsToPowerList.add(buildingLine);
-        		buildingNumber++;
-        		// TODO : Mange building parts as well
-//        		for (String buildingPart : caseFromDistance.buildingParts) {
-//            		if (settings.getPowerCons(buildingPart) ) {
-//            			Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
-//            			buildingsToPowerList.add(buildingLine);
-//            			buildingNumber++;            			
-//            		}
-//        		}
-        		Boolean alreadyPowered = false;
-        		for (Object [] buildingPowered : tuileCase.buildingsPowered) {
-        			// TODO: Check for non possible buildings
-        			// Check if the building is already powered by this generator, and check box if so
-        			if ((String)buildingPowered[0] == buildingFromDistance && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
-        				// TODO: remove boolean in tuileCase.buildingsPowered object
-        				powerCheckBox.setSelected((boolean) buildingPowered[3]);
-        				energyProvided += powerCons;
-        				alreadyPowered = true;
-        				break;
+        		if (settings.getPowerCons(buildingFromDistance) > 0) {
+        			settings.AddDebugLog("" + buildingFromDistance);
+        			JLabel buildingLabel = new JLabel(buildingFromDistance + " (" + buildX + "," + buildY +  ")");
+        			// Getting how much power is needed
+        			Integer powerCons = settings.getPowerCons(buildingFromDistance);
+        			JCheckBox powerCheckBox = new JCheckBox("" + powerCons);
+        			generatorDialog.add(buildingLabel);
+        			generatorDialog.add(powerCheckBox);
+        			Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
+        			buildingsToPowerList.add(buildingLine);
+        			buildingNumber++;
+        			Boolean alreadyPowered = false;
+        			for (Object [] buildingPowered : tuileCase.buildingsPowered) {
+        				// TODO: Check for non possible buildings
+        				// Check if the building is already powered by this generator, and check box if so
+        				if ((String)buildingPowered[0] == buildingFromDistance && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
+        					// TODO: remove boolean in tuileCase.buildingsPowered object
+        					powerCheckBox.setSelected((boolean) buildingPowered[3]);
+        					energyProvided += powerCons;
+        					alreadyPowered = true;
+        					break;
+        				}
         			}
+        			boolean isPoweredByOther = caseFromDistance.checkIfBuildingPowered(buildingFromDistance);
+        			powerCheckBox.setEnabled(!isPoweredByOther || alreadyPowered);
         		}
-    			boolean isPoweredByOther = caseFromDistance.checkIfBuildingPowered();
-    			powerCheckBox.setEnabled(!isPoweredByOther || alreadyPowered);
+        		// TODO : Mange building parts as well
+        		for (String buildingPart : caseFromDistance.buildingParts) {
+            		if (settings.getPowerCons(buildingPart) > 0) {
+            			JLabel buildingLabel = new JLabel(buildingPart + " (" + buildX + "," + buildY +  ")");
+            			// Getting how much power is needed
+            			Integer powerCons = settings.getPowerCons(buildingPart);
+            			JCheckBox powerCheckBox = new JCheckBox("" + powerCons);
+            			generatorDialog.add(buildingLabel);
+            			generatorDialog.add(powerCheckBox);
+            			Object[] buildingLine = {buildingPart, buildX, buildY, powerCheckBox};
+            			buildingsToPowerList.add(buildingLine);
+            			buildingNumber++;     
+            			Boolean alreadyPowered = false;
+            			for (Object [] buildingPowered : tuileCase.buildingsPowered) {
+            				// TODO: Check for non possible buildings
+            				// Check if the building is already powered by this generator, and check box if so
+            				if ((String)buildingPowered[0] == buildingPart && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
+            					// TODO: remove boolean in tuileCase.buildingsPowered object
+            					powerCheckBox.setSelected((boolean) buildingPowered[3]);
+            					energyProvided += powerCons;
+            					alreadyPowered = true;
+            					break;
+            				}
+            			}
+            			boolean isPoweredByOther = caseFromDistance.checkIfBuildingPowered(buildingPart);
+            			powerCheckBox.setEnabled(!isPoweredByOther || alreadyPowered);
+            		}
+        		}
         	}
         }
         
