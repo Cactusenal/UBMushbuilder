@@ -234,7 +234,7 @@ public class GameController {
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
 			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
-			Main.settings.AddDebugLog("Building part is " + tuileCase.buildingParts[0]);
+			Main.settings.AddDebugLog("Building part is " + (tuileCase.buildingParts.length == 0 ? "no building part" : tuileCase.buildingParts[0]));
 //			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
 	}
