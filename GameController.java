@@ -308,6 +308,7 @@ public class GameController {
     	        				relativeCase.updateFilterView();
     	        			}
     	        		}
+    	        		tuileCase.parentTuile.updateTuileProductions();
     	        		tuileCase.updateFilterView();
     	            }
     	        });	
@@ -419,6 +420,7 @@ public class GameController {
     				for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
     					caseFromDistance.updateCaseProduction();
     				}
+    				tuileCase.updateCaseProduction();
     				generatorDialog.setVisible(false);
     			}
     		});
