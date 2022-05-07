@@ -45,6 +45,9 @@ public class GameController {
     // ComboBoxes
     JComboBox<String> filterSelector;
     JComboBox<String> biomeSelector;
+    // Time label
+    JLabel timeLabel = new JLabel();
+    Integer timeIteration = 0;
 	
 	public GameController() {
 		this.settings = Main.settings;
@@ -62,8 +65,12 @@ public class GameController {
 	    menu.add(help);
 	    
 	    // créer un panneau
-	    controllerPanel.add(menu);
-	    
+	    JPanel menuPanel = new JPanel();
+	    menuPanel.add(menu);
+	    menuPanel.add(timeLabel);
+	    menuPanel.setLayout(new GridLayout(1, 2));
+	    controllerPanel.add(menuPanel);
+
 	    //ComboBoxes
 	    filterSelector = new JComboBox<String>(settings.possibleFilters);
 	    controllerPanel.add(filterSelector);
@@ -84,6 +91,7 @@ public class GameController {
 	    JButton testB = new JButton("Test");
 	    JButton clearB = new JButton("Clear");
 	    JButton giveRessourcesB = new JButton("Give");
+	    JButton timeB = new JButton("Itérer temps");
 	    
         // action listeners
 		newf.addActionListener(new ActionListener() {
@@ -177,6 +185,12 @@ public class GameController {
             	showGivePopup(settings.returnActivePlayer());
             }
         });
+		timeB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	timeIteration++;
+            	refreshTimeLabel();
+            }
+        });
 		
         // boutons
 		JPanel buttonPanel = new JPanel();
@@ -186,7 +200,8 @@ public class GameController {
 		buttonPanel.add(testB);
 		buttonPanel.add(clearB);
 		buttonPanel.add(giveRessourcesB);
-		buttonPanel.setLayout(new GridLayout(3, 2));
+		buttonPanel.add(timeB);
+		buttonPanel.setLayout(new GridLayout(4, 2));
 		
 		controllerPanel.add(buttonPanel);
         
@@ -196,8 +211,14 @@ public class GameController {
         controllerPanel.add(settings.debugText);
         
         controllerPanel.setLayout(new BoxLayout(controllerPanel, BoxLayout.Y_AXIS));
+        
+        refreshTimeLabel();
 	}
 	
+	public void refreshTimeLabel() {
+		timeLabel.setText("  Itération #" + timeIteration);
+	}
+
 	public void clickOnCarteCase(TuileCase tuileCase, Boolean isViewer) {
     	if (isViewer) {
 			tuileCase.changeTerrain();
@@ -212,8 +233,8 @@ public class GameController {
 			settings.returnActivePlayer().tuileViewer.randomize(true);    					
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
-//			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
-//			Main.settings.AddDebugLog("Building part is " + tuileCase.buildingParts.get(0));
+			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
+			Main.settings.AddDebugLog("Building part is " + tuileCase.buildingParts[0]);
 //			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
 	}
@@ -319,6 +340,7 @@ public class GameController {
         
         for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
         	String buildingFromDistance = caseFromDistance.building;
+        	// TODO: allow generator to power building parts with building requiring no power
         	if (buildingFromDistance != "" && settings.getPowerCons(buildingFromDistance) > 0) {
         		// Getting building position
         		Integer buildX = caseFromDistance.getCaseXPos();
@@ -333,6 +355,14 @@ public class GameController {
         		Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
         		buildingsToPowerList.add(buildingLine);
         		buildingNumber++;
+        		// TODO : Mange building parts as well
+//        		for (String buildingPart : caseFromDistance.buildingParts) {
+//            		if (settings.getPowerCons(buildingPart) ) {
+//            			Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
+//            			buildingsToPowerList.add(buildingLine);
+//            			buildingNumber++;            			
+//            		}
+//        		}
         		Boolean alreadyPowered = false;
         		for (Object [] buildingPowered : tuileCase.buildingsPowered) {
         			// TODO: Check for non possible buildings

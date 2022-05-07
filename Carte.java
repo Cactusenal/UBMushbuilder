@@ -7,6 +7,10 @@ import java.awt.GridLayout;
 import javax.swing.JLayeredPane;
 
 public class Carte extends JLayeredPane {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public Tuile [][] tableauTuile;
 	public int lign;
 	public int column;

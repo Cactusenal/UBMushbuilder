@@ -73,7 +73,7 @@ public class Settings {
 	String[] farmRule = {"10", "", ""};
 	String[] portRule = {"20", "", ""};
 	String[] generatorRule = {"0", "50", "3"};
-	String[] pierRule = {"0", "", ""};
+	String[] pierRule = {"10", "", ""};
 	Integer buildRulesLength = 3;
 	Integer maxGeneratorDistance = 0;
 	// buildings dialog
@@ -83,8 +83,8 @@ public class Settings {
 	HashMap<String, JTextArea[]> buildRulesTextAreaFields = new HashMap<String, JTextArea[]>();
 	// Conditions
 	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
-	String[] dummyCondition = {"biomes/buildings,were,to,place", "nearby,biomes,or,buildings", "price in ressources"};
-	String[] farmCondition = {"Plaine,Marais", "", ""};
+	String[] dummyCondition = {"biomes/buildings,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
+	String[] farmCondition = {"Plaine,Marais", "", "10/20/20/10"};
 	String[] portCondition = {"Brume", "Brume", ""};
 	String[] pierCondition = {"Port", "", ""};
 	String[] generatorCondition = {"Désert,Plaine", "", ""};

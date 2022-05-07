@@ -5,6 +5,10 @@ import java.awt.GridLayout;
 import javax.swing.*;
 
 public class Sliders extends JPanel {  
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public JSlider slider;
 	static JLabel label;
 	public Sliders(String text, int minValue, int maxValue, int startValue) {

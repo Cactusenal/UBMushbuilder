@@ -1,6 +1,7 @@
 package net.codejava;
 
 import java.awt.Color;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +23,7 @@ public class TuileCase {
     Integer yPos;
     
     String building = "";
-    List<String> buildingParts = new ArrayList<String>();
+    String [] buildingParts = {};
     
     public Object[][] buildingsPowered = {};
     
@@ -83,12 +84,22 @@ public class TuileCase {
 			Main.settings.AddDebugLog("buildingConditions: " + Main.settings.buildingConditions.get(buildName)[0]);
 
 			if (Main.settings.buildingConditions.get(buildName)[0].equals(building)) {
-				buildingParts.add(buildName);
+				addBuildingPart(buildName);
 			} else {
 				building = buildName;
-				buildingParts.clear();
+				buildingParts = null;
 			}
 		}
+	}
+	
+	public void addBuildingPart(String buildingPart) {
+		Integer buildingPartLength = buildingParts != null ? buildingParts.length : 0;
+		String[] newBuildingParts = new String[buildingPartLength + 1];
+		for (int i = 0; i < buildingPartLength; i++) {
+			newBuildingParts[i] = buildingParts[i];
+		}
+		newBuildingParts[buildingPartLength] = buildingPart;
+		buildingParts = newBuildingParts;		
 	}
 	
 	public int getRessource(String ressourceToGet) {
@@ -171,10 +182,11 @@ public class TuileCase {
 				applyOnAllBiome = true;
 			}
 			// Calculate productions
-			if (distanceValue == 0 && (caseType.equals(typeToCompare) || (!isBiome && buildingParts!= null && buildingParts.contains(caseType)))) {
-				if (!isEnergyDependant || checkIfBuildingPowered()) {
+			// TODO: authorize multiple identical building parts
+			if (distanceValue == 0 && (caseType.equals(typeToCompare) || (!isBiome && buildingParts!= null && buildingParts.length > 0 && Arrays.stream(buildingParts).anyMatch(caseType :: equals)))) {
+				if (!isEnergyDependant || checkIfBuildingPowered(caseType)) {
 					prod += prodValue;
-//					Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);					
+//					Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
 				}
 			}
 			else if (distanceValue > 0) {
@@ -182,10 +194,11 @@ public class TuileCase {
 				for (TuileCase relativeCase : tuilesWithinDistance) {
 					if (relativeCase != null) {
 						typeToCompare = isBiome ? relativeCase.terrain : relativeCase.building;
-						if ((caseType.equals(typeToCompare) || (!isBiome && relativeCase.buildingParts!= null && relativeCase.buildingParts.contains(caseType))) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
-							if (!isEnergyDependant || relativeCase.checkIfBuildingPowered()) {
+						// TODO: authorize multiple identical building parts
+						if ((caseType.equals(typeToCompare) || (!isBiome && relativeCase.buildingParts!= null && relativeCase.buildingParts.length > 0 && Arrays.stream(relativeCase.buildingParts).anyMatch(caseType :: equals))) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
+							if (!isEnergyDependant || relativeCase.checkIfBuildingPowered(caseType)) {
 								prod += prodValue;
-//							Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);								
+//								Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);								
 							}
 						}
 					}
@@ -196,10 +209,12 @@ public class TuileCase {
 		return prod;
 	}
 	
-	public boolean checkIfBuildingPowered() {
+	public boolean checkIfBuildingPowered(String buildingName) {
 		if (building == "") {
-			Main.settings.AddDebugLog("Unexpected: no building to check if powered");
+			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building to check if powered");
 			return false;
+		} else if (Arrays.stream(buildingParts).anyMatch(buildingName :: equals)) {
+			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building or building part with this name on this case");
 		}
 		Integer buildX = getCaseXPos();
 		Integer buildY = getCaseYPos();
@@ -207,7 +222,7 @@ public class TuileCase {
 //			Main.settings.AddDebugLog("[checkIfBuildingPowered] building here is :" + inRangeCase.building);
 			for (Object[] buildingPowered : inRangeCase.buildingsPowered) {
 //				Main.settings.AddDebugLog("[checkIfBuildingPowered] building powered here is :" + (String)buildingPowered[0]);
-				if (building.equals((String)buildingPowered[0]) && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
+				if (buildingName.equals((String)buildingPowered[0]) && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
 //					Main.settings.AddDebugLog("[checkIfBuildingPowered] building powered!");
 					return true;
     			}
