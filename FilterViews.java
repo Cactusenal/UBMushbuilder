@@ -19,6 +19,7 @@ public class FilterViews {
     HashMap<String, Boolean> sporeDisplayed = new HashMap<String, Boolean>();
     HashMap<String, Boolean> sucDisplayed = new HashMap<String, Boolean>();
     HashMap<String, Boolean> phosphoDisplayed = new HashMap<String, Boolean>();
+    HashMap<String, Boolean> allDisplay = new HashMap<String, Boolean>();
 //    HashMap<String, Boolean> coinsDisplayed = new HashMap<String, Boolean>();
     
 	//images datas
@@ -37,7 +38,15 @@ public class FilterViews {
 		biomeColors.put("Foret", Color.green);
 		biomeColors.put("Désert", Color.orange);
 		biomeColors.put("Marais", Color.pink);
-
+		
+		// all colors display
+		allDisplay.put("Brume", true);
+		allDisplay.put("Foret", true);
+		allDisplay.put("Plaine", true);
+		allDisplay.put("Marais", true);
+		allDisplay.put("Désert", true);
+		allDisplay.put("Hauteurs", true);
+		
 		// For filter fibre
 		fiberDisplayed.put("Brume", true);
 		fiberDisplayed.put("Foret", true);
@@ -80,22 +89,22 @@ public class FilterViews {
 			case "Fibre":
 				int prodFibre = tuileCase.prodFibre;
 				caseBackground.setText("" + prodFibre);		
-				caseToBiomeColor(caseBackground, terrain, fiberDisplayed);
+				caseToBiomeColor(caseBackground, terrain, allDisplay);
 				break;
 			case "Spore":
 				int prodSpore = tuileCase.prodSpore;
 				caseBackground.setText("" + prodSpore);
-				caseToBiomeColor(caseBackground, terrain, sporeDisplayed);
+				caseToBiomeColor(caseBackground, terrain, allDisplay);
 				break;
 			case "Suc":
 				int prodSuc = tuileCase.prodSuc;
 				caseBackground.setText("" + prodSuc);
-				caseToBiomeColor(caseBackground, terrain, sucDisplayed);
+				caseToBiomeColor(caseBackground, terrain, allDisplay);
 				break;
 			case "Phosphorite":
 				int prodPhospho = tuileCase.prodPhospho;
 				caseBackground.setText("" + prodPhospho);
-				caseToBiomeColor(caseBackground, terrain, phosphoDisplayed);
+				caseToBiomeColor(caseBackground, terrain, allDisplay);
 				break;
 			case "MushCoins":
 				int prodCoins = tuileCase.prodCoins;

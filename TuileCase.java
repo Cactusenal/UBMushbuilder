@@ -126,15 +126,6 @@ public class TuileCase {
 	
 	public void setProdSpore() {
 		prodSpore = getProdFromHashMap(Main.settings.sporeProdRules);
-		
-		switch (building) {
-			case "Ferme":
-				prodSpore *= 2;
-				break;
-			case "Port":
-				prodSpore *= 2;
-				break;
-		}
 	}
 	
 	public void setProdSuc() {
@@ -182,7 +173,6 @@ public class TuileCase {
 				applyOnAllBiome = true;
 			}
 			// Calculate productions
-			// TODO: authorize multiple identical building parts
 			if (distanceValue == 0 && (caseType.equals(typeToCompare) || (!isBiome && buildingParts!= null && buildingParts.length > 0 && Arrays.stream(buildingParts).anyMatch(caseType :: equals)))) {
 				if (!isEnergyDependant || checkIfBuildingPowered(caseType)) {
 					prod += prodValue;
@@ -213,8 +203,9 @@ public class TuileCase {
 		if (building == "") {
 			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building to check if powered");
 			return false;
-		} else if (buildingParts.length > 0 && Arrays.stream(buildingParts).anyMatch(buildingName :: equals)) {
-			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building or building part with this name on this case");
+		} else if (buildingParts.length == 0 || !Arrays.stream(buildingParts).anyMatch(buildingName :: equals)) {
+			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building or building part with this name: " + buildingName + " on this case");
+			return false;
 		}
 		Integer buildX = getCaseXPos();
 		Integer buildY = getCaseYPos();
@@ -225,7 +216,7 @@ public class TuileCase {
 				if (buildingName.equals((String)buildingPowered[0]) && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
 //					Main.settings.AddDebugLog("[checkIfBuildingPowered] building powered!");
 					return true;
-    			}
+				}
 			}
 		}
 		return false;
