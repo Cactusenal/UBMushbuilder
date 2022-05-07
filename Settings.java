@@ -112,32 +112,40 @@ public class Settings {
     // Setting initialisation
     void initProdSettings() {
     	// Fibre
-		String[] FForet0 = {"Foret", "0", "2"};
-		String[] FForet1 = {"Foret", "1", "1", "Brume"};
+		String[] FForet0 = {"Foret", "0", "5"};
+		String[] MaraisF = {"Marais", "0", "1"};
+		String[] FForet1 = {"Foret", "1", "1", "Brume,Plaine,Haiteurs,Désert,Marais"};
+		String[] DésertF = {"Désert", "0", "1"};
+		String[] PlaineF = {"Plaine", "0", "1"};
 		fibreProdRules.put("Foret0", FForet0);
+		fibreProdRules.put("MaraisF", MaraisF);
 		fibreProdRules.put("Foret1", FForet1);
+		fibreProdRules.put("DésertF", DésertF);
+		fibreProdRules.put("PlaineF", PlaineF);
 		
 		// Spore
-		String[] Foret0 = {"Foret", "0", "1"};
-		String[] Marais0 = {"Marais", "0", "2"};
-		String[] Plaine0 = {"Plaine", "0", "1"};
+		String[] Plaine0 = {"Plaine", "0", "4"};
 		String[] SPPier0 = {"Jetée", "1", "1"};
-		sporeProdRules.put("Foret0", Foret0);
-		sporeProdRules.put("Marais0", Marais0);
+		String[] SPHauteurs0 = {"Hauteurs", "0", "1"};
+		String[] SPBrume1 = {"Brume", "1", "1"};
 		sporeProdRules.put("Plaine0", Plaine0);
+		sporeProdRules.put("SPHauteurs0", SPHauteurs0);
+		sporeProdRules.put("SPBrume1", SPBrume1);
 		sporeProdRules.put("SPPier0", SPPier0);
 		
 		//Suc
-		String[] SDesert0 = {"Désert", "0", "1"};
-		String[] SHauteurs0 = {"Hauteurs", "0", "1"};
-		String[] SHauteurs1 = {"Hauteurs", "1", "1", "Brume"};
-		sucProdRules.put("SDesert0", SDesert0);
-		sucProdRules.put("SHauteurs0", SHauteurs0);
-		sucProdRules.put("SHauteurs1", SHauteurs1);
+		String[] SMarais1 = {"Marais", "1", "1"};
+		String[] SMarais0 = {"Marais", "0", "5"};
+		sucProdRules.put("SMarais1", SMarais1);
+		sucProdRules.put("SMarais0", SMarais0);
 		
 		//Phosphorite
-		String[] PHauteurs1 = {"Hauteurs", "0", "1"};
-		phosphoProdRules.put("PHauteurs1", PHauteurs1);
+		String[] PHauteurs0 = {"Hauteurs", "0", "2"};
+		String[] BrumeP0 = {"Brume", "1", "1"};
+		String[] MaraisP0 = {"Marais", "0", "1"};
+		phosphoProdRules.put("PHauteurs0", PHauteurs0);
+		phosphoProdRules.put("BrumeP0", BrumeP0);
+		phosphoProdRules.put("MaraisP0", MaraisP0);
 		
 		//MushCoins
 		String[] CPort = {"Port+", "0", "2"};
