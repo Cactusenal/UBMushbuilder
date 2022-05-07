@@ -6,8 +6,13 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -498,7 +503,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Building conditions");
-    	JLabel rulesTemplateLabel = new JLabel("Nom du batiment | Biome où l'on peut poser le batiment | Biome ou batiment devant se situer à côté | (WIP) Coût du batiment");
+    	JLabel rulesTemplateLabel = new JLabel("Nom du batiment | Biome/batiment où l'on peut poser le batiment | Biome ou batiment devant se situer à côté | (WIP) Coût du batiment");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 
@@ -602,6 +607,7 @@ public class Settings {
         applyAndExitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	updateBuildingRules();
+            	//TODO: Check that closing works
             	buildRulesDialog.setVisible(false);
             }
         });
@@ -698,5 +704,94 @@ public class Settings {
 			i ++;
 		}
 		return slidersValues;
+	}
+
+	public void saveRules() {
+	    String saveName = "testName";
+	    String savePath = "C:\\Users\\romai\\eclipse-workspace\\UBprototype\\src\\net\\saves\\" + saveName + ".txt";
+		try {
+			File myObj = new File(savePath);
+			if (myObj.createNewFile()) {
+	        	System.out.println("File created: " + myObj.getName());
+			} else {
+				System.out.println("File already exists.");
+			}
+		} catch (IOException e) {
+	        System.out.println("An error occurred.");
+	        e.printStackTrace();
+		}
+	    try {
+	        FileWriter myWriter = new FileWriter(savePath);
+	        String saveContent = createSaveFile();
+	        myWriter.write(saveContent);
+	        myWriter.close();
+	        System.out.println("Successfully wrote to the file.");
+	    } catch (IOException e) {
+	        System.out.println("An error occurred.");
+	        e.printStackTrace();
+	    }
+	}
+
+	private String createSaveFile() {
+		String saveContent = "";
+		saveContent += "fibreProdRules$" + createSaveFilefromHashMap(fibreProdRules) + "\r\n";
+		saveContent += "sporeProdRules$" + createSaveFilefromHashMap(sporeProdRules) + "\r\n";
+		saveContent += "sucProdRules$" + createSaveFilefromHashMap(sucProdRules) + "\r\n";
+		saveContent += "phosphoProdRules$" + createSaveFilefromHashMap(phosphoProdRules) + "\r\n";
+		saveContent += "coinProdRules$" + createSaveFilefromHashMap(coinProdRules) + "\r\n";
+		return saveContent;
+	}
+
+	private String createSaveFilefromHashMap(HashMap<String, String[]> hashMapRules) {
+    	String saveSubContent = "";
+		for (String ruleName : hashMapRules.keySet()) {
+			saveSubContent += "|" + ruleName;
+    		String[] ruleValues = hashMapRules.get(ruleName);
+    		for (String savedValue : ruleValues) {
+    			saveSubContent += "|" + savedValue;
+    		}
+    		saveSubContent += "|";
+    	}
+		return saveSubContent;
+	}
+	
+	void readSaveFile(String saveName) {
+	    String savePath = "C:\\Users\\romai\\eclipse-workspace\\UBprototype\\src\\net\\saves\\" + saveName + ".txt";
+	    try {
+	        File myObj = new File(savePath);
+	        Scanner myReader = new Scanner(myObj);
+	        while (myReader.hasNextLine()) {
+	          String data = myReader.nextLine();
+	          System.out.println(data);
+	          loadHashmapRulesFromString(data);
+	        }
+	        myReader.close();
+	    } catch (FileNotFoundException e) {
+	        System.out.println("An error occurred.");
+	        e.printStackTrace();
+	    }
+	}
+	
+	private void loadHashmapRulesFromString(String saveDatas) {
+		String[] rulesDatas = saveDatas.split("$");
+		switch (rulesDatas[0]) {
+		case "fibreProdRules":
+			fibreProdRules = getHashMapRuleFromString(rulesDatas[1]);
+			break;
+		}
+	}
+
+	private HashMap<String, String[]> getHashMapRuleFromString(String rulesDatas) {
+		HashMap<String, String[]> rule = new HashMap<String, String[]>;
+		String[] splitRulesDatas = rulesDatas.split("||");
+		for (String ruleData : splitRulesDatas) {
+			for (int i = 1; i < ruleDatas.length; i++) {
+				String[]
+			}
+					String[] PlaineF = {"Plaine", "0", "1"};
+			fibreProdRules.put("Foret0", FForet0);
+			
+		}
+		return null;
 	}
 }

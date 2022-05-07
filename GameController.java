@@ -37,6 +37,8 @@ public class GameController {
     // Définir les sous-menus
     JMenuItem newf = new JMenuItem("Nouveau");
     JMenuItem save = new JMenuItem("Enregistrer");
+    JMenuItem saveB = new JMenuItem("Sauvegarde des productions");
+    JMenuItem loadB = new JMenuItem("Chargement de la sauvegarde");
     JMenuItem biomeMenu = new JMenuItem("Biomes");
     JMenuItem carteMenu = new JMenuItem("Carte");
     JMenuItem prodMenu = new JMenuItem("Productions");
@@ -55,6 +57,8 @@ public class GameController {
 		// Construction des sous-menus
 	    file.add(newf);
 	    file.add(save);
+	    file.add(saveB);
+	    file.add(loadB);
 	    setMenu.add(biomeMenu);
 	    setMenu.add(carteMenu);
 	    setMenu.add(prodMenu);
@@ -189,6 +193,16 @@ public class GameController {
             public void actionPerformed(ActionEvent e) {
             	timeIteration++;
             	refreshTimeLabel();
+            }
+        });
+		saveB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	settings.saveRules();
+            }
+        });
+		loadB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	settings.readSaveFile("testName");
             }
         });
 		
