@@ -371,7 +371,6 @@ public class Settings {
             	carteNumberOfLigns = Integer.parseInt(lignText.getText());
             	carteNumberOfColumns = Integer.parseInt(columnText.getText());
             	Main.cartePanel.resetSize(carteNumberOfLigns, carteNumberOfColumns);
-            	Main.cartePanel.updateFilterView();
             }
         });
 

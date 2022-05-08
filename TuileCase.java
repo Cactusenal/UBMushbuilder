@@ -27,11 +27,11 @@ public class TuileCase {
     
     public Object[][] buildingsPowered = {};
     
-    Integer prodFibre;
-    Integer prodSpore;
-    Integer prodSuc;
-    Integer prodPhospho;
-    Integer prodCoins;
+    Integer prodFibre = 0;
+    Integer prodSpore = 0;
+    Integer prodSuc = 0;
+    Integer prodPhospho = 0;
+    Integer prodCoins = 0;
     
     //Constructeur
     public TuileCase(Tuile tuileFrom, JLayeredPane panel, String position, int x, int y, boolean isViewer) {

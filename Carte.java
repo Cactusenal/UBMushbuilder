@@ -113,15 +113,31 @@ public class Carte extends JLayeredPane {
 		lign = ligns;
 		column = columns;
 		tableauTuile = new Tuile [ligns][columns];
-		for (int i = 0; i < ligns; i++) {
-    		for (int j = 0; j < columns; j++) {
-    			Tuile tuile = new Tuile(false, mondePlayer,j, i);
+    	// Pour le layout
+    	int sideSize = column + lign;
+    	setPreferredSize(new Dimension(sideSize * caseSize, sideSize * caseSize));
+    	
+    	
+    	for (int i = 0; i < lign; i++) {
+    		for (int j = 0; j < column; j++) {
+    			Tuile tuile = new Tuile(false, mondePlayer, j, i);
     			tableauTuile[i][j] = tuile;
-    			add(tuile.tuileBack);
+    			
+    			// layout
+	    		int gridx = lign - 1 + j - i;
+	    		int gridy = j + i;
+
+	    		add(tuile.tuileBack);
+	    		tuile.tuileBack.setBounds(gridx*ecartTuile, gridy*ecartTuile, ecartTuile * 2, ecartTuile * 2);        		
+	    		
+	    		// Gestion de la profondeur
+	        	setLayer(tuile.tuileBack, gridy);
     		}
     	}
-    	setLayout(new GridLayout(ligns, columns));
-        setPreferredSize(new Dimension(columns * caseSize, ligns * caseSize));
+    	for (Player player : mainSettings.players) {
+    		player.placedTuiles.clear();
+    	}
+    	updateWorldView();
 	}
 
 	public void randomize() {
