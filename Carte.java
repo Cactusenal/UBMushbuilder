@@ -109,6 +109,7 @@ public class Carte extends JLayeredPane {
 	
 	public void resetSize(int ligns, int columns) {
 		removeAll();
+		//TODO: reput this in ISO
 		lign = ligns;
 		column = columns;
 		tableauTuile = new Tuile [ligns][columns];

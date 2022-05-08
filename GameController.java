@@ -202,7 +202,7 @@ public class GameController {
         });
 		loadB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	settings.readSaveFile("testName");
+            	settings.readSaveFile("UBprodSave");
             }
         });
 		
@@ -435,6 +435,7 @@ public class GameController {
     					caseFromDistance.updateCaseProduction();
     				}
     				tuileCase.updateCaseProduction();
+    				settings.updatePlayersProd();
     				generatorDialog.setVisible(false);
     			}
     		});

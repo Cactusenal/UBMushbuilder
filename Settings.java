@@ -89,7 +89,7 @@ public class Settings {
 	// Conditions
 	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
 	String[] dummyCondition = {"biomes/buildings,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
-	String[] farmCondition = {"Plaine,Marais", "", "10/20/20/10"};
+	String[] farmCondition = {"Plaine,Marais", "", "10,20,20,10"};
 	String[] portCondition = {"Brume", "Brume", ""};
 	String[] pierCondition = {"Port", "", ""};
 	String[] generatorCondition = {"Désert,Plaine", "", ""};
@@ -347,7 +347,7 @@ public class Settings {
     	    	
     	if ((biomeIndex > possibleBiomes.length - 1) || biomeIndex < 0) {
     		System.out.println(biomeIndex);    		
-    		Main.settings.AddDebugLog("[Settings.getRandomTerrainValue] value is out of bound: " + Integer.toString(biomeIndex));
+    		AddDebugLog("[Settings.getRandomTerrainValue] value is out of bound: " + Integer.toString(biomeIndex));
     		return "Brume";
     	} else {
     		return(possibleBiomes[biomeIndex]);    	    		
@@ -707,8 +707,8 @@ public class Settings {
 	}
 
 	public void saveRules() {
-	    String saveName = "testName";
-	    String savePath = "C:\\Users\\romai\\eclipse-workspace\\UBprototype\\src\\net\\saves\\" + saveName + ".txt";
+	    String saveName = "UBprodSave";
+	    String savePath = "C:\\UBsaves\\" + saveName + ".txt";
 		try {
 			File myObj = new File(savePath);
 			if (myObj.createNewFile()) {
@@ -734,29 +734,34 @@ public class Settings {
 
 	private String createSaveFile() {
 		String saveContent = "";
-		saveContent += "fibreProdRules$" + createSaveFilefromHashMap(fibreProdRules) + "\r\n";
-		saveContent += "sporeProdRules$" + createSaveFilefromHashMap(sporeProdRules) + "\r\n";
-		saveContent += "sucProdRules$" + createSaveFilefromHashMap(sucProdRules) + "\r\n";
-		saveContent += "phosphoProdRules$" + createSaveFilefromHashMap(phosphoProdRules) + "\r\n";
-		saveContent += "coinProdRules$" + createSaveFilefromHashMap(coinProdRules) + "\r\n";
+		saveContent += "fibreProdRulesç" + createSaveFilefromHashMap(fibreProdRules) + "\r\n";
+		saveContent += "sporeProdRulesç" + createSaveFilefromHashMap(sporeProdRules) + "\r\n";
+		saveContent += "sucProdRulesç" + createSaveFilefromHashMap(sucProdRules) + "\r\n";
+		saveContent += "phosphoProdRulesç" + createSaveFilefromHashMap(phosphoProdRules) + "\r\n";
+		saveContent += "coinProdRulesç" + createSaveFilefromHashMap(coinProdRules) + "\r\n";
+		saveContent += "buildingRulesç" + createSaveFilefromHashMap(buildingRules) + "\r\n";
+		saveContent += "buildingConditionsç" + createSaveFilefromHashMap(buildingConditions) + "\r\n";
 		return saveContent;
 	}
 
 	private String createSaveFilefromHashMap(HashMap<String, String[]> hashMapRules) {
     	String saveSubContent = "";
 		for (String ruleName : hashMapRules.keySet()) {
-			saveSubContent += "|" + ruleName;
+			saveSubContent += ruleName;
     		String[] ruleValues = hashMapRules.get(ruleName);
     		for (String savedValue : ruleValues) {
-    			saveSubContent += "|" + savedValue;
+    			if (savedValue.equals("") || savedValue == null) {
+    				savedValue = "@";
+    			}
+    			saveSubContent += "!" + savedValue;
     		}
-    		saveSubContent += "|";
+    		saveSubContent += "!!";
     	}
 		return saveSubContent;
 	}
 	
 	void readSaveFile(String saveName) {
-	    String savePath = "C:\\Users\\romai\\eclipse-workspace\\UBprototype\\src\\net\\saves\\" + saveName + ".txt";
+		String savePath = "C:\\UBsaves\\" + saveName + ".txt";
 	    try {
 	        File myObj = new File(savePath);
 	        Scanner myReader = new Scanner(myObj);
@@ -773,25 +778,51 @@ public class Settings {
 	}
 	
 	private void loadHashmapRulesFromString(String saveDatas) {
-		String[] rulesDatas = saveDatas.split("$");
+		AddDebugLog("saveDatas:" + saveDatas);
+		String[] rulesDatas = saveDatas.split("ç");
+		AddDebugLog("rule name:" + rulesDatas[0]);
+		AddDebugLog("rulesDatas:" + rulesDatas[1]);
 		switch (rulesDatas[0]) {
-		case "fibreProdRules":
-			fibreProdRules = getHashMapRuleFromString(rulesDatas[1]);
-			break;
+			case "fibreProdRules":
+				fibreProdRules = getHashMapRuleFromString(rulesDatas[1]);
+				break;
+			case "sporeProdRules":
+				sporeProdRules = getHashMapRuleFromString(rulesDatas[1]);
+				break;
+			case "sucProdRules":
+				sucProdRules = getHashMapRuleFromString(rulesDatas[1]);
+				break;
+			case "phosphoProdRules":
+				phosphoProdRules = getHashMapRuleFromString(rulesDatas[1]);
+				break;
+			case "coinProdRules":
+				coinProdRules = getHashMapRuleFromString(rulesDatas[1]);
+				break;
+			case "buildingRules":
+				buildingRules = getHashMapRuleFromString(rulesDatas[1]);
+				break;
+			case "buildingConditions":
+				buildingConditions = getHashMapRuleFromString(rulesDatas[1]);
+				break;
 		}
 	}
 
 	private HashMap<String, String[]> getHashMapRuleFromString(String rulesDatas) {
-		HashMap<String, String[]> rule = new HashMap<String, String[]>;
-		String[] splitRulesDatas = rulesDatas.split("||");
-		for (String ruleData : splitRulesDatas) {
-			for (int i = 1; i < ruleDatas.length; i++) {
-				String[]
+		HashMap<String, String[]> rule = new HashMap<String, String[]>();
+		String[] splitRulesDatas = rulesDatas.split("!!");
+		for (String ruleDatas : splitRulesDatas) {
+			AddDebugLog("" + ruleDatas);
+			String[] splitRuleDatas = ruleDatas.split("!");
+			String[] newRule = new String[splitRuleDatas.length - 1];
+			for (int i = 0; i < splitRuleDatas.length - 1; i++) {
+				if (splitRuleDatas[i + 1].equals("@")) {
+					newRule[i] = "";
+				} else {
+					newRule[i] = splitRuleDatas[i + 1];					
+				}
 			}
-					String[] PlaineF = {"Plaine", "0", "1"};
-			fibreProdRules.put("Foret0", FForet0);
-			
+			rule.put(splitRuleDatas[0], newRule);
 		}
-		return null;
+		return rule;
 	}
 }
