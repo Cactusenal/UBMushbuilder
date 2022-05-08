@@ -283,7 +283,6 @@ public class GameController {
     	JFrame buildCondFrame = new JFrame("What to build?");
         JDialog buildCondDialog = new JDialog(buildCondFrame);
 
-        buildCondDialog.setBounds(200, 200, 500, 100);
         
         // List of possible buildings to construct
         HashMap<String, String[]> buildingConditions = settings.buildingConditions;
@@ -358,8 +357,10 @@ public class GameController {
         }
         if (buildableNumber == 0) {
         	buildCondDialog.add(new JLabel("No possible buildings"));
+        	buildableNumber = 1;
         }
         buildCondDialog.setLayout(new GridLayout(buildableNumber, 2));
+        buildCondDialog.setBounds(200, 200, 500, 50 + buildableNumber * 50);
         buildCondDialog.setVisible(true);
 	}
 	
