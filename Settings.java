@@ -94,6 +94,7 @@ public class Settings {
 	String[] pierCondition = {"Port", "", ""};
 	String[] generatorCondition = {"Désert,Plaine", "", ""};
 	Integer buildConditionsLength = 3;
+	public int constructRange = 3;
 	// buildings dialog
     JFrame buildCondFrame = new JFrame("Buildings position settings");
     JDialog buildCondDialog = new JDialog(buildCondFrame);

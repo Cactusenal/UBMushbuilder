@@ -83,6 +83,6 @@ public class Player {
 	}
 	
 	public void refreshProdLabel() {
-		ressourceLabel.setText("Spore: +" + prodSpore + ", Fibre: +" + prodFibre + ", Suc: +" + prodSuc + ",\n Phosphorite: +"+ prodPhospho + ", MushCoins: " + mushCoins + " (+" + prodCoins + ")");
+		ressourceLabel.setText("Fibre: +" + prodFibre + ", Spore: +" + prodSpore + ", Suc: +" + prodSuc + ",\n Phosphorite: +"+ prodPhospho + ", MushCoins: " + mushCoins + " (+" + prodCoins + ")");
 	}
 }

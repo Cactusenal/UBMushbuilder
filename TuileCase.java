@@ -29,6 +29,11 @@ public class TuileCase {
     Integer prodSuc = 0;
     Integer prodPhospho = 0;
     Integer prodCoins = 0;
+    // For iteration
+    Integer remainingFibre = 0;
+    Integer remainingSpore = 0;
+    Integer remainingSuc = 0;
+    Integer remainingPhospho = 0;
     
     //Buildings
     String building = "";
@@ -38,7 +43,7 @@ public class TuileCase {
     Integer buildFibre = 0;
     Integer buildSpore = 0;
     Integer buildSuc = 0;
-    Integer buildPhospho = 0; 
+    Integer buildPhospho = 0;
     
     public Object[][] buildingsPowered = {};
     
@@ -168,6 +173,14 @@ public class TuileCase {
 	
 	public void setProdCoins() {
 		prodCoins = getProdFromHashMap(Main.settings.coinProdRules);
+	}
+	
+	public void setRemainingProd() {
+		updateCaseProduction();
+	    remainingFibre = prodFibre;
+	    remainingSpore = prodSpore;
+	    remainingSuc = prodSuc;
+	    remainingPhospho = prodPhospho;
 	}
 	
 	public Integer getProdFromHashMap(HashMap<String, String[]> baseProductionRules) {
@@ -339,6 +352,13 @@ public class TuileCase {
 	public void updateFilterView() {
 		Main.filterViews.updateCaseView(this);
 	}
+	
+	public void getRessourcesForConstruction(TuileCase exploitedCase, Integer[] priceInRessource) {
+		exploitedCase.remainingFibre = constructWithRessource("Fibre", exploitedCase.remainingFibre, priceInRessource[0]);
+		exploitedCase.remainingSpore = constructWithRessource("Spore", exploitedCase.remainingSpore, priceInRessource[1]);
+		exploitedCase.remainingSuc = constructWithRessource("Suc", exploitedCase.remainingSuc, priceInRessource[2]);
+		exploitedCase.remainingPhospho = constructWithRessource("Phospho", exploitedCase.remainingPhospho, priceInRessource[3]);
+	}
 
 	public void iterateConstruction() {
 		if (!inConstruction.equals("") ) {
@@ -347,15 +367,29 @@ public class TuileCase {
 			for (int i = 0; i < priceInRessourceString.length; i++) {
 				priceInRessource[i] = Integer.parseInt(priceInRessourceString[i]);
 			}
-			constructWithRessource("Fibre", parentTuile.owner.prodFibre, priceInRessource[0]);
-			constructWithRessource("Spore", parentTuile.owner.prodSpore, priceInRessource[1]);
-			constructWithRessource("Suc", parentTuile.owner.prodSuc, priceInRessource[2]);
-			constructWithRessource("Phospho", parentTuile.owner.prodPhospho, priceInRessource[3]);
-			if (buildFibre == priceInRessource[0] && buildSpore == priceInRessource[1] && buildSuc == priceInRessource[2] && buildPhospho == priceInRessource[3]) {
+			TuileCase[] inRangeCases = getCasesFromDistance(Main.settings.constructRange);
+			Integer index = 0;
+			getRessourcesForConstruction(this, priceInRessource);
+			while (index < inRangeCases.length && !isBuildingFinished(priceInRessource)) {
+				TuileCase inRangeCase = inRangeCases[index];
+				if (inRangeCase.parentTuile.owner.equals(parentTuile.owner)) {
+					getRessourcesForConstruction(inRangeCase, priceInRessource);					
+				}
+				index++;
+			}
+//			constructWithRessource("Fibre", parentTuile.owner.prodFibre, priceInRessource[0]);
+//			constructWithRessource("Spore", parentTuile.owner.prodSpore, priceInRessource[1]);
+//			constructWithRessource("Suc", parentTuile.owner.prodSuc, priceInRessource[2]);
+//			constructWithRessource("Phospho", parentTuile.owner.prodPhospho, priceInRessource[3]);
+			if (isBuildingFinished(priceInRessource)) {
 				setBuilding(inConstruction);
 				inConstruction = "";
 			}
 		}
+	}
+	
+	Boolean isBuildingFinished(Integer[] priceInRessource) {
+		return buildFibre == priceInRessource[0] && buildSpore == priceInRessource[1] && buildSuc == priceInRessource[2] && buildPhospho == priceInRessource[3];
 	}
 
 	private Integer constructWithRessource(String ressource, int prod, Integer requiredRessource) {

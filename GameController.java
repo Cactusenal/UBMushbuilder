@@ -251,7 +251,7 @@ public class GameController {
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
 			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
-			settings.AddDebugLog("Building part is " + (tuileCase.buildingParts.length == 0 ? "no building part" : tuileCase.buildingParts[0]));
+			settings.AddDebugLog("Building part is " + ((tuileCase.buildingParts == null || tuileCase.buildingParts.length == 0) ? "no building part" : tuileCase.buildingParts[0]));
 //			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
 	}
@@ -547,12 +547,26 @@ public class GameController {
     
     private void IterateWorld() {
     	timeIteration++;
+    	setWorldRemainingProd();
     	refreshTimeLabel();
     	produceMushCoins();
     	IterateCarte();
     	Main.cartePanel.updateWorldProd();
     	Main.cartePanel.updateWorldView();
     }
+
+	private String setWorldRemainingProd() {
+		for (Tuile[] tuileLign : Main.cartePanel.tableauTuile) {
+			for (Tuile tuile : tuileLign) {
+				for (TuileCase[] tuileCaseLign : tuile.cases) {
+					for (TuileCase tuileCase : tuileCaseLign) {
+						tuileCase.setRemainingProd();
+					}
+				}
+			}
+		}
+		return null;
+	}
 
 	private void IterateCarte() {
 		for (Tuile[] tuileLign : Main.cartePanel.tableauTuile) {
