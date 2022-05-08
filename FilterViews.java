@@ -28,6 +28,7 @@ public class FilterViews {
     Image imgFarm;
     Image imgPort;
     Image imgGenerator;
+    Image imgConstruct;
 
 	public FilterViews(Settings settings) {
 		// Construction des hashmaps
@@ -74,6 +75,7 @@ public class FilterViews {
 		Tuile parent = tuileCase.parentTuile;
 		String terrain = tuileCase.terrain;
 		String building = tuileCase.building;
+		String inConstruction = tuileCase.inConstruction;
 		
 		caseBackground.setIcon(null);
 		caseBackground.setText("");
@@ -84,7 +86,7 @@ public class FilterViews {
 				caseToPlayerView(caseBackground, playerColor);
 				break;			
 			case "Biome":
-				caseToBiomeView(caseBackground, terrain, building);
+				caseToBiomeView(caseBackground, terrain, building, inConstruction);
 		    	break;
 			case "Fibre":
 				int prodFibre = tuileCase.prodFibre;
@@ -118,7 +120,7 @@ public class FilterViews {
 		
 	}
 	
-	void caseToBiomeView(JButton caseBackground, String terrain, String building) {
+	void caseToBiomeView(JButton caseBackground, String terrain, String building, String inConstruction) {
 		caseToBiomeColor(caseBackground, terrain);
 		switch(terrain) {
 	    	case "Brume":
@@ -138,6 +140,9 @@ public class FilterViews {
 			case "Generateur":
 			    caseBackground.setIcon(new ImageIcon(imgGenerator));
 	    		break;
+		}
+		if (!inConstruction.equals("")) {
+		    caseBackground.setIcon(new ImageIcon(imgConstruct));	
 		}
 	}
 	
@@ -165,6 +170,7 @@ public class FilterViews {
     	imgFarm = sizeImage("farm.png");
     	imgPort = sizeImage("port.png");
     	imgGenerator = sizeImage("generator.png");
+    	imgConstruct = sizeImage("construct.png");
     }
     
     Image sizeImage(String imagePath) {

@@ -432,6 +432,7 @@ public class TuileCase {
 					return 0;
 				}
 			}
+		Main.settings.AddDebugLog("[constructWithRessource] unexpected ressource exploited");
 		return remainingRessource;		
 	}
 
