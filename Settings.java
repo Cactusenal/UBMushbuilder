@@ -142,8 +142,10 @@ public class Settings {
 		//Suc
 		String[] SMarais1 = {"Marais", "1", "1"};
 		String[] SMarais0 = {"Marais", "0", "5"};
+		String[] SForet0 = {"Foret", "0", "1"};
 		sucProdRules.put("SMarais1", SMarais1);
 		sucProdRules.put("SMarais0", SMarais0);
+		sucProdRules.put("SForet0", SForet0);
 		
 		//Phosphorite
 		String[] PHauteurs0 = {"Hauteurs", "0", "2"};
