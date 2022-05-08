@@ -28,7 +28,7 @@ public class Settings {
     Color[] playersColors = {Color.blue, Color.red, Color.green};
 	
     //DATAS
-    String [] possibleFilters = {"Biome", "Player", "Fibre", "Spore", "Suc", "Phosphorite", "MushCoins"};
+    String [] possibleFilters = {"Biome", "Player", "Routes", "Fibre", "Spore", "Suc", "Phosphorite", "MushCoins"};
     String[] directions = {"NO", "N", "NE", "O", "C", "E", "SO", "S", "SE"};
     
     //params selecteurs
@@ -79,6 +79,7 @@ public class Settings {
 	String[] portRule = {"20", "", ""};
 	String[] generatorRule = {"0", "50", "3"};
 	String[] pierRule = {"10", "", ""};
+	String[] roadRule = {"0", "", ""};
 	Integer buildRulesLength = 3;
 	Integer maxGeneratorDistance = 0;
 	// buildings dialog
@@ -92,6 +93,7 @@ public class Settings {
 	String[] farmCondition = {"Plaine,Marais", "", "100,200,200,100"};
 	String[] portCondition = {"Brume", "Brume", "150,200,10,200"};
 	String[] pierCondition = {"Port", "", "30,30,30,30"};
+	String[] roadCondition = {"Plaine,Désert,Foret,Hauteurs,Marais", "", "10,10,0,0"};
 	String[] generatorCondition = {"Désert,Plaine", "", "400,0,100,100"};
 	Integer buildConditionsLength = 3;
 	public int constructRange = 3;
@@ -167,11 +169,13 @@ public class Settings {
     	buildingRules.put("Port", portRule);
     	buildingRules.put("Generateur", generatorRule);
     	buildingRules.put("Jetée", pierRule);
+    	buildingRules.put("Route", roadRule);
     	
     	buildingConditions.put("Ferme", farmCondition);
     	buildingConditions.put("Port", portCondition);
     	buildingConditions.put("Generateur", generatorCondition);
     	buildingConditions.put("Jetée", pierCondition);
+    	buildingConditions.put("Route", roadCondition);
     }
     
     void computeMaxGeneratorDistance() {

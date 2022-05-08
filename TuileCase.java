@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 
 public class TuileCase {
 	String terrain = "Brume";
@@ -38,6 +39,7 @@ public class TuileCase {
     //Buildings
     String building = "";
     String [] buildingParts = {};
+    Integer roadLevel = 0;
     // For construction
     String inConstruction = "";
     Integer buildFibre = 0;
@@ -91,7 +93,16 @@ public class TuileCase {
 	}
 	
 	public void startConstruction(String buildName) {
-		if (building.equals("")) {
+		if (buildName.equals("Route")) {
+			if (roadLevel == 0) {
+				inConstruction = buildName;
+			} else {
+	    		JOptionPane.showMessageDialog(Main.frame,
+	    			    "Road already existing here",
+	    			    "Inane warning",
+	    			    JOptionPane.WARNING_MESSAGE);
+			}
+		} else if (building.equals("")) {
 			inConstruction = buildName;
 //			Main.settings.AddDebugLog("no building");
 		} else {
@@ -110,7 +121,9 @@ public class TuileCase {
 	
 	// UNUSED for now
 	public void setBuilding(String buildName) {
-		if (building.equals("")) {
+		if (buildName.equals("Route")) {
+			roadLevel++;
+		} else if (building.equals("")) {
 			building = buildName;
 //			Main.settings.AddDebugLog("no building");
 		} else {

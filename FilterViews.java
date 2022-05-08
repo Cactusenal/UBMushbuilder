@@ -113,6 +113,10 @@ public class FilterViews {
 				caseBackground.setText("" + prodCoins);
 				caseToBiomeColor(caseBackground, terrain);
 		    	break;
+			case "Routes":
+				caseBackground.setText("" + tuileCase.roadLevel);
+				caseToBiomeColor(caseBackground, terrain);
+				break;
 		    default:
 				Main.settings.AddDebugLog("This filter is unknown: " + filterSelected);
 		}
