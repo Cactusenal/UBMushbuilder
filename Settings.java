@@ -91,8 +91,8 @@ public class Settings {
 	String[] dummyCondition = {"biomes/buildings,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
 	String[] farmCondition = {"Plaine,Marais", "", "100,200,200,100"};
 	String[] portCondition = {"Brume", "Brume", "150,200,10,200"};
-	String[] pierCondition = {"Port", "", ""};
-	String[] generatorCondition = {"Désert,Plaine", "", ""};
+	String[] pierCondition = {"Port", "", "30,30,30,30"};
+	String[] generatorCondition = {"Désert,Plaine", "", "400,0,100,100"};
 	Integer buildConditionsLength = 3;
 	public int constructRange = 3;
 	// buildings dialog

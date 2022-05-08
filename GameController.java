@@ -262,7 +262,7 @@ public class GameController {
         JDialog inConstructDialog = new JDialog(inContructFrame);
 
         inConstructDialog.setBounds(200, 200, 300, 200);
-        JLabel buildingName = new JLabel(tuileCase.inConstruction);
+        JLabel buildingName = new JLabel(tuileCase.inConstruction + " en construction");
         inConstructDialog.add(buildingName);
         String[] priceInRessource = settings.getRessourcePrice(tuileCase.inConstruction).split(",");
         addConstructionRessourceLabel(inConstructDialog, "Fibre", tuileCase.buildFibre, priceInRessource[0]);
