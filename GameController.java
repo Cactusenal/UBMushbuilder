@@ -238,9 +238,11 @@ public class GameController {
     	if (isViewer) {
 			tuileCase.changeTerrain();
 			tuileCase.updateFilterView();
+    	} else if (!tuileCase.inConstruction.equals("")) {
+    		displayInContruction(tuileCase);
     	} else if (buildMode) {
-    		displayBuildingPopup(tuileCase);
-    	} else if (Main.filterViews.filterSelected == "Biome" && tuileCase.building != "" && settings.buildingRules.get(tuileCase.building)[1] != "") {
+        		displayBuildingPopup(tuileCase);
+    	} else if (Main.filterViews.filterSelected == "Biome" && !tuileCase.building.equals("") && !settings.buildingRules.get(tuileCase.building)[1].equals("")) {
 //    			tuileCase.building == "Generateur") {
     		displayGeneratorPopup(tuileCase);
     	} else if (tuileCase.xPos == 1 && tuileCase.yPos == 1) {
@@ -249,11 +251,33 @@ public class GameController {
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
 			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
-			Main.settings.AddDebugLog("Building part is " + (tuileCase.buildingParts.length == 0 ? "no building part" : tuileCase.buildingParts[0]));
+			settings.AddDebugLog("Building part is " + (tuileCase.buildingParts.length == 0 ? "no building part" : tuileCase.buildingParts[0]));
 //			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
 	}
 	
+	public void displayInContruction(TuileCase tuileCase) {
+		// General popup graphic params
+    	JFrame inContructFrame = new JFrame("Building in construction");
+        JDialog inConstructDialog = new JDialog(inContructFrame);
+
+        inConstructDialog.setBounds(200, 200, 300, 200);
+        JLabel buildingName = new JLabel(tuileCase.inConstruction);
+        inConstructDialog.add(buildingName);
+        String[] priceInRessource = settings.getRessourcePrice(tuileCase.inConstruction).split(",");
+        addConstructionRessourceLabel(inConstructDialog, "Fibre", tuileCase.buildFibre, priceInRessource[0]);
+        addConstructionRessourceLabel(inConstructDialog, "Spore", tuileCase.buildSpore, priceInRessource[1]);
+        addConstructionRessourceLabel(inConstructDialog, "Suc", tuileCase.buildSuc, priceInRessource[2]);
+        addConstructionRessourceLabel(inConstructDialog, "Phosphorite", tuileCase.buildPhospho, priceInRessource[3]);
+        inConstructDialog.setLayout(new GridLayout(5, 1));
+        inConstructDialog.setVisible(true);
+	}
+	
+	public void addConstructionRessourceLabel(JDialog dialog, String ressource, Integer currentRessource, String requiredRessource) {
+    	JLabel necessaryRessources = new JLabel (ressource + " required: " + currentRessource + "/" + requiredRessource);
+		dialog.add(necessaryRessources);
+	}
+
 	public void displayBuildingPopup (TuileCase tuileCase) {
 		// General popup graphic params
     	JFrame buildCondFrame = new JFrame("What to build?");
@@ -312,7 +336,7 @@ public class GameController {
     			JButton buidButton = new JButton("Construire");
     			buidButton.addActionListener(new ActionListener() {
     	            public void actionPerformed(ActionEvent e) {
-    	            	tuileCase.setBuilding(buildCondName);
+    	            	tuileCase.startConstruction(buildCondName);
     	            	buildCondDialog.setVisible(false);
     	                // Update nearby prods
     	        		for (String direction : directions) {
@@ -525,7 +549,22 @@ public class GameController {
     	timeIteration++;
     	refreshTimeLabel();
     	produceMushCoins();
+    	IterateCarte();
+    	Main.cartePanel.updateWorldProd();
+    	Main.cartePanel.updateWorldView();
     }
+
+	private void IterateCarte() {
+		for (Tuile[] tuileLign : Main.cartePanel.tableauTuile) {
+			for (Tuile tuile : tuileLign) {
+				for (TuileCase[] tuileCaseLign : tuile.cases) {
+					for (TuileCase tuileCase : tuileCaseLign) {
+						tuileCase.iterateConstruction();
+					}
+				}
+			}
+		}
+	}
 
 	private void produceMushCoins() {
 		for (Player player : settings.players) {

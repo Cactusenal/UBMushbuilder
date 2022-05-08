@@ -89,8 +89,8 @@ public class Settings {
 	// Conditions
 	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
 	String[] dummyCondition = {"biomes/buildings,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
-	String[] farmCondition = {"Plaine,Marais", "", "10,20,20,10"};
-	String[] portCondition = {"Brume", "Brume", ""};
+	String[] farmCondition = {"Plaine,Marais", "", "100,200,200,100"};
+	String[] portCondition = {"Brume", "Brume", "150,200,10,200"};
 	String[] pierCondition = {"Port", "", ""};
 	String[] generatorCondition = {"Désert,Plaine", "", ""};
 	Integer buildConditionsLength = 3;
@@ -502,7 +502,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Building conditions");
-    	JLabel rulesTemplateLabel = new JLabel("Nom du batiment | Biome/batiment où l'on peut poser le batiment | Biome ou batiment devant se situer à côté | (WIP) Coût du batiment");
+    	JLabel rulesTemplateLabel = new JLabel("Nom du batiment | Biome/batiment où l'on peut poser le batiment | Biome ou batiment devant se situer à côté | Coût du batiment (F,Sp,Suc,Phos)");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 
@@ -572,6 +572,20 @@ public class Settings {
     public void showBuildConditionPopup() {
 		buildCondTextAreaFields = setInputPanel(buildCondPanel, buildingConditions, buildConditionsLength);
     	buildCondDialog.setVisible(true);
+    }
+    
+    String getRessourcePrice(String buildingName) {
+    	if (buildingConditions.containsKey(buildingName)) {
+    		String priceInRessource = buildingConditions.get(buildingName)[2];
+    		if (priceInRessource != null && !priceInRessource.equals("")) {
+    			return priceInRessource;
+    		} else {
+    			AddDebugLog("[getRessourcePrice] building price undefined for this building: " + buildingName);
+    		}
+    	} else {
+    		AddDebugLog("[getRessourcePrice] this building does not exists: " + buildingName);
+    	}
+    	return null;
     }
     
     //BUILDINGS-Rules

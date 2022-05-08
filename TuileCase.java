@@ -18,24 +18,35 @@ public class TuileCase {
     JButton caseBackground;
     Tuile parentTuile;
     String casePosition;
-    
+   
+    // Position
     Integer xPos;
     Integer yPos;
     
-    String building = "";
-    String [] buildingParts = {};
-    
-    public Object[][] buildingsPowered = {};
-    
+    //Productions
     Integer prodFibre = 0;
     Integer prodSpore = 0;
     Integer prodSuc = 0;
     Integer prodPhospho = 0;
     Integer prodCoins = 0;
     
+    //Buildings
+    String building = "";
+    String [] buildingParts = {};
+    // For construction
+    String inConstruction = "";
+    Integer buildFibre = 0;
+    Integer buildSpore = 0;
+    Integer buildSuc = 0;
+    Integer buildPhospho = 0; 
+    
+    public Object[][] buildingsPowered = {};
+    
+    
     //Constructeur
     public TuileCase(Tuile tuileFrom, JLayeredPane panel, String position, int x, int y, boolean isViewer) {
     	parentTuile = tuileFrom;
+    	//TODO: position still necessary?
     	casePosition = position;
     	xPos = x;
     	yPos = y;
@@ -74,18 +85,37 @@ public class TuileCase {
     	setProdCoins();
 	}
 	
+	public void startConstruction(String buildName) {
+		if (building.equals("")) {
+			inConstruction = buildName;
+//			Main.settings.AddDebugLog("no building");
+		} else {
+//			Main.settings.AddDebugLog("build to set: " + buildName);
+//			Main.settings.AddDebugLog("present building: " + building);
+//			Main.settings.AddDebugLog("buildingConditions: " + Main.settings.buildingConditions.get(buildName)[0]);
+			if (Main.settings.buildingConditions.get(buildName)[0].equals(building)) {
+				inConstruction = buildName;
+			} else {
+				// Replace existing building ?
+				inConstruction = buildName;
+				buildingParts = null;
+			}
+		}
+	}
+	
+	// UNUSED for now
 	public void setBuilding(String buildName) {
 		if (building.equals("")) {
 			building = buildName;
-			Main.settings.AddDebugLog("no building");
+//			Main.settings.AddDebugLog("no building");
 		} else {
-			Main.settings.AddDebugLog("build to set: " + buildName);
-			Main.settings.AddDebugLog("present building: " + building);
-			Main.settings.AddDebugLog("buildingConditions: " + Main.settings.buildingConditions.get(buildName)[0]);
-
+//			Main.settings.AddDebugLog("build to set: " + buildName);
+//			Main.settings.AddDebugLog("present building: " + building);
+//			Main.settings.AddDebugLog("buildingConditions: " + Main.settings.buildingConditions.get(buildName)[0]);
 			if (Main.settings.buildingConditions.get(buildName)[0].equals(building)) {
 				addBuildingPart(buildName);
 			} else {
+				// Replace existing building ?
 				building = buildName;
 				buildingParts = null;
 			}
@@ -309,5 +339,67 @@ public class TuileCase {
 	public void updateFilterView() {
 		Main.filterViews.updateCaseView(this);
 	}
+
+	public void iterateConstruction() {
+		if (!inConstruction.equals("") ) {
+			String[] priceInRessourceString = Main.settings.getRessourcePrice(inConstruction).split(",");
+			Integer[] priceInRessource = new Integer[priceInRessourceString.length];
+			for (int i = 0; i < priceInRessourceString.length; i++) {
+				priceInRessource[i] = Integer.parseInt(priceInRessourceString[i]);
+			}
+			constructWithRessource("Fibre", parentTuile.owner.prodFibre, priceInRessource[0]);
+			constructWithRessource("Spore", parentTuile.owner.prodSpore, priceInRessource[1]);
+			constructWithRessource("Suc", parentTuile.owner.prodSuc, priceInRessource[2]);
+			constructWithRessource("Phospho", parentTuile.owner.prodPhospho, priceInRessource[3]);
+			if (buildFibre == priceInRessource[0] && buildSpore == priceInRessource[1] && buildSuc == priceInRessource[2] && buildPhospho == priceInRessource[3]) {
+				setBuilding(inConstruction);
+				inConstruction = "";
+			}
+		}
+	}
+
+	private Integer constructWithRessource(String ressource, int prod, Integer requiredRessource) {
+		Integer remainingRessource = 0;		
+		switch(ressource) {
+			case "Fibre":
+				if (buildFibre + prod > requiredRessource) {
+					remainingRessource = buildFibre + prod - requiredRessource;
+					buildFibre = requiredRessource;
+					return remainingRessource;
+				} else {
+					buildFibre += prod;
+					return 0;
+				}
+			case "Spore":
+				if (buildSpore + prod > requiredRessource) {
+					remainingRessource = buildSpore + prod - requiredRessource;
+					buildSpore = requiredRessource;
+					return remainingRessource;
+				} else {
+					buildSpore += prod;
+					return 0;
+				}
+			case "Suc":
+				if (buildSuc + prod > requiredRessource) {
+					remainingRessource = buildSuc + prod - requiredRessource;
+					buildSuc = requiredRessource;
+					return remainingRessource;
+				} else {
+					buildSuc += prod;
+					return 0;
+				}
+			case "Phospho":
+				if (buildPhospho + prod > requiredRessource) {
+					remainingRessource = buildPhospho + prod - requiredRessource;
+					buildPhospho = requiredRessource;
+					return remainingRessource;
+				} else {
+					buildPhospho += prod;
+					return 0;
+				}
+			}
+		return remainingRessource;		
+	}
+
 }
 
