@@ -355,7 +355,6 @@ public class GameController {
         
         for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
         	String buildingFromDistance = caseFromDistance.building;
-        	// TODO: allow generator to power building parts with building requiring no power
         	if (buildingFromDistance != "") {
         		// Getting buildings case position
         		Integer buildX = caseFromDistance.getCaseXPos();
@@ -386,7 +385,6 @@ public class GameController {
         			boolean isPoweredByOther = caseFromDistance.checkIfBuildingPowered(buildingFromDistance);
         			powerCheckBox.setEnabled(!isPoweredByOther || alreadyPowered);
         		}
-        		// TODO : Mange building parts as well
         		for (String buildingPart : caseFromDistance.buildingParts) {
             		if (settings.getPowerCons(buildingPart) > 0) {
             			JLabel buildingLabel = new JLabel(buildingPart + " (" + buildX + "," + buildY +  ")");
