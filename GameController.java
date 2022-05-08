@@ -191,9 +191,10 @@ public class GameController {
         });
 		timeB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	timeIteration++;
-            	refreshTimeLabel();
+            	IterateWorld();
+
             }
+
         });
 		saveB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -494,7 +495,7 @@ public class GameController {
         JTextArea phosphoTextArea = new JTextArea ("" + activePlayer.givenProdPhospho);
         prodToAddPanel.add(phosphoTextArea);
         prodToAddPanel.add(new JLabel("MushCoins"));
-        JTextArea coinsTextArea = new JTextArea ("" + activePlayer.givenProdCoins);
+        JTextArea coinsTextArea = new JTextArea ();//"" + activePlayer.givenCoins);
         prodToAddPanel.add(coinsTextArea);
         
         prodToAddPanel.setLayout(new GridLayout(5, 2));
@@ -506,7 +507,7 @@ public class GameController {
             	activePlayer.givenProdFibre = Integer.parseInt(fibreTextArea.getText());
             	activePlayer.givenProdSuc = Integer.parseInt(sucTextArea.getText());
             	activePlayer.givenProdPhospho = Integer.parseInt(phosphoTextArea.getText());
-            	activePlayer.givenProdCoins = Integer.parseInt(coinsTextArea.getText());
+            	activePlayer.mushCoins += Integer.parseInt(coinsTextArea.getText());
             	activePlayer.updateRessourceInfos();
                 giveDialog.setVisible(false);
             }
@@ -519,4 +520,18 @@ public class GameController {
         giveDialog.setLayout(new GridLayout(3, 1));
         giveDialog.setVisible(true);
     }
+    
+    private void IterateWorld() {
+    	timeIteration++;
+    	refreshTimeLabel();
+    	produceMushCoins();
+    }
+
+	private void produceMushCoins() {
+		for (Player player : settings.players) {
+			Integer prodCoins = player.getPlayerProd("prodCoins");
+			player.mushCoins += prodCoins;
+			player.refreshProdLabel();
+		}
+	}
 }

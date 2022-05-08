@@ -27,17 +27,18 @@ public class Player {
     int prodPhospho;
     int prodCoins;
     
+    Integer mushCoins = 0;
+    
     int givenProdFibre = 0;
     int givenProdSpore = 0;
     int givenProdSuc = 0;
     int givenProdPhospho = 0;
-    int givenProdCoins =0;
+//    int givenCoins = 0;
     Integer[] givenProds = {
 		givenProdFibre,
 		givenProdSpore,
 		givenProdSuc,
-		givenProdPhospho,
-		givenProdCoins
+		givenProdPhospho
     };
 	
 	public Player(String givenName, Color givenColor) {
@@ -77,7 +78,11 @@ public class Player {
 		prodSpore = getPlayerProd("prodSpore") + givenProdSpore;
 		prodSuc = getPlayerProd("prodSuc") + givenProdSuc;
 		prodPhospho = getPlayerProd("prodPhospho") + givenProdPhospho;
-		prodCoins = getPlayerProd("prodCoins") + givenProdCoins;
-		ressourceLabel.setText("Spore: " + prodSpore + ", Fibre: " + prodFibre + ", Suc: " + prodSuc + ",\n Phosphorite: "+ prodPhospho + ", MushCoins: " + prodCoins);
+		prodCoins = getPlayerProd("prodCoins");
+		refreshProdLabel();
+	}
+	
+	public void refreshProdLabel() {
+		ressourceLabel.setText("Spore: +" + prodSpore + ", Fibre: +" + prodFibre + ", Suc: +" + prodSuc + ",\n Phosphorite: +"+ prodPhospho + ", MushCoins: " + mushCoins + " (+" + prodCoins + ")");
 	}
 }
