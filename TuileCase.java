@@ -390,10 +390,6 @@ public class TuileCase {
 				}
 				index++;
 			}
-//			constructWithRessource("Fibre", parentTuile.owner.prodFibre, priceInRessource[0]);
-//			constructWithRessource("Spore", parentTuile.owner.prodSpore, priceInRessource[1]);
-//			constructWithRessource("Suc", parentTuile.owner.prodSuc, priceInRessource[2]);
-//			constructWithRessource("Phospho", parentTuile.owner.prodPhospho, priceInRessource[3]);
 			if (isBuildingFinished(priceInRessource)) {
 				setBuilding(inConstruction);
 				inConstruction = "";

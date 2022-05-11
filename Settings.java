@@ -96,7 +96,7 @@ public class Settings {
 	String[] roadCondition = {"Plaine,Désert,Foret,Hauteurs,Marais", "", "10,10,0,0"};
 	String[] generatorCondition = {"Désert,Plaine", "", "400,0,100,100"};
 	Integer buildConditionsLength = 3;
-	public int constructRange = 3;
+	Integer constructRange = 3;
 	// buildings dialog
     JFrame buildCondFrame = new JFrame("Buildings position settings");
     JDialog buildCondDialog = new JDialog(buildCondFrame);
