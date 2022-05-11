@@ -125,7 +125,7 @@ public class Settings {
     	// Fibre
 		String[] FForet0 = {"Foret", "0", "5"};
 		String[] MaraisF = {"Marais", "0", "1"};
-		String[] FForet1 = {"Foret", "1", "1", "Brume,Plaine,Haiteurs,Désert,Marais"};
+		String[] FForet1 = {"Foret", "1", "1", "Brume,Plaine,Hauteurs,Désert,Marais"};
 		String[] DésertF = {"Désert", "0", "1"};
 		String[] PlaineF = {"Plaine", "0", "1"};
 		fibreProdRules.put("Foret0", FForet0);
@@ -409,7 +409,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Production rules");
-    	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome/Batiment d'où la règle s'applique (\"+\" si alimentation requise)| Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas");
+    	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome/Batiment d'où la règle s'applique (\"+\" si alimentation requise)| Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas | Saison(s) si spécifique");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 
