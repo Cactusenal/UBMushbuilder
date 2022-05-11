@@ -204,6 +204,12 @@ public class TuileCase {
         // ruleValuesExample = ["biome/building", "distance", "valeur de production", "terrains,oula,regle,nesappliquepas"];
 		for (String ruleName : baseProductionRules.keySet()) {
 			String[] ruleValues = baseProductionRules.get(ruleName);
+			if (ruleValues.length > 4 && !ruleValues[4].equals("")) {
+				String[] allowedSeasons = ruleValues[4].split(",");
+	    		if (!Arrays.stream(allowedSeasons).anyMatch(Main.settings.currentSeason::equals)) {
+	    			continue;
+	    		}
+			}
 			// Extract rules infos
 			String caseType = ruleValues[0];
 			Integer distanceValue = Integer.parseInt(ruleValues[1]);

@@ -87,6 +87,10 @@ public class Carte extends JLayeredPane {
 				tuile.updateTuileProductions();
 			}
 		}
+		for (Player player : Main.settings.players) {
+			player.tuileViewer.updateTuileProductions();
+			player.tuileViewer.updateFilterView();
+		}
 		mainSettings.updatePlayersProd();
 	}
 	

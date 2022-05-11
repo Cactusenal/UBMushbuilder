@@ -40,6 +40,7 @@ public class Settings {
 
     // Seasons
     String[] possibleSeasons = {"Jour", "Crépuscule", "Nuit", "Aube"};
+    String currentSeason = "Jour";
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
     DefaultTableModel model = new DefaultTableModel(possibleBiomes, 0);
@@ -50,7 +51,7 @@ public class Settings {
 	HashMap<String, String[]> sucProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> phosphoProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> coinProdRules = new HashMap<String, String[]>();
-	Integer prodRulesLength = 4;
+	Integer prodRulesLength = 5;
     // Prod rules dialogs
     JFrame prodFrame = new JFrame("Production settings");
     JDialog prodDialog = new JDialog(prodFrame);
@@ -123,7 +124,7 @@ public class Settings {
     // Setting initialisation
     void initProdSettings() {
     	// Fibre
-		String[] FForet0 = {"Foret", "0", "5"};
+		String[] FForet0 = {"Foret", "0", "5", "", "Jour"};
 		String[] MaraisF = {"Marais", "0", "1"};
 		String[] FForet1 = {"Foret", "1", "1", "Brume,Plaine,Hauteurs,Désert,Marais"};
 		String[] DésertF = {"Désert", "0", "1"};
@@ -403,7 +404,7 @@ public class Settings {
     // PRODUCTION
     @SuppressWarnings("unchecked")
 	public void createProdPopup() {
-    	prodDialog.setBounds(50, 50, 1400, 700);
+    	prodDialog.setBounds(10, 50, 1520, 700);
     	
     	JPanel leftPanel = new JPanel();
     	JPanel rightPanel = new JPanel();

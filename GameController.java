@@ -151,6 +151,12 @@ public class GameController {
             	}
             }
         });
+		seasonSelector.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	settings.currentSeason = seasonSelector.getItemAt(seasonSelector.getSelectedIndex());
+            	Main.cartePanel.updateWorldView();
+            }
+        });
 		createB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	//settings.AddDebugLog("Création de tuile");
