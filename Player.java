@@ -8,6 +8,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
 import java.awt.Color;
+import java.awt.GridLayout;
 
 public class Player {
 	
@@ -59,9 +60,15 @@ public class Player {
 	}
 	
 	public void addMenu(JPanel panel) {
-        panel.add(rBtn);
-		panel.add(tuileViewer.tuileBack);
-        panel.add(ressourceLabel);
+        JPanel leftPanel = new JPanel();
+        leftPanel.add(rBtn);
+        leftPanel.add(ressourceLabel);
+        leftPanel.setLayout(new GridLayout(2, 1));
+        JPanel playerPanel = new JPanel();
+        playerPanel.add(leftPanel);
+        playerPanel.add(tuileViewer.tuileBack);
+        playerPanel.setLayout(new GridLayout(1, 2));
+        panel.add(playerPanel);
         tuileViewer.randomize(true);
 	}
 	
@@ -83,6 +90,6 @@ public class Player {
 	}
 	
 	public void refreshProdLabel() {
-		ressourceLabel.setText("Fibre: +" + prodFibre + ", Spore: +" + prodSpore + ", Suc: +" + prodSuc + ",\n Phosphorite: +"+ prodPhospho + ", MushCoins: " + mushCoins + " (+" + prodCoins + ")");
+		ressourceLabel.setText("Fibre: +" + prodFibre + ",\n Spore: +" + prodSpore + ",\n Suc: +" + prodSuc + ",\n Phosphorite: +"+ prodPhospho + ",\n MushCoins: " + mushCoins + " (+" + prodCoins + ")");
 	}
 }

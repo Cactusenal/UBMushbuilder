@@ -28,7 +28,6 @@ public class Settings {
     Color[] playersColors = {Color.blue, Color.red, Color.green};
 	
     //DATAS
-    String [] possibleFilters = {"Biome", "Player", "Routes", "Fibre", "Spore", "Suc", "Phosphorite", "MushCoins"};
     String[] directions = {"NO", "N", "NE", "O", "C", "E", "SO", "S", "SE"};
     
     //params selecteurs
@@ -39,6 +38,8 @@ public class Settings {
     JDialog biomeDialog = new JDialog(biomeFrame);
     JDialog carteDialog = new JDialog(carteFrame);
 
+    // Seasons
+    String[] possibleSeasons = {"Jour", "Crépuscule", "Nuit", "Aube"};
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
     DefaultTableModel model = new DefaultTableModel(possibleBiomes, 0);
@@ -106,6 +107,7 @@ public class Settings {
 
     // Debugger
     JTextArea debugText = new JTextArea();
+	Font boldFont = new Font("Dialog", Font.BOLD, 12);
     
     //CONSTRUCTEUR
     public Settings() {
@@ -182,7 +184,7 @@ public class Settings {
     void computeMaxGeneratorDistance() {
     	for (String ruleName : buildingRules.keySet()) {
     		String[] rule = buildingRules.get(ruleName);
-    		if (rule[2] != "") {
+    		if (!rule[2].equals("")) {
         		Integer generatorDistance = Integer.parseInt(rule[2]);
         		if (generatorDistance > maxGeneratorDistance) {
         			maxGeneratorDistance = generatorDistance;
@@ -417,10 +419,8 @@ public class Settings {
     		leftPanel.add(subProductionLabel);
     		HashMap<String, String[]> subProdRules = (HashMap<String, String[]>) prodData[1];
     		JPanel subProdPanel = (JPanel) prodData[2];
-//    		HashMap<String, JTextArea[]> subTextAreaFields = (HashMap<String, JTextArea[]>) prodData[3];
     		
     		// Get sub-panel content
-//    		subTextAreaFields = 
     		setInputPanel(subProdPanel, subProdRules, prodRulesLength);
     		rightPanel.add(subProdPanel);
     	}
@@ -563,7 +563,7 @@ public class Settings {
     	for (String ruleName : TextAreaFields.keySet()) {
     		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
     		// TODO: Check if ressource price is okay (3e field)
-    		if (ruleFromTextFields[1].getText().length() > 0) { // && ruleFromTextFields[2].getText().length() > 0 && ruleFromTextFields[3].getText().length() > 0) {
+    		if (ruleFromTextFields[1].getText().length() > 0) {
     			String[] newRule = new String[rulesLength];
     			for (Integer i = 0; i < rulesLength; i ++) {
     				newRule[i] = ruleFromTextFields[i + 1].getText();
@@ -629,7 +629,6 @@ public class Settings {
         applyAndExitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	updateBuildingRules();
-            	//TODO: Check that closing works
             	buildRulesDialog.setVisible(false);
             }
         });
@@ -675,10 +674,6 @@ public class Settings {
    HashMap<String, JTextArea[]> setInputPanel(JPanel subProdPanel, HashMap<String, String[]> prodRules, Integer rulesLength) {
     	HashMap<String, JTextArea[]> TextAreaFields = new HashMap<String, JTextArea[]>();
     	subProdPanel.removeAll();
-    	
-    	// TODO: remove dummy
-		JTextArea dummyTextField = new JTextArea("test");
-		Font boldFont= new Font(dummyTextField.getFont().getName(), Font.BOLD, dummyTextField.getFont().getSize());
     	
     	for (String ruleName : prodRules.keySet()) {
 			// Get present rules
@@ -773,7 +768,7 @@ public class Settings {
 			saveSubContent += ruleName;
     		String[] ruleValues = hashMapRules.get(ruleName);
     		for (String savedValue : ruleValues) {
-    			if (savedValue.equals("") || savedValue == null) {
+    			if (savedValue == null || savedValue.equals("")) {
     				savedValue = "@";
     			}
     			saveSubContent += "!" + savedValue;

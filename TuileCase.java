@@ -440,9 +440,9 @@ public class TuileCase {
 					buildPhospho += prod;
 					return 0;
 				}
-			}
+		}
 		Main.settings.AddDebugLog("[constructWithRessource] unexpected ressource exploited");
-		return remainingRessource;		
+		return remainingRessource;
 	}
 
 }

@@ -12,6 +12,7 @@ import javax.swing.SwingConstants;
 
 public class FilterViews {	
     String filterSelected = "Biome";
+    String [] possibleFilters = {"Biome", "Player", "Routes", "Fibre", "Spore", "Suc", "Phosphorite", "MushCoins"};
     
     // Paramètres d'affichage
     HashMap<String, Color> biomeColors = new HashMap<String, Color>();
@@ -20,7 +21,6 @@ public class FilterViews {
     HashMap<String, Boolean> sucDisplayed = new HashMap<String, Boolean>();
     HashMap<String, Boolean> phosphoDisplayed = new HashMap<String, Boolean>();
     HashMap<String, Boolean> allDisplay = new HashMap<String, Boolean>();
-//    HashMap<String, Boolean> coinsDisplayed = new HashMap<String, Boolean>();
     
 	//images datas
     Image imgEau;

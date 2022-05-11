@@ -1,6 +1,7 @@
 package net.codejava;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +48,7 @@ public class GameController {
     // ComboBoxes
     JComboBox<String> filterSelector;
     JComboBox<String> biomeSelector;
+    JComboBox<String> seasonSelector;
     // Time label
     JLabel timeLabel = new JLabel();
     Integer timeIteration = 0;
@@ -79,11 +81,17 @@ public class GameController {
 	    controllerPanel.add(menuPanel);
 
 	    //ComboBoxes
-	    filterSelector = new JComboBox<String>(settings.possibleFilters);
-	    controllerPanel.add(filterSelector);
 	    String[] biomeTypes = settings.biomeTypes.keySet().toArray(String[]::new);
+	    filterSelector = new JComboBox<String>(Main.filterViews.possibleFilters);
 	    biomeSelector = new JComboBox<String>(biomeTypes);
-	    controllerPanel.add(biomeSelector);
+	    seasonSelector = new JComboBox<String>(Main.settings.possibleSeasons);
+	    JPanel comboBoxesPanel = new JPanel();
+	    comboBoxesPanel.add(filterSelector);
+	    comboBoxesPanel.add(biomeSelector);
+	    comboBoxesPanel.add(seasonSelector);
+	    comboBoxesPanel.setLayout(new GridLayout(2, 2));
+	    comboBoxesPanel.setPreferredSize(new Dimension(5, 30));
+	    controllerPanel.add(comboBoxesPanel);
 
 	    //Settings popup
 	    settings.createBiomePopup();
@@ -318,25 +326,28 @@ public class GameController {
     			}
     		}
     		if (nearbyRequired.length > 0) {
-    			isNearbyOk = false;
-    			for (String direction : directions) {
-    				TuileCase relativeCase = tuileCase.getRelativeCase(direction);
-	    			if (relativeCase != null) {
-	    				for (String condition : nearbyRequired) {
+    			for (String condition : nearbyRequired) {
+    				boolean isNearbyConditionOk = false;
+	    			for (String direction : directions) {
+	    				TuileCase relativeCase = tuileCase.getRelativeCase(direction);
+		    			if (relativeCase != null) {
 	    					if (possibleBiomesList.contains(condition)) {
 	    						if (condition.equals(relativeCase.terrain)) {
-	    							isNearbyOk = true;
+	    							isNearbyConditionOk = true;
 	    							break;
 	    						}
 	    					} else {
 	    						if (condition.equals(relativeCase.building)) {
-	    							isNearbyOk = true;
+	    							isNearbyConditionOk = true;
 	    							break;
 	    						}
 	    					}
 	    				}
-	    				if (isNearbyOk) {break;}	    				
 	    			}
+	    			if (!isNearbyConditionOk) {
+	    				isNearbyOk = false;
+	    				break;
+	    			}	    				
     			}
     		}
     		if (isCurrentCaseOk && isNearbyOk && !buildCondName.equals(tuileCase.building)) {
