@@ -41,6 +41,7 @@ public class Settings {
 
     //biomes datas
 	String[] possibleBiomes = {"Brume", "Plaine", "Hauteurs", "Foret", "Désert", "Marais"};
+    DefaultTableModel model = new DefaultTableModel(possibleBiomes, 0);
 	HashMap<String, Integer[]>  biomeTypes = new HashMap<String, Integer[]>();
 	Integer[] allBiomesType = {25, 25, 25, 25, 25, 25};
 	HashMap<String, String[]> fibreProdRules = new HashMap<String, String[]>();
@@ -260,13 +261,7 @@ public class Settings {
         JButton biomeTypeSave = new JButton("Créer nouveau type de biome");
 
         // Create the table model
-        DefaultTableModel model = new DefaultTableModel(possibleBiomes, 0);
         JTable biomeTable = new JTable(model);
-		// Fill table
-        for (String biomeTypeName : biomeTypes.keySet()) {
-    		Integer[] biomeValues = biomeTypes.get(biomeTypeName);
-        	fillTableWithBiomeDatas(biomeTypeName, biomeValues, model);
-        }
         
         biomeTypeSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -284,6 +279,13 @@ public class Settings {
     }
     
     public void showBiomePopup() {
+    	model.setRowCount(0);
+    	// Fill table
+        for (String biomeTypeName : biomeTypes.keySet()) {
+    		Integer[] biomeValues = biomeTypes.get(biomeTypeName);
+        	fillTableWithBiomeDatas(biomeTypeName, biomeValues, model);
+        }
+    	
     	biomeDialog.setVisible(true);
     }
     
@@ -761,6 +763,7 @@ public class Settings {
 		saveContent += "coinProdRulesç" + createSaveFilefromHashMap(coinProdRules) + "\r\n";
 		saveContent += "buildingRulesç" + createSaveFilefromHashMap(buildingRules) + "\r\n";
 		saveContent += "buildingConditionsç" + createSaveFilefromHashMap(buildingConditions) + "\r\n";
+		saveContent += "biomeTypesç" + createSaveFilefromHashMapInteger(biomeTypes) + "\r\n";
 		return saveContent;
 	}
 
@@ -780,6 +783,19 @@ public class Settings {
 		return saveSubContent;
 	}
 	
+	private String createSaveFilefromHashMapInteger(HashMap<String, Integer[]> integerHashMap) {
+		HashMap <String, String[]> stringHashMap = new HashMap<String, String[]>();
+		for (String ruleName : integerHashMap.keySet()) {
+			Integer[] integerValues = integerHashMap.get(ruleName);
+			String[] stringValues = new String[integerValues.length];
+			for (int i = 0; i < integerValues.length; i++) {
+				stringValues[i] = integerValues[i].toString();
+			}
+			stringHashMap.put(ruleName, stringValues);
+		}
+		return createSaveFilefromHashMap(stringHashMap);
+	}
+	
 	void readSaveFile(String saveName) {
 		String savePath = "C:\\UBsaves\\" + saveName + ".txt";
 	    try {
@@ -789,6 +805,7 @@ public class Settings {
 	          String data = myReader.nextLine();
 	          System.out.println(data);
 	          loadHashmapRulesFromString(data);
+	          Main.gameController.resetBiomeSelectorValues();
 	        }
 	        myReader.close();
 	    } catch (FileNotFoundException e) {
@@ -798,10 +815,10 @@ public class Settings {
 	}
 	
 	private void loadHashmapRulesFromString(String saveDatas) {
-		AddDebugLog("saveDatas:" + saveDatas);
+//		AddDebugLog("saveDatas:" + saveDatas);
 		String[] rulesDatas = saveDatas.split("ç");
-		AddDebugLog("rule name:" + rulesDatas[0]);
-		AddDebugLog("rulesDatas:" + rulesDatas[1]);
+//		AddDebugLog("rule name:" + rulesDatas[0]);
+//		AddDebugLog("rulesDatas:" + rulesDatas[1]);
 		switch (rulesDatas[0]) {
 			case "fibreProdRules":
 				fibreProdRules = getHashMapRuleFromString(rulesDatas[1]);
@@ -824,6 +841,9 @@ public class Settings {
 			case "buildingConditions":
 				buildingConditions = getHashMapRuleFromString(rulesDatas[1]);
 				break;
+			case "biomeTypes":
+				biomeTypes = getIntegerHashMapRuleFromString(rulesDatas[1]);
+				break;
 		}
 	}
 
@@ -831,7 +851,7 @@ public class Settings {
 		HashMap<String, String[]> rule = new HashMap<String, String[]>();
 		String[] splitRulesDatas = rulesDatas.split("!!");
 		for (String ruleDatas : splitRulesDatas) {
-			AddDebugLog("" + ruleDatas);
+//			AddDebugLog("" + ruleDatas);
 			String[] splitRuleDatas = ruleDatas.split("!");
 			String[] newRule = new String[splitRuleDatas.length - 1];
 			for (int i = 0; i < splitRuleDatas.length - 1; i++) {
@@ -844,5 +864,19 @@ public class Settings {
 			rule.put(splitRuleDatas[0], newRule);
 		}
 		return rule;
+	}
+
+	private HashMap<String, Integer[]> getIntegerHashMapRuleFromString(String string) {
+		HashMap<String, String[]> stringHashMap = getHashMapRuleFromString(string);
+		HashMap <String, Integer[]> integerHashMap = new HashMap<String, Integer[]>();
+		for (String ruleName : stringHashMap.keySet()) {
+			String[] stringValues = stringHashMap.get(ruleName);
+			Integer[] integerValues = new Integer[stringValues.length];
+			for (int i = 0; i < stringValues.length; i++) {
+				integerValues[i] = Integer.parseInt(stringValues[i]);
+			}
+			integerHashMap.put(ruleName, integerValues);
+		}
+		return integerHashMap;
 	}
 }

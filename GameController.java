@@ -37,7 +37,7 @@ public class GameController {
     // Définir les sous-menus
     JMenuItem newf = new JMenuItem("Nouveau");
     JMenuItem save = new JMenuItem("Enregistrer");
-    JMenuItem saveB = new JMenuItem("Sauvegarde des productions");
+    JMenuItem saveB = new JMenuItem("Sauvegarde des paramètres");
     JMenuItem loadB = new JMenuItem("Chargement de la sauvegarde");
     JMenuItem biomeMenu = new JMenuItem("Biomes");
     JMenuItem carteMenu = new JMenuItem("Carte");
@@ -235,6 +235,13 @@ public class GameController {
 	
 	public void refreshTimeLabel() {
 		timeLabel.setText("  Itération #" + timeIteration);
+	}
+
+	public void resetBiomeSelectorValues() {
+		biomeSelector.removeAllItems();
+		for (String biomeType : settings.biomeTypes.keySet()) {
+			biomeSelector.addItem(biomeType);
+		}
 	}
 
 	public void clickOnCarteCase(TuileCase tuileCase, Boolean isViewer) {
