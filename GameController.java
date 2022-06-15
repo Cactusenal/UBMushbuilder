@@ -1,7 +1,6 @@
 package net.codejava;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,8 +51,11 @@ public class GameController {
     // Time label
     JLabel timeLabel = new JLabel();
     Integer timeIteration = 0;
-    // Compteurs for generator dialog
+    // Variables for generator dialog
+    Object[][] buildingsToPower;
     Integer buildingNumber;
+    JLabel energyCounter = new JLabel();
+    Integer energyProduced;
     Integer energyProvided;
 	
 	public GameController() {
@@ -90,7 +92,6 @@ public class GameController {
 	    comboBoxesPanel.add(biomeSelector);
 	    comboBoxesPanel.add(seasonSelector);
 	    comboBoxesPanel.setLayout(new GridLayout(2, 2));
-	    comboBoxesPanel.setPreferredSize(new Dimension(5, 30));
 	    controllerPanel.add(comboBoxesPanel);
 
 	    //Settings popup
@@ -394,12 +395,11 @@ public class GameController {
         // General popup graphic params
     	JFrame generatorFrame = new JFrame("Generator energy");
         JDialog generatorDialog = new JDialog(generatorFrame);
-
         
         // List of possible buildings to power creation
         List<Object[]> buildingsToPowerList = new ArrayList<Object[]>();
         
-        Integer energyProduced = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[1]);
+        energyProduced = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[1]);
         Integer generatorRange = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[2]);
         // Initialize counters
         buildingNumber = 0;
@@ -427,16 +427,17 @@ public class GameController {
     		generatorDialog.add(noBuildingLabel);
         }
         else {
-        	Object[][] buildingsToPower = new Object[buildingsToPowerList.size()][4];
+        	buildingsToPower = new Object[buildingsToPowerList.size()][4];
         	buildingsToPowerList.toArray(buildingsToPower);
         	JButton applyPower = new JButton("Apply power connections");
     		generatorDialog.add(applyPower);
-    		generatorDialog.add(new JLabel("(" + energyProvided + "/" + energyProduced + ")"));
+    		generatorDialog.add(energyCounter);
+    		recomputeGeneratorEnergyCounter();
     		// Apply button
     		applyPower.addActionListener(new ActionListener(){
     			// Apply the list of powered building to generator
     			public void actionPerformed(ActionEvent e){
-    				applyGeneratorConnections(tuileCase, buildingsToPower, energyProduced);
+    				applyGeneratorConnections(tuileCase);
     				for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
     					caseFromDistance.updateCaseProduction();
     				}
@@ -477,9 +478,16 @@ public class GameController {
 		}
 		boolean isPoweredByOther = buildingCase.checkIfBuildingPowered(buildingFromDistance);
 		powerCheckBox.setEnabled(!isPoweredByOther || alreadyPowered);
+		// Update of energy consuption when a checkbox is touched
+		powerCheckBox.addActionListener(new ActionListener(){
+			// Apply the list of powered building to generator
+			public void actionPerformed(ActionEvent e){
+				recomputeGeneratorEnergyCounter();
+			}
+		});
     }
     
-    public void applyGeneratorConnections(TuileCase generatorCase, Object[][] buildingsToPower, Integer maxEnergy) {
+    public Integer recomputeGeneratorEnergyCounter() {
 		Integer energyToProvide = 0;
 		for (Object [] buildingLine : buildingsToPower) {
 			Boolean isPoweredHere = ((JCheckBox) buildingLine[3]).isSelected();
@@ -487,7 +495,17 @@ public class GameController {
 				energyToProvide += settings.getPowerCons((String) buildingLine[0]);
 			}
 		}
-		if (energyToProvide > maxEnergy) {
+    	energyCounter.setText("(" + energyToProvide + "/" + energyProduced + ")");
+    	
+    	energyCounter.setForeground(energyToProvide > energyProduced ? Color.red : Color.black);
+
+    	return energyToProvide;
+    }
+    
+    public void applyGeneratorConnections(TuileCase generatorCase) {
+		Integer energyToProvide = recomputeGeneratorEnergyCounter();
+
+		if (energyToProvide > energyProduced) {
     		JOptionPane.showMessageDialog(Main.frame,
     			    "Too much energy to provide for this generator",
     			    "Inane warning",
