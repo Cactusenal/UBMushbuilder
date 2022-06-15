@@ -1,7 +1,7 @@
 package net.codejava;
 
 import javax.swing.*;
-import java.awt.Dimension;
+
 import java.awt.Frame;
 import java.awt.Point;
 
@@ -32,19 +32,16 @@ public class Main
         cartePanel.updateWorldView();
         
         // PANNEAU DROIT
-        JPanel viewPanel = new JPanel(); 
         JScrollPane scrPanel = new JScrollPane(cartePanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrPanel.setPreferredSize(new Dimension(1300, 790));
+//        scrPanel.setPreferredSize(new Dimension(1300, 790));
         
         // Center the scroll pane
         JViewport jvp = new JViewport();
         jvp = scrPanel.getViewport();
         jvp.setViewPosition(new Point(800,0));
 
-        viewPanel.add(scrPanel);
-
         // créer un séparateur de panneau
-        JSplitPane sep = new JSplitPane(SwingConstants.VERTICAL, gameController.controllerPanel, viewPanel); 
+        JSplitPane sep = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, gameController.controllerPanel, scrPanel); 
         // définir l'orientation du séparateur
         sep.setOrientation(SwingConstants.VERTICAL);
         // Ajouter le séparateur
