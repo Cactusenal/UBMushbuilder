@@ -399,6 +399,10 @@ public class TuileCase {
 			if (isBuildingFinished(priceInRessource)) {
 				setBuilding(inConstruction);
 				inConstruction = "";
+				buildFibre = 0;
+				buildSpore = 0;
+				buildSuc = 0;
+				buildPhospho = 0;
 			}
 		}
 	}
