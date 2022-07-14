@@ -342,7 +342,7 @@ public class TuileCase {
 		return getCasesFromDistance(caseDistance, 0);
 	}
 		
-	// Original case is excluded
+	// Original case is excluded if minDistance >= 0
 	public TuileCase[] getCasesFromDistance(int caseDistance, int minDistance) {
 		TuileCase[] casesArray = {};
 		if (minDistance >= caseDistance) {
