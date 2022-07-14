@@ -339,7 +339,16 @@ public class TuileCase {
 	}
 	
 	public TuileCase[] getCasesFromDistance(int caseDistance) {
+		return getCasesFromDistance(caseDistance, 0);
+	}
+		
+	// Original case is excluded
+	public TuileCase[] getCasesFromDistance(int caseDistance, int minDistance) {
 		TuileCase[] casesArray = {};
+		if (minDistance >= caseDistance) {
+			return casesArray;
+		}
+		
 		List<TuileCase> casesList = new ArrayList<TuileCase>(Arrays.asList(casesArray));
 		int maxColumn = parentTuile.isViewTuile ? 3 : Main.cartePanel.column * 3;
 		int maxLign = parentTuile.isViewTuile ? 3 : Main.cartePanel.lign * 3;
@@ -353,7 +362,8 @@ public class TuileCase {
 		for (int x = minX; x < maxX + 1; x++) {
 			for (int y = minY; y < maxY + 1; y++) {
 				// Main.settings.AddDebugLog("[" + x / 3 + ", " + y / 3 + "], [" + x % 3 + ", " + y % 3 + "]");
-				if ((Math.abs(x - xCase) + Math.abs(y - yCase)) < (caseDistance + 1) && !(x == xCase && y == yCase)) {
+				int distance = Math.abs(x - xCase) + Math.abs(y - yCase);
+				if (distance < (caseDistance + 1) && distance > minDistance) {
 //					 && (!this.parentTuile.isViewTuile || (x / 3 == parentTuile.xPos && y / 3 == parentTuile.yPos))
 					if (this.parentTuile.isViewTuile) {
 						casesList.add(parentTuile.cases[x][y]);
