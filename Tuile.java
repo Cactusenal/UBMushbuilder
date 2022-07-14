@@ -17,6 +17,7 @@ public class Tuile {
 	int yPos;
 	
 	TuileCase[][] cases = new TuileCase [3][3];
+	Integer nbHabitant = 1;
 
 	boolean isViewTuile;
 	
@@ -90,6 +91,7 @@ public class Tuile {
 
 		// Update Tuile infos
 		setTerrain(tuileToCopy.getTerrain());
+		updatePopulation();
 
 		updateTuileProductions();
 		
@@ -218,7 +220,22 @@ public class Tuile {
         }
 	}
 	
+	public int updatePopulation() {
+		nbHabitant = 1;
+		for (TuileCase[] currentCaseLign : cases) {
+            for (TuileCase currentCase : currentCaseLign) {
+            	if (!currentCase.building.equals("")) {
+            		nbHabitant++;
+            	}
+            }
+		}
+		return nbHabitant;
+	}
+	
 	public int getProduction(String ressourceToGet) {
+		if (ressourceToGet.equals("habitant")) {
+			return nbHabitant;
+		}	
 		int ressourceProd = 0;
 		for (TuileCase[] currentCaseLign : cases) {
             for (TuileCase currentCase : currentCaseLign) {

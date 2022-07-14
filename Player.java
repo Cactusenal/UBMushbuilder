@@ -27,6 +27,7 @@ public class Player {
     int prodSuc;
     int prodPhospho;
     int prodCoins;
+    int nbHabitant;
     
     Integer mushCoins = 0;
     
@@ -86,10 +87,11 @@ public class Player {
 		prodSuc = getPlayerProd("prodSuc") + givenProdSuc;
 		prodPhospho = getPlayerProd("prodPhospho") + givenProdPhospho;
 		prodCoins = getPlayerProd("prodCoins");
+		nbHabitant = getPlayerProd("habitant");
 		refreshProdLabel();
 	}
 	
 	public void refreshProdLabel() {
-		ressourceLabel.setText("Fibre: +" + prodFibre + ",\n Spore: +" + prodSpore + ",\n Suc: +" + prodSuc + ",\n Phosphorite: +"+ prodPhospho + ",\n MushCoins: " + mushCoins + " (+" + prodCoins + ")");
+		ressourceLabel.setText("Habitants: " + nbHabitant + ",\nFibre: +" + prodFibre + ",\nSpore: +" + prodSpore + ",\nSuc: +" + prodSuc + ",\nPhosphorite: +"+ prodPhospho + ",\nMushCoins: " + mushCoins + " (+" + prodCoins + ")");
 	}
 }

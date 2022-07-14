@@ -138,6 +138,7 @@ public class TuileCase {
 				buildingParts = null;
 			}
 		}
+		parentTuile.updatePopulation();
 	}
 	
 	public void addBuildingPart(String buildingPart) {
