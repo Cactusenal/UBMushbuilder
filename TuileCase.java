@@ -397,16 +397,21 @@ public class TuileCase {
 			for (int i = 0; i < priceInRessourceString.length; i++) {
 				priceInRessource[i] = Integer.parseInt(priceInRessourceString[i]);
 			}
-			TuileCase[] inRangeCases = getCasesFromDistance(Main.settings.constructRange);
-			Integer index = 0;
 			getRessourcesForConstruction(this, priceInRessource);
-			while (index < inRangeCases.length && !isBuildingFinished(priceInRessource)) {
-				TuileCase inRangeCase = inRangeCases[index];
-				if (inRangeCase.parentTuile.owner.equals(parentTuile.owner)) {
-					getRessourcesForConstruction(inRangeCase, priceInRessource);					
+			Integer rangeIndex = 1;
+			while (rangeIndex <= Main.settings.constructRange && !isBuildingFinished(priceInRessource)) {
+				TuileCase[] inRangeCases = getCasesFromDistance(rangeIndex, rangeIndex - 1);
+				Integer casesIndex = 0;
+				while (casesIndex < inRangeCases.length && !isBuildingFinished(priceInRessource)) {
+					TuileCase inRangeCase = inRangeCases[casesIndex];
+					if (inRangeCase.parentTuile.owner.equals(parentTuile.owner)) {
+						getRessourcesForConstruction(inRangeCase, priceInRessource);					
+					}
+					casesIndex++;
 				}
-				index++;
+				rangeIndex++;
 			}
+
 			if (isBuildingFinished(priceInRessource)) {
 				setBuilding(inConstruction);
 				inConstruction = "";
