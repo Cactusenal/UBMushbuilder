@@ -77,13 +77,13 @@ public class Settings {
 	// building datas
 	// Rules
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
-	String[] dummyRule = {"En.requise", "En.produite", "distance"};
-	String[] farmRule = {"10", "", ""};
-	String[] portRule = {"20", "", ""};
-	String[] generatorRule = {"0", "50", "3"};
-	String[] pierRule = {"10", "", ""};
-	String[] roadRule = {"0", "", ""};
-	Integer buildRulesLength = 3;
+	String[] dummyRule = {"En.requise", "En.produite", "distance", "Suc consumption"};
+	String[] farmRule = {"10", "", "", "10"};
+	String[] portRule = {"20", "", "", "5"};
+	String[] generatorRule = {"0", "50", "3", "20"};
+	String[] pierRule = {"10", "", "", "5"};
+	String[] roadRule = {"0", "", "", "0"};
+	Integer buildRulesLength = 4;
 	Integer maxGeneratorDistance = 0;
 	// buildings dialog
     JFrame buildRulesFrame = new JFrame("Buildings position settings");
@@ -606,7 +606,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Building rules");
-    	JLabel rulesTemplateLabel = new JLabel("Energie requise | Energie produite | Portée");
+    	JLabel rulesTemplateLabel = new JLabel("Energie requise | Energie produite | Portée | Consommation de Suc");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 
@@ -666,6 +666,15 @@ public class Settings {
 	public int getPowerCons(String buildingName) {
 		if (buildingRules.containsKey(buildingName)) {
 			return Integer.parseInt(buildingRules.get(buildingName)[0]);			
+		} else {
+			return 0;
+		}
+	}
+	
+    // SUC
+	public int getSucCons(String buildingName) {
+		if (buildingRules.containsKey(buildingName)) {
+			return Integer.parseInt(buildingRules.get(buildingName)[3]);			
 		} else {
 			return 0;
 		}

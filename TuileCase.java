@@ -40,6 +40,8 @@ public class TuileCase {
     String building = "";
     String [] buildingParts = {};
     Integer roadLevel = 0;
+    Integer sucLevel = 0;
+    Boolean isActive = false;
     // For construction
     String inConstruction = "";
     Integer buildFibre = 0;
@@ -119,7 +121,6 @@ public class TuileCase {
 		}
 	}
 	
-	// UNUSED for now
 	public void setBuilding(String buildName) {
 		if (buildName.equals("Route")) {
 			roadLevel++;
@@ -136,8 +137,15 @@ public class TuileCase {
 				// Replace existing building ?
 				building = buildName;
 				buildingParts = null;
+				sucLevel = 0;
 			}
 		}
+		inConstruction = "";
+		isActive = false;
+		buildFibre = 0;
+		buildSpore = 0;
+		buildSuc = 0;
+		buildPhospho = 0;
 		parentTuile.updatePopulation();
 	}
 	
@@ -148,7 +156,7 @@ public class TuileCase {
 			newBuildingParts[i] = buildingParts[i];
 		}
 		newBuildingParts[buildingPartLength] = buildingPart;
-		buildingParts = newBuildingParts;		
+		buildingParts = newBuildingParts;
 	}
 	
 	public int getRessource(String ressourceToGet) {
@@ -384,10 +392,10 @@ public class TuileCase {
 	}
 	
 	public void getRessourcesForConstruction(TuileCase exploitedCase, Integer[] priceInRessource) {
-		exploitedCase.remainingFibre = constructWithRessource("Fibre", exploitedCase.remainingFibre, priceInRessource[0]);
-		exploitedCase.remainingSpore = constructWithRessource("Spore", exploitedCase.remainingSpore, priceInRessource[1]);
-		exploitedCase.remainingSuc = constructWithRessource("Suc", exploitedCase.remainingSuc, priceInRessource[2]);
-		exploitedCase.remainingPhospho = constructWithRessource("Phospho", exploitedCase.remainingPhospho, priceInRessource[3]);
+		exploitedCase.remainingFibre = feedWithRessource("Fibre", exploitedCase.remainingFibre, priceInRessource[0]);
+		exploitedCase.remainingSpore = feedWithRessource("Spore", exploitedCase.remainingSpore, priceInRessource[1]);
+		exploitedCase.remainingSuc = feedWithRessource("Suc", exploitedCase.remainingSuc, priceInRessource[2]);
+		exploitedCase.remainingPhospho = feedWithRessource("Phospho", exploitedCase.remainingPhospho, priceInRessource[3]);
 	}
 
 	public void iterateConstruction() {
@@ -414,11 +422,6 @@ public class TuileCase {
 
 			if (isBuildingFinished(priceInRessource)) {
 				setBuilding(inConstruction);
-				inConstruction = "";
-				buildFibre = 0;
-				buildSpore = 0;
-				buildSuc = 0;
-				buildPhospho = 0;
 			}
 		}
 	}
@@ -427,7 +430,7 @@ public class TuileCase {
 		return buildFibre == priceInRessource[0] && buildSpore == priceInRessource[1] && buildSuc == priceInRessource[2] && buildPhospho == priceInRessource[3];
 	}
 
-	private Integer constructWithRessource(String ressource, int prod, Integer requiredRessource) {
+	private Integer feedWithRessource(String ressource, int prod, Integer requiredRessource) {
 		Integer remainingRessource = 0;		
 		switch(ressource) {
 			case "Fibre":
@@ -466,10 +469,60 @@ public class TuileCase {
 					buildPhospho += prod;
 					return 0;
 				}
+			case "SucCons":
+				if (sucLevel + prod > requiredRessource) {
+					remainingRessource = sucLevel + prod - requiredRessource;
+					sucLevel = requiredRessource;
+					return remainingRessource;
+				} else {
+					sucLevel += prod;
+					return 0;
+				}
 		}
-		Main.settings.AddDebugLog("[constructWithRessource] unexpected ressource exploited");
+		Main.settings.AddDebugLog("[feedWithRessource] unexpected ressource exploited");
 		return remainingRessource;
 	}
 
+	// Suc Cons.
+	public void consumeSucAndSetActivity() {
+		if (building.equals("")) {
+			return;
+		}
+		int consumption = Main.settings.getSucCons(building);
+		for (int i = 0; i < buildingParts.length; i++) {
+			consumption += Main.settings.getSucCons(buildingParts[i]);
+		}
+		if (consumption > sucLevel) {
+			isActive = false;
+		} else {
+			sucLevel -= consumption;
+			isActive = true;
+		}
+	}
+
+	public void feedSucStock() {
+		//getRessourcesForConstruction(this, priceInRessource);
+		int maxSucLevel = 100;
+		remainingSuc = feedWithRessource("SucCons", remainingSuc, maxSucLevel);
+		Integer rangeIndex = 1;
+		while (rangeIndex <= Main.settings.constructRange && !isBuildingSucFilled(maxSucLevel)) {
+			TuileCase[] inRangeCases = getCasesFromDistance(rangeIndex, rangeIndex - 1);
+			Integer casesIndex = 0;
+			while (casesIndex < inRangeCases.length && !isBuildingSucFilled(maxSucLevel)) {
+				TuileCase inRangeCase = inRangeCases[casesIndex];
+				if (inRangeCase.parentTuile.owner.equals(parentTuile.owner)) {
+					inRangeCase.remainingSuc = feedWithRessource("SucCons", inRangeCase.remainingSuc, maxSucLevel);
+				}
+				casesIndex++;
+			}
+			rangeIndex++;
+		}		
+	}
+	
+	Boolean isBuildingSucFilled(Integer maxSucLevel) {
+		return sucLevel >= maxSucLevel;
+	}
 }
 
+
+	

@@ -130,6 +130,7 @@ public class Tuile {
             	cases[x][y].setTerrain(terrainGrid[x][y]);
             	cases[x][y].building = "";
             	cases[x][y].buildingParts = null;
+            	cases[x][y].sucLevel = 0;
             }
         }
 	}

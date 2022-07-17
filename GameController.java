@@ -575,14 +575,29 @@ public class GameController {
     
     private void IterateWorld() {
     	timeIteration++;
+    	consumeSucAndSetActivity();
     	setWorldRemainingProd();
     	refreshTimeLabel();
+    	feedSucStock();
     	produceMushCoins();
     	IterateCarte();
     	Main.cartePanel.updateWorldProd();
     	Main.cartePanel.updateWorldView();
     }
 
+	private String consumeSucAndSetActivity() {
+		for (Tuile[] tuileLign : Main.cartePanel.tableauTuile) {
+			for (Tuile tuile : tuileLign) {
+				for (TuileCase[] tuileCaseLign : tuile.cases) {
+					for (TuileCase tuileCase : tuileCaseLign) {
+						tuileCase.consumeSucAndSetActivity();
+					}
+				}
+			}
+		}
+		return null;
+	}	
+	
 	private String setWorldRemainingProd() {
 		for (Tuile[] tuileLign : Main.cartePanel.tableauTuile) {
 			for (Tuile tuile : tuileLign) {
@@ -596,6 +611,26 @@ public class GameController {
 		return null;
 	}
 
+	private void feedSucStock() {
+		for (Tuile[] tuileLign : Main.cartePanel.tableauTuile) {
+			for (Tuile tuile : tuileLign) {
+				for (TuileCase[] tuileCaseLign : tuile.cases) {
+					for (TuileCase tuileCase : tuileCaseLign) {
+						tuileCase.feedSucStock();
+					}
+				}
+			}
+		}		
+	}
+
+	private void produceMushCoins() {
+		for (Player player : settings.players) {
+			Integer prodCoins = player.getPlayerProd("prodCoins");
+			player.mushCoins += prodCoins;
+			player.refreshProdLabel();
+		}
+	}
+
 	private void IterateCarte() {
 		for (Tuile[] tuileLign : Main.cartePanel.tableauTuile) {
 			for (Tuile tuile : tuileLign) {
@@ -605,14 +640,6 @@ public class GameController {
 					}
 				}
 			}
-		}
-	}
-
-	private void produceMushCoins() {
-		for (Player player : settings.players) {
-			Integer prodCoins = player.getPlayerProd("prodCoins");
-			player.mushCoins += prodCoins;
-			player.refreshProdLabel();
 		}
 	}
 }
