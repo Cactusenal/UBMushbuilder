@@ -392,10 +392,10 @@ public class TuileCase {
 	}
 	
 	public void getRessourcesForConstruction(TuileCase exploitedCase, Integer[] priceInRessource) {
-		exploitedCase.remainingFibre = feedWithRessource("Fibre", exploitedCase.remainingFibre, priceInRessource[0]);
-		exploitedCase.remainingSpore = feedWithRessource("Spore", exploitedCase.remainingSpore, priceInRessource[1]);
-		exploitedCase.remainingSuc = feedWithRessource("Suc", exploitedCase.remainingSuc, priceInRessource[2]);
-		exploitedCase.remainingPhospho = feedWithRessource("Phospho", exploitedCase.remainingPhospho, priceInRessource[3]);
+		feedWithRessource("Fibre", exploitedCase.remainingFibre, priceInRessource[0]);
+		feedWithRessource("Spore", exploitedCase.remainingSpore, priceInRessource[1]);
+		feedWithRessource("Suc", exploitedCase.remainingSuc, priceInRessource[2]);
+		feedWithRessource("Phospho", exploitedCase.remainingPhospho, priceInRessource[3]);
 	}
 
 	public void iterateConstruction() {
@@ -437,6 +437,7 @@ public class TuileCase {
 				if (buildFibre + prod > requiredRessource) {
 					remainingRessource = buildFibre + prod - requiredRessource;
 					buildFibre = requiredRessource;
+					remainingFibre = remainingRessource;
 					return remainingRessource;
 				} else {
 					buildFibre += prod;
@@ -446,6 +447,7 @@ public class TuileCase {
 				if (buildSpore + prod > requiredRessource) {
 					remainingRessource = buildSpore + prod - requiredRessource;
 					buildSpore = requiredRessource;
+					remainingSpore  = remainingRessource;
 					return remainingRessource;
 				} else {
 					buildSpore += prod;
@@ -455,6 +457,7 @@ public class TuileCase {
 				if (buildSuc + prod > requiredRessource) {
 					remainingRessource = buildSuc + prod - requiredRessource;
 					buildSuc = requiredRessource;
+					remainingSuc  = remainingRessource;
 					return remainingRessource;
 				} else {
 					buildSuc += prod;
@@ -464,6 +467,7 @@ public class TuileCase {
 				if (buildPhospho + prod > requiredRessource) {
 					remainingRessource = buildPhospho + prod - requiredRessource;
 					buildPhospho = requiredRessource;
+					remainingPhospho = remainingRessource;
 					return remainingRessource;
 				} else {
 					buildPhospho += prod;
@@ -473,6 +477,7 @@ public class TuileCase {
 				if (sucLevel + prod > requiredRessource) {
 					remainingRessource = sucLevel + prod - requiredRessource;
 					sucLevel = requiredRessource;
+					remainingSuc  = remainingRessource;
 					return remainingRessource;
 				} else {
 					sucLevel += prod;
@@ -501,9 +506,8 @@ public class TuileCase {
 	}
 
 	public void feedSucStock() {
-		//getRessourcesForConstruction(this, priceInRessource);
 		int maxSucLevel = 100;
-		remainingSuc = feedWithRessource("SucCons", remainingSuc, maxSucLevel);
+		feedWithRessource("SucCons", remainingSuc, maxSucLevel);
 		Integer rangeIndex = 1;
 		while (rangeIndex <= Main.settings.constructRange && !isBuildingSucFilled(maxSucLevel)) {
 			TuileCase[] inRangeCases = getCasesFromDistance(rangeIndex, rangeIndex - 1);
@@ -511,7 +515,7 @@ public class TuileCase {
 			while (casesIndex < inRangeCases.length && !isBuildingSucFilled(maxSucLevel)) {
 				TuileCase inRangeCase = inRangeCases[casesIndex];
 				if (inRangeCase.parentTuile.owner.equals(parentTuile.owner)) {
-					inRangeCase.remainingSuc = feedWithRessource("SucCons", inRangeCase.remainingSuc, maxSucLevel);
+					feedWithRessource("SucCons", inRangeCase.remainingSuc, maxSucLevel);
 				}
 				casesIndex++;
 			}
