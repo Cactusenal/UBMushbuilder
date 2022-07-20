@@ -3,6 +3,7 @@ package net.codejava;
 import java.awt.Color;
 
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -11,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
@@ -19,6 +23,8 @@ public class TuileCase {
     JButton caseBackground;
     Tuile parentTuile;
     String casePosition;
+    JFrame infoFrame;
+    JDialog infoDialog;    
    
     // Position
     Integer xPos;
@@ -72,6 +78,22 @@ public class TuileCase {
     	if (xPos == 1 && yPos == 1) {
     		caseBackground.setFont(new Font("Monospace", Font.BOLD, 14));
     	}
+    	
+    	infoFrame = new JFrame();
+        infoDialog = new JDialog(infoFrame);
+        
+    	caseBackground.addMouseListener(new java.awt.event.MouseAdapter() {
+    	    public void mouseEntered(java.awt.event.MouseEvent evt) {
+    	    	// if setttings
+    	    	showPanelCaseInfo();
+    	    }
+
+
+			public void mouseExited(java.awt.event.MouseEvent evt) {
+//    	    	caseBackground.setBackground(UIManager.getColor("control"));
+				hidePanelCaseInfo();
+    	    }
+    	});
     }
 
 	void changeTerrain() {
@@ -525,6 +547,49 @@ public class TuileCase {
 	
 	Boolean isBuildingSucFilled(Integer maxSucLevel) {
 		return sucLevel >= maxSucLevel;
+	}
+	
+	// PANEL PREVIEW
+	private void showPanelCaseInfo() {
+    	infoFrame = new JFrame();
+        infoDialog = new JDialog(infoFrame);
+        
+        updateCaseProduction();
+        
+        infoDialog.add(new JLabel(terrain + " (" + getCaseXPos() + ":" + getCaseYPos() + ")"));
+        infoDialog.add(new JLabel(""));
+        infoDialog.add(new JLabel("Fibre: +" + prodFibre));
+        infoDialog.add(new JLabel("Spore: +" + prodSpore));
+        infoDialog.add(new JLabel("Suc: +" + prodSuc));
+        infoDialog.add(new JLabel("Phosphorite: +" + prodPhospho));
+        infoDialog.add(new JLabel("MushCoins: +" + prodCoins));
+        infoDialog.add(new JLabel(""));
+        int numberOfLines = 8;
+
+        if (!building.equals("")) {
+            infoDialog.add(new JLabel(building));
+            numberOfLines++;
+            for (var i = 0; i < buildingParts.length; i++) {
+                infoDialog.add(new JLabel(" - " + buildingParts[i]));
+                numberOfLines++;
+            }
+        }
+
+        if (roadLevel > 0) {
+            infoDialog.add(new JLabel("Route de niveau " + roadLevel));
+            numberOfLines++;
+        }
+		
+		infoDialog.setLayout(new GridLayout(numberOfLines, 1));
+		
+        infoDialog.setBounds(350, 50, 150, numberOfLines * 30);
+        infoDialog.setVisible(true);
+	}
+	
+	private void hidePanelCaseInfo() {
+		infoDialog.setVisible(false);
+		infoDialog.dispose();
+		infoDialog.removeAll();
 	}
 }
 
