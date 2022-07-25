@@ -23,6 +23,8 @@ public class TuileCase {
     JButton caseBackground;
     Tuile parentTuile;
     String casePosition;
+    
+    // Preview
     JFrame infoFrame;
     JDialog infoDialog;    
    
@@ -84,14 +86,26 @@ public class TuileCase {
         
     	caseBackground.addMouseListener(new java.awt.event.MouseAdapter() {
     	    public void mouseEntered(java.awt.event.MouseEvent evt) {
-    	    	// if setttings
-    	    	showPanelCaseInfo();
+    	    	switch (Main.gameController.overviewSelector.getItemAt(Main.gameController.overviewSelector.getSelectedIndex())) {
+		    		case "Cases" :
+		    			showPanelCaseInfo();
+		    			break;
+		    		case "Tuiles":
+		    			parentTuile.showPanelTuileInfo();
+		    			break;
+		    	}
     	    }
 
 
 			public void mouseExited(java.awt.event.MouseEvent evt) {
-//    	    	caseBackground.setBackground(UIManager.getColor("control"));
-				hidePanelCaseInfo();
+    	    	switch (Main.gameController.overviewSelector.getItemAt(Main.gameController.overviewSelector.getSelectedIndex())) {
+		    		case "Cases" :
+		    			hidePanelCaseInfo();
+		    			break;
+		    		case "Tuiles":
+		    			parentTuile.hidePanelTuileInfo();
+		    			break;
+		    	}
     	    }
     	});
     }

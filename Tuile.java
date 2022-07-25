@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
 public class Tuile {
@@ -26,6 +29,10 @@ public class Tuile {
 	
 	int i = 0;
 	int j = 0;
+
+    // Preview
+    JFrame infoFrame;
+    JDialog infoDialog;    
 	
 	public Tuile(boolean isViewer, Player ownerData, int x, int y) {
 		owner = ownerData;
@@ -252,5 +259,36 @@ public class Tuile {
             	currentCase.updateFilterView();
             }
         }
+	}
+
+	// PANEL PREVIEW
+	public void showPanelTuileInfo() {
+    	infoFrame = new JFrame();
+        infoDialog = new JDialog(infoFrame);
+        
+        updateTuileProductions();
+        
+        infoDialog.add(new JLabel(owner.playerName + " (" + xPos + ":" + yPos + ")"));
+        infoDialog.add(new JLabel(""));	
+        infoDialog.add(new JLabel("Fibre: +" + getProduction("prodFibre")));
+        infoDialog.add(new JLabel("Spore: +" + getProduction("prodSpore")));
+        infoDialog.add(new JLabel("Suc: +" + getProduction("prodSuc")));
+        infoDialog.add(new JLabel("Phosphorite: +" + getProduction("prodPhospho")));
+        infoDialog.add(new JLabel("MushCoins: +" + getProduction("prodCoins")));
+        infoDialog.add(new JLabel(""));
+        infoDialog.add(new JLabel("Habitant(s): " + getProduction("habitant")));
+        infoDialog.add(new JLabel(""));
+        int numberOfLines = 10;
+		
+		infoDialog.setLayout(new GridLayout(numberOfLines, 1));
+		
+        infoDialog.setBounds(350, 50, 150, numberOfLines * 30);
+        infoDialog.setVisible(true);		
+	}
+
+	public void hidePanelTuileInfo() {
+		infoDialog.setVisible(false);
+		infoDialog.dispose();
+		infoDialog.removeAll();		
 	}
 }

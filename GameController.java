@@ -48,6 +48,8 @@ public class GameController {
     JComboBox<String> filterSelector;
     JComboBox<String> biomeSelector;
     JComboBox<String> seasonSelector;
+    JComboBox<String> overviewSelector;
+    String[] possibleViews = {"Aucune", "Tuiles", "Cases"};
     // Time label
     JLabel timeLabel = new JLabel();
     Integer timeIteration = 0;
@@ -87,10 +89,12 @@ public class GameController {
 	    filterSelector = new JComboBox<String>(Main.filterViews.possibleFilters);
 	    biomeSelector = new JComboBox<String>(biomeTypes);
 	    seasonSelector = new JComboBox<String>(Main.settings.possibleSeasons);
+	    overviewSelector = new JComboBox<String>(possibleViews);
 	    JPanel comboBoxesPanel = new JPanel();
 	    comboBoxesPanel.add(filterSelector);
 	    comboBoxesPanel.add(biomeSelector);
 	    comboBoxesPanel.add(seasonSelector);
+	    comboBoxesPanel.add(overviewSelector);
 	    comboBoxesPanel.setLayout(new GridLayout(2, 2));
 	    controllerPanel.add(comboBoxesPanel);
 
