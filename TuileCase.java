@@ -46,7 +46,9 @@ public class TuileCase {
     
     //Buildings
     String building = "";
-    String [] buildingParts = {};
+    String [] floorBuildingParts = {};
+    String [] wallBuildingParts = {};
+    String [] roofBuildingParts = {};
     Integer roadLevel = 0;
     Integer sucLevel = 0;
     Boolean isActive = false;
@@ -132,6 +134,7 @@ public class TuileCase {
 	
 	public void startConstruction(String buildName) {
 		if (buildName.equals("Route")) {
+			// Construction de route
 			if (roadLevel == 0) {
 				inConstruction = buildName;
 			} else {
@@ -141,18 +144,19 @@ public class TuileCase {
 	    			    JOptionPane.WARNING_MESSAGE);
 			}
 		} else if (building.equals("")) {
+			// Construction sur terrain vide
 			inConstruction = buildName;
-//			Main.settings.AddDebugLog("no building");
 		} else {
-//			Main.settings.AddDebugLog("build to set: " + buildName);
-//			Main.settings.AddDebugLog("present building: " + building);
-//			Main.settings.AddDebugLog("buildingConditions: " + Main.settings.buildingConditions.get(buildName)[0]);
-			if (Main.settings.buildingConditions.get(buildName)[0].equals(building)) {
+			// Terrain déjà occupé
+			if (Main.settings.buildingConditions.get(buildName)[0].split(",")[0].equals(building)) {
+				// Construction de module
 				inConstruction = buildName;
 			} else {
 				// Replace existing building ?
 				inConstruction = buildName;
-				buildingParts = null;
+				floorBuildingParts = null;
+				wallBuildingParts = null;
+				roofBuildingParts = null;
 			}
 		}
 	}
@@ -164,15 +168,15 @@ public class TuileCase {
 			building = buildName;
 //			Main.settings.AddDebugLog("no building");
 		} else {
-//			Main.settings.AddDebugLog("build to set: " + buildName);
-//			Main.settings.AddDebugLog("present building: " + building);
-//			Main.settings.AddDebugLog("buildingConditions: " + Main.settings.buildingConditions.get(buildName)[0]);
-			if (Main.settings.buildingConditions.get(buildName)[0].equals(building)) {
-				addBuildingPart(buildName);
+			String[] buildingReq = Main.settings.buildingConditions.get(buildName)[0].split(",");
+			if (buildingReq[0].equals(building)) {
+				addBuildingPart(buildName, buildingReq[1]);
 			} else {
 				// Replace existing building ?
 				building = buildName;
-				buildingParts = null;
+				floorBuildingParts = null;
+				wallBuildingParts = null;
+				roofBuildingParts = null;
 				sucLevel = 0;
 			}
 		}
@@ -185,14 +189,41 @@ public class TuileCase {
 		parentTuile.updatePopulation();
 	}
 	
-	public void addBuildingPart(String buildingPart) {
-		Integer buildingPartLength = buildingParts != null ? buildingParts.length : 0;
+	public void addBuildingPart(String buildingPart, String localisation) {
+		String[] oldBuildingParts = {};
+		switch (localisation) {
+			case "sol":
+				oldBuildingParts = floorBuildingParts;
+				break;
+			case "mur":
+				oldBuildingParts = wallBuildingParts;
+				break;
+			case "toit":
+				oldBuildingParts = roofBuildingParts;
+				break;
+			default:
+				Main.settings.AddDebugLog("Part localisation is unknown: " + localisation);
+		}
+		
+		Integer buildingPartLength = oldBuildingParts != null ? oldBuildingParts.length : 0;
 		String[] newBuildingParts = new String[buildingPartLength + 1];
 		for (int i = 0; i < buildingPartLength; i++) {
-			newBuildingParts[i] = buildingParts[i];
+			newBuildingParts[i] = oldBuildingParts[i];
 		}
 		newBuildingParts[buildingPartLength] = buildingPart;
-		buildingParts = newBuildingParts;
+		switch (localisation) {
+			case "sol":
+				floorBuildingParts = newBuildingParts;
+				break;
+			case "mur":
+				wallBuildingParts = newBuildingParts;
+				break;
+			case "toit":
+				roofBuildingParts = newBuildingParts;
+				break;
+			default:
+				Main.settings.AddDebugLog("Part localisation is unknown: " + localisation);
+		}
 	}
 	
 	public int getRessource(String ressourceToGet) {
@@ -280,7 +311,9 @@ public class TuileCase {
 				applyOnAllBiome = true;
 			}
 			// Calculate productions
-			if (distanceValue == 0 && (caseType.equals(typeToCompare) || (!isBiome && buildingParts!= null && buildingParts.length > 0 && Arrays.stream(buildingParts).anyMatch(caseType :: equals)))) {
+//			Boolean isCaseTypePartOfBuildings = (!isBiome && buildingParts!= null && buildingParts.length > 0 && Arrays.stream(buildingParts).anyMatch(caseType :: equals));
+			if (distanceValue == 0 && (caseType.equals(typeToCompare) || (!isBiome && isBuildTypePartOfBuildings(this, caseType)))) {
+				
 				if (!isEnergyDependant || checkIfBuildingPowered(caseType)) {
 					prod += prodValue;
 //					Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
@@ -292,7 +325,7 @@ public class TuileCase {
 					if (relativeCase != null) {
 						typeToCompare = isBiome ? relativeCase.terrain : relativeCase.building;
 						// TODO: authorize multiple identical building parts
-						if ((caseType.equals(typeToCompare) || (!isBiome && relativeCase.buildingParts!= null && relativeCase.buildingParts.length > 0 && Arrays.stream(relativeCase.buildingParts).anyMatch(caseType :: equals))) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
+						if ((caseType.equals(typeToCompare) || (!isBiome && isBuildTypePartOfBuildings(relativeCase, caseType))) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
 							if (!isEnergyDependant || relativeCase.checkIfBuildingPowered(caseType)) {
 								prod += prodValue;
 //								Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);								
@@ -306,13 +339,26 @@ public class TuileCase {
 		return prod;
 	}
 	
+	Boolean isBuildTypePartOfBuildings(TuileCase tuile, String buildType) {
+		Boolean isPart = false;
+		String[][] buildingPartLists = {tuile.floorBuildingParts, tuile.wallBuildingParts, tuile.roofBuildingParts};
+		for (String[] buildingPartList : buildingPartLists) {
+			if (buildingPartList!= null && buildingPartList.length > 0 && Arrays.stream(buildingPartList).anyMatch(buildType :: equals)) {
+				isPart = true;
+				break;
+			}
+		}
+		return isPart;
+	}	
+
+	
 	public boolean checkIfBuildingPowered(String buildingName) {
 		if (building.equals("")) {
 			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building to check if powered");
 			return false;
-		} else if (!buildingName.equals(building) && buildingParts.length > 0 && !Arrays.stream(buildingParts).anyMatch(buildingName :: equals)) {
+		} else if (!building.equals(buildingName) && !isBuildTypePartOfBuildings(this, buildingName)) {
+				//buildingParts.length > 0 && !Arrays.stream(buildingParts).anyMatch(buildingName :: equals)) {
 			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building or building part with this name: " + buildingName + " on this case");
-			Main.settings.AddDebugLog("[checkIfBuildingPowered] " + buildingParts.length + ", " + buildingParts);
 			return false;
 		}
 		Integer buildX = getCaseXPos();
@@ -530,8 +576,11 @@ public class TuileCase {
 			return;
 		}
 		int consumption = Main.settings.getSucCons(building);
-		for (int i = 0; i < buildingParts.length; i++) {
-			consumption += Main.settings.getSucCons(buildingParts[i]);
+		String[][] buildingPartLists = {floorBuildingParts, wallBuildingParts, roofBuildingParts};
+		for (String[] buildingPartList : buildingPartLists) {
+			for (int i = 0; i < buildingPartList.length; i++) {
+				consumption += Main.settings.getSucCons(buildingPartList[i]);
+			}
 		}
 		if (consumption > sucLevel) {
 			isActive = false;
@@ -583,10 +632,13 @@ public class TuileCase {
         if (!building.equals("")) {
             infoDialog.add(new JLabel(building));
             numberOfLines++;
-            for (var i = 0; i < buildingParts.length; i++) {
-                infoDialog.add(new JLabel(" - " + buildingParts[i]));
-                numberOfLines++;
-            }
+    		String[][] buildingPartLists = {floorBuildingParts, wallBuildingParts, roofBuildingParts};
+    		for (String[] buildingPartList : buildingPartLists) {
+	            for (var i = 0; i < buildingPartList.length; i++) {
+	                infoDialog.add(new JLabel(" - " + buildingPartList[i]));
+	                numberOfLines++;
+	            }
+    		}
         }
 
         if (roadLevel > 0) {

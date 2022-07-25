@@ -136,7 +136,9 @@ public class Tuile {
             for (int y = 0; y < 3; y++) {
             	cases[x][y].setTerrain(terrainGrid[x][y]);
             	cases[x][y].building = "";
-            	cases[x][y].buildingParts = null;
+            	cases[x][y].floorBuildingParts = null;
+            	cases[x][y].wallBuildingParts = null;
+            	cases[x][y].roofBuildingParts = null;
             	cases[x][y].sucLevel = 0;
             }
         }

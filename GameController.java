@@ -271,7 +271,7 @@ public class GameController {
     		displayInContruction(tuileCase);
     	} else if (buildMode) {
         	displayBuildingPopup(tuileCase);
-    	} else if (Main.filterViews.filterSelected == "Biome" && !tuileCase.building.equals("") && !settings.buildingRules.get(tuileCase.building)[1].equals("")) {
+    	} else if (Main.filterViews.filterSelected == "Biome" && !tuileCase.building.equals("") && !settings.buildingRules.get(tuileCase.building)[2].equals("")) {
     		displayGeneratorPopup(tuileCase);
     	} else if (tuileCase.xPos == 1 && tuileCase.yPos == 1) {
 			tuileCase.parentTuile.setCopiedTuile(settings.returnActivePlayer().tuileViewer);
@@ -279,7 +279,7 @@ public class GameController {
     	} else {
 //    		Main.settings.AddDebugLog("Case cood is " + xPos + ", " + yPos + ", tuile cood is " + parentTuile.xPos + ", " + parentTuile.yPos);
 			Main.settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", building is " + tuileCase.building);
-			settings.AddDebugLog("Building part is " + ((tuileCase.buildingParts == null || tuileCase.buildingParts.length == 0) ? "no building part" : tuileCase.buildingParts[0]));
+//			settings.AddDebugLog("Building part is " + ((tuileCase.buildingParts == null || tuileCase.buildingParts.length == 0) ? "no building part" : tuileCase.buildingParts[0]));
 //			settings.AddDebugLog("Filter selected is " + Main.filterViews.filterSelected + ", prod is " + tuileCase.prodFibre);
     	}
 	}
@@ -331,8 +331,27 @@ public class GameController {
 					}
 				} else {
 					if (condition.equals(tuileCase.building)) {
-						isCurrentCaseOk = true;
-						break;
+						// Construction de module: Vérifier si emplacement de module libre
+						Integer nbPartsPostition = 0;
+						String[] partList = {};
+						switch (conditionsOnCurrentCase[1]) {
+							case "sol":
+								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[0]);
+								partList = tuileCase.floorBuildingParts;
+								break;
+							case "mur":
+								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[1]);
+								partList = tuileCase.wallBuildingParts;
+								break;
+							case "toit":
+								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[2]);
+								partList = tuileCase.roofBuildingParts;
+								break;
+						}
+						if (partList.length < nbPartsPostition) {
+							isCurrentCaseOk = true;
+							break;
+						}
 					}
     			}
     		}
@@ -403,8 +422,8 @@ public class GameController {
         // List of possible buildings to power creation
         List<Object[]> buildingsToPowerList = new ArrayList<Object[]>();
         
-        energyProduced = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[1]);
-        Integer generatorRange = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[2]);
+        energyProduced = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[2]);
+        Integer generatorRange = Integer.parseInt(settings.buildingRules.get(tuileCase.building)[3]);
         // Initialize counters
         buildingNumber = 0;
         energyProvided = 0;
@@ -418,10 +437,13 @@ public class GameController {
         		if (settings.getPowerCons(buildingFromDistance) > 0) {
         			createBuildingLineForPower(generatorDialog, buildingFromDistance, caseFromDistance, buildX, buildY, tuileCase, buildingsToPowerList);
         		}
-        		for (String buildingPart : caseFromDistance.buildingParts) {
-            		if (settings.getPowerCons(buildingPart) > 0) {
-            			createBuildingLineForPower(generatorDialog, buildingPart, caseFromDistance, buildX, buildY, tuileCase, buildingsToPowerList);
-            		}
+        		String[][] buildingPartLists = {caseFromDistance.floorBuildingParts, caseFromDistance.wallBuildingParts, caseFromDistance.roofBuildingParts};
+        		for (String[] buildingPartList : buildingPartLists) {
+        			for (String buildingPart : buildingPartList) {
+        				if (settings.getPowerCons(buildingPart) > 0) {
+        					createBuildingLineForPower(generatorDialog, buildingPart, caseFromDistance, buildX, buildY, tuileCase, buildingsToPowerList);
+        				}
+        			}        			
         		}
         	}
         }

@@ -77,13 +77,13 @@ public class Settings {
 	// building datas
 	// Rules
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
-	String[] dummyRule = {"En.requise", "En.produite", "distance", "Suc consumption"};
-	String[] farmRule = {"10", "", "", "10"};
-	String[] portRule = {"20", "", "", "5"};
-	String[] generatorRule = {"0", "50", "3", "20"};
-	String[] pierRule = {"10", "", "", "5"};
-	String[] roadRule = {"0", "", "", "0"};
-	Integer buildRulesLength = 4;
+	String[] dummyRule = {"Emp. modules (sol,mur,toit)", "En.requise", "En.produite", "distance", "Suc consumption"};
+	String[] farmRule = {"3,1,0","10", "", "", "10"};
+	String[] portRule = {"3,2,1","20", "", "", "5"};
+	String[] generatorRule = {"2,2,2", "0", "50", "3", "20"};
+	String[] pierRule = {"-", "10", "", "", "5"};
+	String[] roadRule = {"-", "0", "", "", "0"};
+	Integer buildRulesLength = 5;
 	Integer maxGeneratorDistance = 0;
 	// buildings dialog
     JFrame buildRulesFrame = new JFrame("Buildings position settings");
@@ -92,10 +92,10 @@ public class Settings {
 	HashMap<String, JTextArea[]> buildRulesTextAreaFields = new HashMap<String, JTextArea[]>();
 	// Conditions
 	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
-	String[] dummyCondition = {"biomes/buildings,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
+	String[] dummyCondition = {"biomes/buildings modules,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
 	String[] farmCondition = {"Plaine,Marais", "", "100,200,200,100"};
 	String[] portCondition = {"Brume", "Brume", "150,200,10,200"};
-	String[] pierCondition = {"Port", "", "30,30,30,30"};
+	String[] pierCondition = {"Port,sol", "", "30,30,30,30"};
 	String[] roadCondition = {"Plaine,Désert,Foret,Hauteurs,Marais", "", "10,10,0,0"};
 	String[] generatorCondition = {"Désert,Plaine", "", "400,0,100,100"};
 	Integer buildConditionsLength = 3;
@@ -185,7 +185,8 @@ public class Settings {
     void computeMaxGeneratorDistance() {
     	for (String ruleName : buildingRules.keySet()) {
     		String[] rule = buildingRules.get(ruleName);
-    		if (!rule[2].equals("")) {
+    		// Check if energy is produced
+    		if (!rule[3].equals("")) {
         		Integer generatorDistance = Integer.parseInt(rule[2]);
         		if (generatorDistance > maxGeneratorDistance) {
         			maxGeneratorDistance = generatorDistance;
@@ -665,7 +666,7 @@ public class Settings {
     // POWER
 	public int getPowerCons(String buildingName) {
 		if (buildingRules.containsKey(buildingName)) {
-			return Integer.parseInt(buildingRules.get(buildingName)[0]);			
+			return Integer.parseInt(buildingRules.get(buildingName)[1]);			
 		} else {
 			return 0;
 		}
@@ -674,7 +675,7 @@ public class Settings {
     // SUC
 	public int getSucCons(String buildingName) {
 		if (buildingRules.containsKey(buildingName)) {
-			return Integer.parseInt(buildingRules.get(buildingName)[3]);			
+			return Integer.parseInt(buildingRules.get(buildingName)[4]);			
 		} else {
 			return 0;
 		}
