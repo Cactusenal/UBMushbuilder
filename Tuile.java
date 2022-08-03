@@ -270,7 +270,9 @@ public class Tuile {
         
         updateTuileProductions();
         
-        infoDialog.add(new JLabel(owner.playerName + " (" + xPos + ":" + yPos + ")"));
+        JLabel playerLabel = new JLabel(owner.playerName + " (" + xPos + ":" + yPos + ")");
+        playerLabel.setForeground(owner.playerColor);
+        infoDialog.add(playerLabel);
         infoDialog.add(new JLabel(""));	
         infoDialog.add(new JLabel("Fibre: +" + getProduction("prodFibre")));
         infoDialog.add(new JLabel("Spore: +" + getProduction("prodSpore")));
