@@ -30,6 +30,7 @@ public class Settings {
     //DATAS
     String[] directions = {"NO", "N", "NE", "O", "C", "E", "SO", "S", "SE"};
     Integer inhabitantWorkforce = 30;
+    Integer maxSucLevel = 100;
     
     //params selecteurs
     Sliders[] BiomeSliders;

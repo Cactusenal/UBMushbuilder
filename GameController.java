@@ -564,11 +564,13 @@ public class GameController {
         } else {
         	energyLabel = new JLabel("Alimenté depuis la case [" + powerPosition[0] + ", " + powerPosition[1] + "]");        	
         }
-		JCheckBox sucCheckBox = new JCheckBox("Consommation de suc " + tuileCase.getSucTotalCons());
+        JLabel sucLevelLabel = new JLabel("Niveau de suc: " + tuileCase.sucLevel + "/" + settings.maxSucLevel);
+        JCheckBox sucCheckBox = new JCheckBox("Consommation de suc " + tuileCase.getSucTotalCons());
 		sucCheckBox.setSelected(tuileCase.isSucFed);
 
 		buildOptionsDialog.add(titleLabel);
 		buildOptionsDialog.add(energyLabel);
+		buildOptionsDialog.add(sucLevelLabel);
 		buildOptionsDialog.add(sucCheckBox);
         
 		String[][] buildingPartLists = {tuileCase.floorBuildingParts, tuileCase.wallBuildingParts, tuileCase.roofBuildingParts};
@@ -586,6 +588,7 @@ public class GameController {
 				}
 			}
 		}
+		
 		buildOptionsDialog.setLayout(new GridLayout(0, 1));
 		buildOptionsDialog.setVisible(true);
     }

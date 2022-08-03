@@ -584,6 +584,9 @@ public class TuileCase {
 					return 0;
 				}
 			case "SucCons":
+				if (building.equals("")) {
+					return prod;
+				}
 				if (sucLevel + prod > requiredRessource) {
 					remainingRessource = sucLevel + prod - requiredRessource;
 					sucLevel = requiredRessource;
@@ -624,7 +627,7 @@ public class TuileCase {
 	}
 
 	public void feedSucStock() {
-		int maxSucLevel = 100;
+		int maxSucLevel = Main.settings.maxSucLevel;
 		feedWithRessource("SucCons", remainingSuc, maxSucLevel);
 		Integer rangeIndex = 1;
 		while (rangeIndex <= Main.settings.constructRange && !isBuildingSucFilled(maxSucLevel)) {
@@ -673,7 +676,8 @@ public class TuileCase {
 	            }
     		}
         }
-
+//        infoDialog.add(new JLabel("Suc Level: +" + sucLevel));
+//        numberOfLines++;
         if (roadLevel > 0) {
             infoDialog.add(new JLabel("Route de niveau " + roadLevel));
             numberOfLines++;
