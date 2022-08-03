@@ -51,6 +51,7 @@ public class TuileCase {
     String [] roofBuildingParts = {};
     Integer roadLevel = 0;
     Integer sucLevel = 0;
+    Boolean isSucFed = false;
     Boolean isActive = false;
     // For construction
     String inConstruction = "";
@@ -97,7 +98,6 @@ public class TuileCase {
 		    			break;
 		    	}
     	    }
-
 
 			public void mouseExited(java.awt.event.MouseEvent evt) {
     	    	switch (Main.gameController.overviewSelector.getItemAt(Main.gameController.overviewSelector.getSelectedIndex())) {
@@ -196,6 +196,7 @@ public class TuileCase {
 			}
 		}
 		inConstruction = "";
+		isSucFed = true;
 		isActive = false;
 		buildFibre = 0;
 		buildSpore = 0;
@@ -209,20 +210,7 @@ public class TuileCase {
 	}
 	
 	public void addBuildingPart(String buildingPart, String localisation) {
-		String[] oldBuildingParts = {};
-		switch (localisation) {
-			case "sol":
-				oldBuildingParts = floorBuildingParts;
-				break;
-			case "mur":
-				oldBuildingParts = wallBuildingParts;
-				break;
-			case "toit":
-				oldBuildingParts = roofBuildingParts;
-				break;
-			default:
-				Main.settings.AddDebugLog("Part localisation is unknown: " + localisation);
-		}
+		String[] oldBuildingParts = getBuildingPartsList(localisation);
 		
 		Integer buildingPartLength = oldBuildingParts != null ? oldBuildingParts.length : 0;
 		String[] newBuildingParts = new String[buildingPartLength + 1];
@@ -243,6 +231,24 @@ public class TuileCase {
 			default:
 				Main.settings.AddDebugLog("Part localisation is unknown: " + localisation);
 		}
+	}
+	
+	public String[] getBuildingPartsList(String partsLocation) {
+		String[] buildingPartsList = {};
+		switch (partsLocation) {
+			case "sol":
+				buildingPartsList = floorBuildingParts;
+				break;
+			case "mur":
+				buildingPartsList = wallBuildingParts;
+				break;
+			case "toit":
+				buildingPartsList = roofBuildingParts;
+				break;
+			default:
+				Main.settings.AddDebugLog("Part localisation is unknown: " + partsLocation);
+		}
+		return buildingPartsList;
 	}
 	
 	public int getRessource(String ressourceToGet) {
@@ -333,7 +339,7 @@ public class TuileCase {
 //			Boolean isCaseTypePartOfBuildings = (!isBiome && buildingParts!= null && buildingParts.length > 0 && Arrays.stream(buildingParts).anyMatch(caseType :: equals));
 			if (distanceValue == 0 && (caseType.equals(typeToCompare) || (!isBiome && isBuildTypePartOfBuildings(this, caseType)))) {
 				
-				if (!isEnergyDependant || checkIfBuildingPowered(caseType)) {
+				if (!isEnergyDependant || getBuildingPowerSourcePosition(caseType) != null) {
 					prod += prodValue;
 //					Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);
 				}
@@ -345,7 +351,7 @@ public class TuileCase {
 						typeToCompare = isBiome ? relativeCase.terrain : relativeCase.building;
 						// TODO: authorize multiple identical building parts
 						if ((caseType.equals(typeToCompare) || (!isBiome && isBuildTypePartOfBuildings(relativeCase, caseType))) && (applyOnAllBiome || !biomesToNotApply.contains(terrain))) {
-							if (!isEnergyDependant || relativeCase.checkIfBuildingPowered(caseType)) {
+							if (!isEnergyDependant || relativeCase.getBuildingPowerSourcePosition(caseType) != null) {
 								prod += prodValue;
 //								Main.settings.AddDebugLog("[getProdFromHashMap]: adding prod: " + prodValue);								
 							}
@@ -371,28 +377,28 @@ public class TuileCase {
 	}	
 
 	
-	public boolean checkIfBuildingPowered(String buildingName) {
+	public Integer[] getBuildingPowerSourcePosition(String buildingName) {
+		Integer[] powerPosition = null;
 		if (building.equals("")) {
-			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building to check if powered");
-			return false;
+			Main.settings.AddDebugLog("[getBuildingPowerSourcePosition] Unexpected: no building to check if powered");
 		} else if (!building.equals(buildingName) && !isBuildTypePartOfBuildings(this, buildingName)) {
 				//buildingParts.length > 0 && !Arrays.stream(buildingParts).anyMatch(buildingName :: equals)) {
-			Main.settings.AddDebugLog("[checkIfBuildingPowered] Unexpected: no building or building part with this name: " + buildingName + " on this case");
-			return false;
+			Main.settings.AddDebugLog("[getBuildingPowerSourcePosition] Unexpected: no building or building part with this name: " + buildingName + " on this case");
 		}
 		Integer buildX = getCaseXPos();
 		Integer buildY = getCaseYPos();
 		for (TuileCase inRangeCase : getCasesFromDistance(Main.settings.maxGeneratorDistance)) {
-//			Main.settings.AddDebugLog("[checkIfBuildingPowered] building here is :" + inRangeCase.building);
+//			Main.settings.AddDebugLog("[getBuildingPowerSourcePosition] building here is :" + inRangeCase.building);
 			for (Object[] buildingPowered : inRangeCase.buildingsPowered) {
-//				Main.settings.AddDebugLog("[checkIfBuildingPowered] building powered here is :" + (String)buildingPowered[0]);
+//				Main.settings.AddDebugLog("[getBuildingPowerSourcePosition] building powered here is :" + (String)buildingPowered[0]);
 				if (buildingName.equals((String)buildingPowered[0]) && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
-//					Main.settings.AddDebugLog("[checkIfBuildingPowered] building powered!");
-					return true;
+//					Main.settings.AddDebugLog("[getBuildingPowerSourcePosition] building powered!");
+					powerPosition = new Integer[]{buildX, buildY};
+					return powerPosition;
 				}
 			}
 		}
-		return false;
+		return powerPosition;
 	}
 		
 	Integer getCaseXPos() {
@@ -597,19 +603,24 @@ public class TuileCase {
 		if (building.equals("")) {
 			return;
 		}
-		int consumption = Main.settings.getSucCons(building);
-		String[][] buildingPartLists = {floorBuildingParts, wallBuildingParts, roofBuildingParts};
-		for (String[] buildingPartList : buildingPartLists) {
-			for (int i = 0; i < buildingPartList.length; i++) {
-				consumption += Main.settings.getSucCons(buildingPartList[i]);
-			}
-		}
-		if (consumption > sucLevel) {
+		int consumption = getSucTotalCons();
+		if (!isSucFed || consumption > sucLevel) {
 			isActive = false;
 		} else {
 			sucLevel -= consumption;
 			isActive = true;
 		}
+	}
+	
+	public int getSucTotalCons() {
+		int consumption = Main.settings.getSucCons(building);
+		String[][] buildingPartLists = {floorBuildingParts, wallBuildingParts, roofBuildingParts};
+		for (String[] buildingPartList : buildingPartLists) {
+			for (int i = 0; i < (buildingPartList != null ? buildingPartList.length : 0); i++) {
+				consumption += Main.settings.getSucCons(buildingPartList[i]);
+			}
+		}
+		return consumption;
 	}
 
 	public void feedSucStock() {

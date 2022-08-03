@@ -600,6 +600,25 @@ public class Settings {
     	return null;
     }
     
+    public int getNbBuildPartPosition(String buildName, String partPosition) {
+    	int nbPartsPostition = 0;
+    	switch(partPosition) {
+	    	case "sol":
+	    		nbPartsPostition = Integer.valueOf(buildingRules.get(buildName)[0].split(",")[0]);
+	    		break;
+	    	case "mur":
+	    		nbPartsPostition = Integer.valueOf(buildingRules.get(buildName)[0].split(",")[1]);
+	    		break;
+	    	case "toit":
+	    		nbPartsPostition = Integer.valueOf(buildingRules.get(buildName)[0].split(",")[2]);
+	    		break;
+	    	default:
+	    		AddDebugLog("ERROR: unknown building part position: " + partPosition);
+    	}
+    	return nbPartsPostition;
+    }
+    
+    
     //BUILDINGS-Rules
     public void createBuildRulesPopup() {
     	buildRulesDialog.setBounds(50, 50, 1400, 700);

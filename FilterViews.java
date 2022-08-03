@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 public class FilterViews {	
     String filterSelected = "Biome";
     String [] possibleFilters = {"Biome", "Player", "Routes", "Fibre", "Spore", "Suc", "Phosphorite", "MushCoins"};
+    String [] possibleActions = {"Pose de tuile", "Construire", "Voir"};
     
     // Paramètres d'affichage
     HashMap<String, Color> biomeColors = new HashMap<String, Color>();

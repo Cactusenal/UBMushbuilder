@@ -45,6 +45,7 @@ public class GameController {
     JMenuItem buildConditionMenu = new JMenuItem("Placement des constructions");
     JMenuItem buildRulesMenu = new JMenuItem("Gestion des constructions");
     // ComboBoxes
+    JComboBox<String> actionSelector;
     JComboBox<String> filterSelector;
     JComboBox<String> biomeSelector;
     JComboBox<String> seasonSelector;
@@ -86,11 +87,13 @@ public class GameController {
 
 	    //ComboBoxes
 	    String[] biomeTypes = settings.biomeTypes.keySet().toArray(String[]::new);
+	    actionSelector = new JComboBox<String>(Main.filterViews.possibleActions);
 	    filterSelector = new JComboBox<String>(Main.filterViews.possibleFilters);
 	    biomeSelector = new JComboBox<String>(biomeTypes);
 	    seasonSelector = new JComboBox<String>(Main.settings.possibleSeasons);
 	    overviewSelector = new JComboBox<String>(possibleViews);
 	    JPanel comboBoxesPanel = new JPanel();
+	    comboBoxesPanel.add(actionSelector);
 	    comboBoxesPanel.add(filterSelector);
 	    comboBoxesPanel.add(biomeSelector);
 	    comboBoxesPanel.add(seasonSelector);
@@ -107,7 +110,6 @@ public class GameController {
 	    //Menu de création
 	    JButton createB = new JButton("Créer une tuile");
 	    JButton turnRB = new JButton("Tourner à droite");
-	    JButton buildB = new JButton("Construire");
 	    JButton testB = new JButton("Test");
 	    JButton clearB = new JButton("Clear");
 	    JButton giveRessourcesB = new JButton("Give");
@@ -176,13 +178,6 @@ public class GameController {
             	settings.returnActivePlayer().tuileViewer.turnClockWise();
             }
         });
-		buildB.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	//settings.AddDebugLog("Trun");
-            	buildMode = !buildMode;
-            	buildB.setBackground(buildMode? Color.green : Color.red);
-            }
-        });	
 		testB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 //            	settings.AddDebugLog("biome value 2 is " + BiomeSliders[2].getValue());
@@ -233,7 +228,6 @@ public class GameController {
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(createB);
 		buttonPanel.add(turnRB);
-		buttonPanel.add(buildB);
 		buttonPanel.add(testB);
 		buttonPanel.add(clearB);
 		buttonPanel.add(giveRessourcesB);
@@ -269,11 +263,15 @@ public class GameController {
 			tuileCase.updateFilterView();
     	} else if (!tuileCase.inConstruction.equals("")) {
     		displayInContruction(tuileCase);
-    	} else if (buildMode) {
+    	} else if (actionSelector.getItemAt(actionSelector.getSelectedIndex()).equals("Construire")) {
         	displayBuildingPopup(tuileCase);
-    	} else if (Main.filterViews.filterSelected == "Biome" && !tuileCase.building.equals("") && !settings.buildingRules.get(tuileCase.building)[2].equals("")) {
-    		displayGeneratorPopup(tuileCase);
-    	} else if (tuileCase.xPos == 1 && tuileCase.yPos == 1) {
+    	} else if (actionSelector.getItemAt(actionSelector.getSelectedIndex()).equals("Voir")) {
+    		if (!tuileCase.building.equals("") && !settings.buildingRules.get(tuileCase.building)[2].equals("")) {
+    			displayGeneratorPopup(tuileCase);    			
+    		} else if (!tuileCase.building.equals("")) {
+    			displayBuildingOptions(tuileCase);
+    		}
+    	} else if (actionSelector.getItemAt(actionSelector.getSelectedIndex()).equals("Pose de tuile")) {
 			tuileCase.parentTuile.setCopiedTuile(settings.returnActivePlayer().tuileViewer);
 			settings.returnActivePlayer().tuileViewer.randomize(true);    					
     	} else {
@@ -332,23 +330,25 @@ public class GameController {
 				} else {
 					if (condition.equals(tuileCase.building)) {
 						// Construction de module: Vérifier si emplacement de module libre
-						Integer nbPartsPostition = 0;
-						String[] partList = {};
-						switch (conditionsOnCurrentCase[1]) {
-							case "sol":
-								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[0]);
-								partList = tuileCase.floorBuildingParts;
-								break;
-							case "mur":
-								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[1]);
-								partList = tuileCase.wallBuildingParts;
-								break;
-							case "toit":
-								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[2]);
-								partList = tuileCase.roofBuildingParts;
-								break;
-						}
-						if (partList.length < nbPartsPostition) {
+						String partsPosition = conditionsOnCurrentCase[1];
+						Integer nbPartsPostition = settings.getNbBuildPartPosition(tuileCase.building, partsPosition);
+						String[] partList = tuileCase.getBuildingPartsList(partsPosition);
+//						switch (conditionsOnCurrentCase[1]) {
+//							case "sol":
+//								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[0]);
+//								partList = tuileCase.floorBuildingParts;
+//								break;
+//							case "mur":
+//								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[1]);
+//								partList = tuileCase.wallBuildingParts;
+//								break;
+//							case "toit":
+//								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[2]);
+//								partList = tuileCase.roofBuildingParts;
+//								break;
+//						}
+						int nbPartsBuilt = (partList != null ? partList.length : 0);
+						if (nbPartsBuilt < nbPartsPostition) {
 							isCurrentCaseOk = true;
 							break;
 						}
@@ -502,7 +502,7 @@ public class GameController {
 				break;
 			}
 		}
-		boolean isPoweredByOther = buildingCase.checkIfBuildingPowered(buildingFromDistance);
+		boolean isPoweredByOther = buildingCase.getBuildingPowerSourcePosition(buildingFromDistance) != null;
 		powerCheckBox.setEnabled(!isPoweredByOther || alreadyPowered);
 		// Update of energy consuption when a checkbox is touched
 		powerCheckBox.addActionListener(new ActionListener(){
@@ -550,6 +550,44 @@ public class GameController {
 			buildingsPoweredList.toArray(buildingsPoweredArray);
 			generatorCase.buildingsPowered = buildingsPoweredArray;
 		}
+    }
+    
+    public void displayBuildingOptions(TuileCase tuileCase) {
+    	JDialog buildOptionsDialog = new JDialog();
+    	buildOptionsDialog.setBounds(200, 200, 800, 600);
+    	
+        JLabel titleLabel = new JLabel(tuileCase.building);
+        Integer[] powerPosition = tuileCase.getBuildingPowerSourcePosition(tuileCase.building);
+        JLabel energyLabel;
+        if (powerPosition == null) {
+        	energyLabel = new JLabel("Non alimenté en énergie");
+        } else {
+        	energyLabel = new JLabel("Alimenté depuis la case [" + powerPosition[0] + ", " + powerPosition[1] + "]");        	
+        }
+		JCheckBox sucCheckBox = new JCheckBox("Consommation de suc " + tuileCase.getSucTotalCons());
+		sucCheckBox.setSelected(tuileCase.isSucFed);
+
+		buildOptionsDialog.add(titleLabel);
+		buildOptionsDialog.add(energyLabel);
+		buildOptionsDialog.add(sucCheckBox);
+        
+		String[][] buildingPartLists = {tuileCase.floorBuildingParts, tuileCase.wallBuildingParts, tuileCase.roofBuildingParts};
+		String[] buildingPartListNames = {"Sol", "Mur", "Toit"};
+		for (var i = 0; i < buildingPartLists.length; i++) {
+			String [] buildingPartList = buildingPartLists[i];
+			String partPosition = buildingPartListNames[i];
+			int nbFreePartPosition = settings.getNbBuildPartPosition(tuileCase.building, partPosition.toLowerCase()) - tuileCase.getBuildingPartsList(partPosition.toLowerCase()).length;
+			buildOptionsDialog.add(new JLabel(" -- " + partPosition + " (" + nbFreePartPosition + " emplacements restants)"));
+			if (buildingPartList != null) {
+				for (String buildingPart : buildingPartList) {
+					buildOptionsDialog.add(new JLabel(" ---- " + buildingPart));
+					buildOptionsDialog.add(new JLabel(" ------ Consomation d'énergie: " + settings.getPowerCons(buildingPart)));
+					buildOptionsDialog.add(new JLabel(" ------ Consomation de suc: " + settings.getSucCons(buildingPart)));
+				}
+			}
+		}
+		buildOptionsDialog.setLayout(new GridLayout(0, 1));
+		buildOptionsDialog.setVisible(true);
     }
     
     public void showGivePopup(Player activePlayer) {
