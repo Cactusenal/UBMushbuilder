@@ -29,6 +29,7 @@ public class Settings {
 	
     //DATAS
     String[] directions = {"NO", "N", "NE", "O", "C", "E", "SO", "S", "SE"};
+    Integer inhabitantWorkforce = 30;
     
     //params selecteurs
     Sliders[] BiomeSliders;
@@ -607,7 +608,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Building rules");
-    	JLabel rulesTemplateLabel = new JLabel("Energie requise | Energie produite | Portée | Consommation de Suc");
+    	JLabel rulesTemplateLabel = new JLabel("Nombres emplacements de modules (sol, mur, toit) | Energie requise | Energie produite | Portée | Consommation de Suc");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 
