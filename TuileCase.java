@@ -136,7 +136,7 @@ public class TuileCase {
 		if (buildName.equals("Route")) {
 			// Construction de route
 			if (roadLevel == 0) {
-				inConstruction = buildName;
+				setConstructionStart(buildName);
 			} else {
 	    		JOptionPane.showMessageDialog(Main.frame,
 	    			    "Road already existing here",
@@ -145,23 +145,38 @@ public class TuileCase {
 			}
 		} else if (building.equals("")) {
 			// Construction sur terrain vide
-			inConstruction = buildName;
+			setConstructionStart(buildName);
 		} else {
 			// Terrain déjà occupé
 			if (Main.settings.buildingConditions.get(buildName)[0].split(",")[0].equals(building)) {
 				// Construction de module
-				inConstruction = buildName;
+				setConstructionStart(buildName);
 			} else {
 				// Replace existing building ?
-				inConstruction = buildName;
-				floorBuildingParts = null;
-				wallBuildingParts = null;
-				roofBuildingParts = null;
+				if (setConstructionStart(buildName)) {
+					floorBuildingParts = null;
+					wallBuildingParts = null;
+					roofBuildingParts = null;					
+				}
 			}
 		}
 	}
 	
-	public void setBuilding(String buildName) {
+	private boolean setConstructionStart(String buildName) {
+		if(!(parentTuile.getFreeInhabitants() > 0)) {
+    		JOptionPane.showMessageDialog(Main.frame,
+    			    "no Inhabitant free for construction",
+    			    "Inane warning",
+    			    JOptionPane.WARNING_MESSAGE);
+    		return false;
+		}
+		inConstruction = buildName;
+		Object[] inHabitantWorkPlace = {xPos, yPos, "builder"};
+		parentTuile.inhabitantWork.add(inHabitantWorkPlace);
+		return true;
+	}
+	
+	public void setFinishedBuilding(String buildName) {
 		if (buildName.equals("Route")) {
 			roadLevel++;
 		} else if (building.equals("")) {
@@ -187,6 +202,10 @@ public class TuileCase {
 		buildSuc = 0;
 		buildPhospho = 0;
 		parentTuile.updatePopulation();
+		Object[] inHabitantWorkPlace = {xPos, yPos, "builder"};
+		if(!parentTuile.removeInhabitant(inHabitantWorkPlace)) {
+			Main.settings.AddDebugLog("ERROR: do not suceed to free the inhabitant");
+		}
 	}
 	
 	public void addBuildingPart(String buildingPart, String localisation) {
@@ -482,13 +501,16 @@ public class TuileCase {
 
 	public void iterateConstruction() {
 		if (!inConstruction.equals("") ) {
+			// Get construction price
 			String[] priceInRessourceString = Main.settings.getRessourcePrice(inConstruction).split(",");
 			Integer[] priceInRessource = new Integer[priceInRessourceString.length];
 			for (int i = 0; i < priceInRessourceString.length; i++) {
 				priceInRessource[i] = Integer.parseInt(priceInRessourceString[i]);
 			}
+			// Getting ressource on present case
 			getRessourcesForConstruction(this, priceInRessource);
 			Integer rangeIndex = 1;
+			// Getting ressources line by line
 			while (rangeIndex <= Main.settings.constructRange && !isBuildingFinished(priceInRessource)) {
 				TuileCase[] inRangeCases = getCasesFromDistance(rangeIndex, rangeIndex - 1);
 				Integer casesIndex = 0;
@@ -501,9 +523,9 @@ public class TuileCase {
 				}
 				rangeIndex++;
 			}
-
+			// Set building once building is finished
 			if (isBuildingFinished(priceInRessource)) {
-				setBuilding(inConstruction);
+				setFinishedBuilding(inConstruction);
 			}
 		}
 	}

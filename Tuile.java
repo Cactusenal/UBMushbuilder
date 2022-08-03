@@ -20,7 +20,8 @@ public class Tuile {
 	int yPos;
 	
 	TuileCase[][] cases = new TuileCase [3][3];
-	Integer nbHabitant = 1;
+	Integer nbInhabitant = 1;
+	ArrayList<Object[]> inhabitantWork = new ArrayList<Object[]>();
 
 	boolean isViewTuile;
 	
@@ -231,20 +232,20 @@ public class Tuile {
 	}
 	
 	public int updatePopulation() {
-		nbHabitant = 1;
+		nbInhabitant = 1;
 		for (TuileCase[] currentCaseLign : cases) {
             for (TuileCase currentCase : currentCaseLign) {
             	if (!currentCase.building.equals("")) {
-            		nbHabitant++;
+            		nbInhabitant++;
             	}
             }
 		}
-		return nbHabitant;
+		return nbInhabitant;
 	}
 	
 	public int getProduction(String ressourceToGet) {
 		if (ressourceToGet.equals("habitant")) {
-			return nbHabitant;
+			return nbInhabitant;
 		}	
 		int ressourceProd = 0;
 		for (TuileCase[] currentCaseLign : cases) {
@@ -280,7 +281,7 @@ public class Tuile {
         infoDialog.add(new JLabel("Phosphorite: +" + getProduction("prodPhospho")));
         infoDialog.add(new JLabel("MushCoins: +" + getProduction("prodCoins")));
         infoDialog.add(new JLabel(""));
-        infoDialog.add(new JLabel("Habitant(s): " + getProduction("habitant")));
+        infoDialog.add(new JLabel("Habitant(s): " + getFreeInhabitants() + "/" + getProduction("habitant")));
         infoDialog.add(new JLabel(""));
         int numberOfLines = 10;
 		
@@ -294,5 +295,26 @@ public class Tuile {
 		infoDialog.setVisible(false);
 		infoDialog.dispose();
 		infoDialog.removeAll();		
+	}
+
+	public int getFreeInhabitants() {
+		return nbInhabitant - inhabitantWork.size();
+	}
+	
+	public boolean removeInhabitant(Object[] workplace) {
+		for (var index = 0; i < inhabitantWork.size(); i++) {
+			var valid = true;
+			for (var workplaceIndex = 0; workplaceIndex < workplace.length; workplaceIndex++) {
+				if (!inhabitantWork.get(index)[workplaceIndex].equals(workplace[workplaceIndex])) {
+					valid = false;
+					break;
+				}
+			}
+			if (valid) {
+				inhabitantWork.remove(index);
+				return true;
+			}
+		}
+		return false;
 	}
 }
