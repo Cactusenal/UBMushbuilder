@@ -282,12 +282,18 @@ public class Tuile {
         infoDialog.add(new JLabel("MushCoins: +" + getProduction("prodCoins")));
         infoDialog.add(new JLabel(""));
         infoDialog.add(new JLabel("Habitant(s): " + getFreeInhabitants() + "/" + getProduction("habitant")));
-        infoDialog.add(new JLabel(""));
-        int numberOfLines = 10;
+        int numberOfLines = 9;
+        // Display inhabitant occupations
+        Object[][] inhabitantWorkArray = new Object[inhabitantWork.size()][3];
+        inhabitantWork.toArray(inhabitantWorkArray);
+        for (Object[] inhabitant : inhabitantWorkArray) {
+            infoDialog.add(new JLabel(getInhabitantOccupationString(inhabitant)));
+            numberOfLines++;
+        }
 		
 		infoDialog.setLayout(new GridLayout(numberOfLines, 1));
 		
-        infoDialog.setBounds(350, 50, 150, numberOfLines * 30);
+        infoDialog.setBounds(350, 50, 200, numberOfLines * 30);
         infoDialog.setVisible(true);		
 	}
 
@@ -299,6 +305,18 @@ public class Tuile {
 
 	public int getFreeInhabitants() {
 		return nbInhabitant - inhabitantWork.size();
+	}
+	
+	private String getInhabitantOccupationString(Object[] inhabitantWorkData) {
+		String occupationString = "";
+		switch (inhabitantWorkData[2].toString()) {
+			case "builder":
+				occupationString = "Habitant construisant en ";
+			default:
+				Main.settings.AddDebugLog("Unknown occupation for inhabitant: " + inhabitantWorkData[2].toString());
+		}
+		occupationString += inhabitantWorkData[0] + ":" + inhabitantWorkData[1];
+		return occupationString;
 	}
 	
 	public boolean removeInhabitant(Object[] workplace) {

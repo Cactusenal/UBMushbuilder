@@ -675,9 +675,9 @@ public class TuileCase {
 	                numberOfLines++;
 	            }
     		}
+    		infoDialog.add(new JLabel("Suc Level: " + sucLevel + "/" + Main.settings.maxSucLevel));
+    		numberOfLines++;
         }
-//        infoDialog.add(new JLabel("Suc Level: +" + sucLevel));
-//        numberOfLines++;
         if (roadLevel > 0) {
             infoDialog.add(new JLabel("Route de niveau " + roadLevel));
             numberOfLines++;
@@ -688,6 +688,7 @@ public class TuileCase {
         infoDialog.setBounds(350, 50, 150, numberOfLines * 30);
         infoDialog.setVisible(true);
 	}
+	
 	
 	private void hidePanelCaseInfo() {
 		infoDialog.setVisible(false);
