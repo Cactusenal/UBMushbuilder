@@ -662,12 +662,12 @@ public class TuileCase {
         infoDialog.add(new JLabel("Suc: +" + prodSuc));
         infoDialog.add(new JLabel("Phosphorite: +" + prodPhospho));
         infoDialog.add(new JLabel("MushCoins: +" + prodCoins));
-        infoDialog.add(new JLabel(""));
-        int numberOfLines = 8;
+        int numberOfLines = 7;
 
         if (!building.equals("")) {
+        	infoDialog.add(new JLabel(""));
             infoDialog.add(new JLabel(building));
-            numberOfLines++;
+            numberOfLines += 2;
     		String[][] buildingPartLists = {floorBuildingParts, wallBuildingParts, roofBuildingParts};
     		for (String[] buildingPartList : buildingPartLists) {
 	            for (var i = 0; i < buildingPartList.length; i++) {
@@ -679,13 +679,19 @@ public class TuileCase {
     		numberOfLines++;
         }
         if (roadLevel > 0) {
-            infoDialog.add(new JLabel("Route de niveau " + roadLevel));
-            numberOfLines++;
+            infoDialog.add(new JLabel(""));
+        	infoDialog.add(new JLabel("Route de niveau " + roadLevel));
+            numberOfLines += 2;
+        }
+        if (!inConstruction.equals("")) {
+            infoDialog.add(new JLabel(""));
+        	infoDialog.add(new JLabel(inConstruction + " en constrcution"));
+            numberOfLines += 2;
         }
 		
 		infoDialog.setLayout(new GridLayout(numberOfLines, 1));
 		
-        infoDialog.setBounds(350, 50, 150, numberOfLines * 30);
+        infoDialog.setBounds(350, 50, 200, numberOfLines * 30);
         infoDialog.setVisible(true);
 	}
 	

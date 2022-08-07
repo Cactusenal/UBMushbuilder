@@ -261,10 +261,12 @@ public class GameController {
     	if (isViewer) {
 			tuileCase.changeTerrain();
 			tuileCase.updateFilterView();
-    	} else if (!tuileCase.inConstruction.equals("")) {
-    		displayInContruction(tuileCase);
     	} else if (actionSelector.getItemAt(actionSelector.getSelectedIndex()).equals("Construire")) {
-        	displayBuildingPopup(tuileCase);
+    		if (!tuileCase.inConstruction.equals("")) {
+        		displayInContruction(tuileCase);
+    		} else {
+    			displayBuildingPopup(tuileCase);
+    		}
     	} else if (actionSelector.getItemAt(actionSelector.getSelectedIndex()).equals("Voir")) {
     		if (!tuileCase.building.equals("") && !settings.buildingRules.get(tuileCase.building)[2].equals("")) {
     			displayGeneratorPopup(tuileCase);    			
