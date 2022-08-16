@@ -427,11 +427,13 @@ public class GameController {
         		}
         		String[][] buildingPartLists = {caseFromDistance.floorBuildingParts, caseFromDistance.wallBuildingParts, caseFromDistance.roofBuildingParts};
         		for (String[] buildingPartList : buildingPartLists) {
-        			for (String buildingPart : buildingPartList) {
-        				if (settings.getPowerCons(buildingPart) > 0) {
-        					createBuildingLineForPower(generatorDialog, buildingPart, caseFromDistance, buildX, buildY, tuileCase, buildingsToPowerList);
-        				}
-        			}        			
+        			if (buildingPartList != null) {
+        				for (String buildingPart : buildingPartList) {
+        					if (settings.getPowerCons(buildingPart) > 0) {
+        						createBuildingLineForPower(generatorDialog, buildingPart, caseFromDistance, buildX, buildY, tuileCase, buildingsToPowerList);
+        					}
+        				}        			        				
+        			}
         		}
         	}
         }
@@ -472,13 +474,21 @@ public class GameController {
 		JLabel buildingLabel = new JLabel(buildingFromDistance + " (" + buildX + "," + buildY +  ")");
 		// Getting how much power is needed
 		Integer powerCons = settings.getPowerCons(buildingFromDistance);
-		JCheckBox powerCheckBox = new JCheckBox("" + powerCons);
+		boolean isPowered = buildingCase.getBuildingPowerSourcePosition(buildingFromDistance) != null;
+		boolean isBuildingSucOk = buildingCase.isSucFed || settings.getSucCons(buildingFromDistance) == 0;
+		String powerCheckBoxLabel = "" + powerCons;
+		if (!isBuildingSucOk) {
+			powerCheckBoxLabel += " (Alimentation en suc nécessaire)";
+		}
+		JCheckBox powerCheckBox = new JCheckBox(powerCheckBoxLabel );
+		
 		generatorDialog.add(buildingLabel);
 		generatorDialog.add(powerCheckBox);
+		
 		Object[] buildingLine = {buildingFromDistance, buildX, buildY, powerCheckBox};
 		buildingsToPowerList.add(buildingLine);
 		buildingNumber++;
-		Boolean alreadyPowered = false;
+		Boolean alreadyPoweredHere = false;
 		for (Object [] buildingPowered : generatorCase.buildingsPowered) {
 			// TODO: Check for non possible buildings
 			// Check if the building is already powered by this generator, and check box if so
@@ -486,12 +496,11 @@ public class GameController {
 				// TODO: remove boolean in tuileCase.buildingsPowered object ?
 				powerCheckBox.setSelected((boolean) buildingPowered[3]);
 				energyProvided += powerCons;
-				alreadyPowered = true;
+				alreadyPoweredHere = true;
 				break;
 			}
 		}
-		boolean isPoweredByOther = buildingCase.getBuildingPowerSourcePosition(buildingFromDistance) != null;
-		powerCheckBox.setEnabled(!isPoweredByOther || alreadyPowered);
+		powerCheckBox.setEnabled((alreadyPoweredHere) || (!isPowered && isBuildingSucOk));
 		// Update of energy consuption when a checkbox is touched
 		powerCheckBox.addActionListener(new ActionListener(){
 			// Apply the list of powered building to generator
@@ -578,6 +587,28 @@ public class GameController {
 				}
 			}
 		}
+		
+		//Création du bouton
+    	JButton applyBuildingOptions = new JButton("Apply building options");
+    	buildOptionsDialog.add(applyBuildingOptions);
+		applyBuildingOptions.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+//				for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
+//					caseFromDistance.updateCaseProduction();
+//				}
+				if (sucCheckBox.isSelected() && tuileCase.sucLevel < 50 && !tuileCase.isActive) {
+		    		JOptionPane.showMessageDialog(Main.frame,
+		    			    "Not enough Suc to restart building",
+		    			    "Inane warning",
+		    			    JOptionPane.WARNING_MESSAGE);
+				} else {
+					tuileCase.isSucFed = sucCheckBox.isSelected();
+					tuileCase.updateCaseProduction();
+					settings.updatePlayersProd();
+					buildOptionsDialog.setVisible(false);					
+				}
+			}
+		});
 		
 		buildOptionsDialog.setLayout(new GridLayout(0, 1));
 		buildOptionsDialog.setVisible(true);

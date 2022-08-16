@@ -239,7 +239,7 @@ public class Tuile {
 		nbInhabitant = 1;
 		for (TuileCase[] currentCaseLign : cases) {
             for (TuileCase currentCase : currentCaseLign) {
-            	if (!currentCase.building.equals("")) {
+            	if (!currentCase.building.equals("") && currentCase.isActive) {
             		nbInhabitant++;
             	}
             }

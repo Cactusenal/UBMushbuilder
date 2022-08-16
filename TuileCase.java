@@ -623,11 +623,45 @@ public class TuileCase {
 		}
 		int consumption = getSucTotalCons();
 		if (!isSucFed || consumption > sucLevel) {
+			// Building does not have enough suc anymore
 			isActive = false;
+			Main.settings.AddDebugLog("[consumeSucAndSetActivity] " + getCaseXPos() +":"+ getCaseYPos() + " , isSucFed: " + isSucFed + " ,consumption: " + consumption);
+			if (Main.settings.isGeneratingPower(building)) {
+				// Desactivate all porwered buildings from this TuileCase
+				buildingsPowered = new Object[0][0];
+				if (isSucFed) {Main.settings.AddDebugLog("[consumeSucAndSetActivity] Generator is out of suc! Desactivating powered buildings");}
+			} else if (!building.equals("")) {
+				// Desactivate the building from this TuileCase if it is powered
+				if (Main.settings.getPowerCons(building) > 0) {
+					Integer[] sourcePositionMain = getBuildingPowerSourcePosition(building);
+					if (sourcePositionMain != null) {
+						TuileCase generatorSourceMain = Main.cartePanel.getTuileCase(sourcePositionMain[0], sourcePositionMain[1]);
+						generatorSourceMain.removeBuildingPowered(building, getCaseXPos(), getCaseYPos());
+						Main.settings.AddDebugLog("[consumeSucAndSetActivity] Building is out of suc! Desactivating power connection of " + getCaseXPos() + ";" + getCaseYPos() + " from " + sourcePositionMain[0] + ";" +sourcePositionMain[1]);
+					}
+				}
+				// Desactivate the building parts from this TuileCase they are powered
+        		String[][] buildingPartLists = {floorBuildingParts, wallBuildingParts, roofBuildingParts};
+        		for (String[] buildingPartList : buildingPartLists) {
+        			for (String buildingPart : buildingPartList) {
+        				if (Main.settings.getPowerCons(buildingPart) > 0) {
+        					Integer[] sourcePositionPart = getBuildingPowerSourcePosition(buildingPart);
+        					if (sourcePositionPart != null) {
+        						TuileCase generatorSourcePart = Main.cartePanel.getTuileCase(sourcePositionPart[0], sourcePositionPart[1]);
+        						generatorSourcePart.removeBuildingPowered(buildingPart, getCaseXPos(), getCaseYPos());
+        						Main.settings.AddDebugLog("[consumeSucAndSetActivity] Building part is out of suc! Desactivating power connection of " + getCaseXPos() + ";" + getCaseYPos() + " from " + sourcePositionPart[0] + ";" +sourcePositionPart[1]);
+        					}        					
+        				}
+        			}
+        		}
+			}
+			// Desactivate building
+			isSucFed = false;
 		} else {
 			sucLevel -= consumption;
 			isActive = true;
 		}
+		parentTuile.updatePopulation();
 	}
 	
 	public int getSucTotalCons() {
