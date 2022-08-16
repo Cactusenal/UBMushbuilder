@@ -46,9 +46,9 @@ public class TuileCase {
     
     //Buildings
     String building = "";
-    String [] floorBuildingParts = {};
-    String [] wallBuildingParts = {};
-    String [] roofBuildingParts = {};
+    String [] floorBuildingParts = Main.settings.emptyStringArray;
+    String [] wallBuildingParts = Main.settings.emptyStringArray;
+    String [] roofBuildingParts = Main.settings.emptyStringArray;
     Integer roadLevel = 0;
     Integer sucLevel = 0;
     Boolean isSucFed = false;
@@ -59,7 +59,7 @@ public class TuileCase {
     Integer buildSpore = 0;
     Integer buildSuc = 0;
     Integer buildPhospho = 0;
-    
+    // For generators
     public Object[][] buildingsPowered = {};
     
     
@@ -154,9 +154,9 @@ public class TuileCase {
 			} else {
 				// Replace existing building ?
 				if (setConstructionStart(buildName)) {
-					floorBuildingParts = null;
-					wallBuildingParts = null;
-					roofBuildingParts = null;					
+					floorBuildingParts = Main.settings.emptyStringArray;
+					wallBuildingParts = Main.settings.emptyStringArray;
+					roofBuildingParts = Main.settings.emptyStringArray;
 				}
 			}
 		}
@@ -189,15 +189,16 @@ public class TuileCase {
 			} else {
 				// Replace existing building ?
 				building = buildName;
-				floorBuildingParts = null;
-				wallBuildingParts = null;
-				roofBuildingParts = null;
+				floorBuildingParts = Main.settings.emptyStringArray;
+				wallBuildingParts = Main.settings.emptyStringArray;
+				roofBuildingParts = Main.settings.emptyStringArray;
 				sucLevel = 0;
 			}
 		}
 		inConstruction = "";
 		isSucFed = true;
 		isActive = false;
+		sucLevel = Main.settings.maxSucLevel;
 		buildFibre = 0;
 		buildSpore = 0;
 		buildSuc = 0;
@@ -393,12 +394,26 @@ public class TuileCase {
 //				Main.settings.AddDebugLog("[getBuildingPowerSourcePosition] building powered here is :" + (String)buildingPowered[0]);
 				if (buildingName.equals((String)buildingPowered[0]) && (Integer)buildingPowered[1] == buildX && (Integer)buildingPowered[2] == buildY) {
 //					Main.settings.AddDebugLog("[getBuildingPowerSourcePosition] building powered!");
-					powerPosition = new Integer[]{buildX, buildY};
+					powerPosition = new Integer[]{inRangeCase.getCaseXPos(), inRangeCase.getCaseYPos()};
 					return powerPosition;
 				}
 			}
 		}
 		return powerPosition;
+	}
+	
+	void removeBuildingPowered(String buildingName, int xPos, int yPos) {
+		Main.settings.AddDebugLog("removeBuildingPowered");
+		List<Object[]> buildingsPoweredList = new ArrayList<Object[]>();
+		for (Object [] buildingPowered : buildingsPowered) {
+			if ((String)buildingPowered[0] == buildingName && (Integer)buildingPowered[1] == xPos && (Integer)buildingPowered[2] == yPos) {
+			} else {
+				buildingsPoweredList.add(buildingPowered);				
+			}
+		}
+		Object [][] buildingsPoweredArray =  new Object[buildingsPoweredList.size()][4];
+		buildingsPoweredList.toArray(buildingsPoweredArray);
+		buildingsPowered = buildingsPoweredArray;
 	}
 		
 	Integer getCaseXPos() {
@@ -655,6 +670,10 @@ public class TuileCase {
         
         updateCaseProduction();
         
+        JLabel playerLabel = new JLabel(parentTuile.owner.playerName + "");
+        playerLabel.setForeground(parentTuile.owner.playerColor);
+        infoDialog.add(playerLabel);
+        infoDialog.add(new JLabel(""));
         infoDialog.add(new JLabel(terrain + " (" + getCaseXPos() + ":" + getCaseYPos() + ")"));
         infoDialog.add(new JLabel(""));
         infoDialog.add(new JLabel("Fibre: +" + prodFibre));
@@ -662,7 +681,7 @@ public class TuileCase {
         infoDialog.add(new JLabel("Suc: +" + prodSuc));
         infoDialog.add(new JLabel("Phosphorite: +" + prodPhospho));
         infoDialog.add(new JLabel("MushCoins: +" + prodCoins));
-        int numberOfLines = 7;
+        int numberOfLines = 9;
 
         if (!building.equals("")) {
         	infoDialog.add(new JLabel(""));
@@ -670,7 +689,7 @@ public class TuileCase {
             numberOfLines += 2;
     		String[][] buildingPartLists = {floorBuildingParts, wallBuildingParts, roofBuildingParts};
     		for (String[] buildingPartList : buildingPartLists) {
-	            for (var i = 0; i < buildingPartList.length; i++) {
+	            for (var i = 0; i < (buildingPartList != null ? buildingPartList.length : 0) ; i++) {
 	                infoDialog.add(new JLabel(" - " + buildingPartList[i]));
 	                numberOfLines++;
 	            }

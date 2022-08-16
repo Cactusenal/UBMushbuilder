@@ -50,7 +50,7 @@ public class GameController {
     JComboBox<String> biomeSelector;
     JComboBox<String> seasonSelector;
     JComboBox<String> overviewSelector;
-    String[] possibleViews = {"Aucune", "Tuiles", "Cases"};
+    String[] possibleViews = {"Cases", "Tuiles", "Aucune"};
     // Time label
     JLabel timeLabel = new JLabel();
     Integer timeIteration = 0;
@@ -268,7 +268,7 @@ public class GameController {
     			displayBuildingPopup(tuileCase);
     		}
     	} else if (actionSelector.getItemAt(actionSelector.getSelectedIndex()).equals("Voir")) {
-    		if (!tuileCase.building.equals("") && !settings.buildingRules.get(tuileCase.building)[2].equals("")) {
+    		if (!tuileCase.building.equals("") && settings.isGeneratingPower(tuileCase.building)) {
     			displayGeneratorPopup(tuileCase);    			
     		} else if (!tuileCase.building.equals("")) {
     			displayBuildingOptions(tuileCase);
@@ -335,20 +335,6 @@ public class GameController {
 						String partsPosition = conditionsOnCurrentCase[1];
 						Integer nbPartsPostition = settings.getNbBuildPartPosition(tuileCase.building, partsPosition);
 						String[] partList = tuileCase.getBuildingPartsList(partsPosition);
-//						switch (conditionsOnCurrentCase[1]) {
-//							case "sol":
-//								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[0]);
-//								partList = tuileCase.floorBuildingParts;
-//								break;
-//							case "mur":
-//								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[1]);
-//								partList = tuileCase.wallBuildingParts;
-//								break;
-//							case "toit":
-//								nbPartsPostition = Integer.valueOf(settings.buildingRules.get(tuileCase.building)[0].split(",")[2]);
-//								partList = tuileCase.roofBuildingParts;
-//								break;
-//						}
 						int nbPartsBuilt = (partList != null ? partList.length : 0);
 						if (nbPartsBuilt < nbPartsPostition) {
 							isCurrentCaseOk = true;
@@ -574,13 +560,15 @@ public class GameController {
 		buildOptionsDialog.add(energyLabel);
 		buildOptionsDialog.add(sucLevelLabel);
 		buildOptionsDialog.add(sucCheckBox);
-        
+		
+        // <Display of building parts
 		String[][] buildingPartLists = {tuileCase.floorBuildingParts, tuileCase.wallBuildingParts, tuileCase.roofBuildingParts};
 		String[] buildingPartListNames = {"Sol", "Mur", "Toit"};
 		for (var i = 0; i < buildingPartLists.length; i++) {
 			String [] buildingPartList = buildingPartLists[i];
 			String partPosition = buildingPartListNames[i];
-			int nbFreePartPosition = settings.getNbBuildPartPosition(tuileCase.building, partPosition.toLowerCase()) - tuileCase.getBuildingPartsList(partPosition.toLowerCase()).length;
+			String[] presentParts = tuileCase.getBuildingPartsList(partPosition.toLowerCase());
+			int nbFreePartPosition = settings.getNbBuildPartPosition(tuileCase.building, partPosition.toLowerCase()) - (presentParts != null ? presentParts.length : 0);
 			buildOptionsDialog.add(new JLabel(" -- " + partPosition + " (" + nbFreePartPosition + " emplacements restants)"));
 			if (buildingPartList != null) {
 				for (String buildingPart : buildingPartList) {

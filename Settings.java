@@ -77,6 +77,7 @@ public class Settings {
 	};
 	
 	// building datas
+    String [] emptyStringArray = {};
 	// Rules
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
 	String[] dummyRule = {"Emp. modules (sol,mur,toit)", "En.requise", "En.produite", "distance", "Suc consumption"};
@@ -465,7 +466,7 @@ public class Settings {
         buttonPanel.add(applyAndExitButton);    	
         buttonPanel.setLayout(new GridLayout(1, 2));
         
-        prodDialog.add(buttonPanel, BorderLayout.SOUTH);    	
+        prodDialog.add(buttonPanel, BorderLayout.SOUTH);
     }
     
     HashMap<String, String[]> getProdRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields) {
@@ -905,5 +906,12 @@ public class Settings {
 			integerHashMap.put(ruleName, integerValues);
 		}
 		return integerHashMap;
+	}
+	
+	public boolean isGeneratingPower(String buildingName) {
+		if (buildingName.equals("")) {
+			return false;
+		}
+		return !buildingRules.get(buildingName)[2].equals("");
 	}
 }

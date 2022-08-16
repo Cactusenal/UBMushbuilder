@@ -58,6 +58,10 @@ public class Tuile {
 		j = 0;
 	}
 	
+	public TuileCase getTuileCase (int x, int y) {
+		return cases[x][y];
+	}
+	
 	void setTuileLayout(TuileCase newCase) {
     	boolean isIso = true;
 		
@@ -137,9 +141,9 @@ public class Tuile {
             for (int y = 0; y < 3; y++) {
             	cases[x][y].setTerrain(terrainGrid[x][y]);
             	cases[x][y].building = "";
-            	cases[x][y].floorBuildingParts = null;
-            	cases[x][y].wallBuildingParts = null;
-            	cases[x][y].roofBuildingParts = null;
+            	cases[x][y].floorBuildingParts = Main.settings.emptyStringArray;
+            	cases[x][y].wallBuildingParts = Main.settings.emptyStringArray;
+            	cases[x][y].roofBuildingParts = Main.settings.emptyStringArray;
             	cases[x][y].sucLevel = 0;
             }
         }
@@ -245,6 +249,7 @@ public class Tuile {
 	
 	public int getProduction(String ressourceToGet) {
 		if (ressourceToGet.equals("habitant")) {
+			// TDODO reclaculer dynamiquement
 			return nbInhabitant;
 		}	
 		int ressourceProd = 0;
@@ -312,8 +317,9 @@ public class Tuile {
 		switch (inhabitantWorkData[2].toString()) {
 			case "builder":
 				occupationString = "Habitant construisant en ";
+				break;
 			default:
-				Main.settings.AddDebugLog("Unknown occupation for inhabitant: " + inhabitantWorkData[2].toString());
+				Main.settings.AddDebugLog("[getInhabitantOccupationString] Unknown occupation for inhabitant: " + inhabitantWorkData[2].toString());
 		}
 		occupationString += inhabitantWorkData[0] + ":" + inhabitantWorkData[1];
 		return occupationString;

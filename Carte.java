@@ -76,6 +76,10 @@ public class Carte extends JLayeredPane {
 		return tableauTuile[y][x];
 	}
 	
+	TuileCase getTuileCase(int x, int y) {
+		return getTuile(x / 3, y / 3).getTuileCase(x % 3, y % 3);
+	}
+	
 	void updateWorldView() {
 		updateWorldProd();
 		updateFilterView();
