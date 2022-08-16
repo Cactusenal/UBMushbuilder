@@ -203,7 +203,7 @@ public class TuileCase {
 		buildSpore = 0;
 		buildSuc = 0;
 		buildPhospho = 0;
-		parentTuile.updatePopulation();
+		parentTuile.getAndUpdatePopulation();
 		Object[] inHabitantWorkPlace = {xPos, yPos, "builder"};
 		if(!parentTuile.removeInhabitant(inHabitantWorkPlace)) {
 			Main.settings.AddDebugLog("ERROR: do not suceed to free the inhabitant");
@@ -661,7 +661,7 @@ public class TuileCase {
 			sucLevel -= consumption;
 			isActive = true;
 		}
-		parentTuile.updatePopulation();
+		parentTuile.getAndUpdatePopulation();
 	}
 	
 	public int getSucTotalCons() {

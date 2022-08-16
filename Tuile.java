@@ -103,7 +103,7 @@ public class Tuile {
 
 		// Update Tuile infos
 		setTerrain(tuileToCopy.getTerrain());
-		updatePopulation();
+		getAndUpdatePopulation();
 
 		updateTuileProductions();
 		
@@ -235,11 +235,11 @@ public class Tuile {
         }
 	}
 	
-	public int updatePopulation() {
+	public int getAndUpdatePopulation() {
 		nbInhabitant = 1;
 		for (TuileCase[] currentCaseLign : cases) {
             for (TuileCase currentCase : currentCaseLign) {
-            	if (!currentCase.building.equals("") && currentCase.isActive) {
+            	if (!currentCase.building.equals("")) { // ?? && currentCase.isActive) {
             		nbInhabitant++;
             	}
             }
@@ -249,8 +249,7 @@ public class Tuile {
 	
 	public int getProduction(String ressourceToGet) {
 		if (ressourceToGet.equals("habitant")) {
-			// TDODO reclaculer dynamiquement
-			return nbInhabitant;
+			return getAndUpdatePopulation();
 		}	
 		int ressourceProd = 0;
 		for (TuileCase[] currentCaseLign : cases) {
