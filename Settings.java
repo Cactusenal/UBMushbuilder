@@ -53,7 +53,7 @@ public class Settings {
 	HashMap<String, String[]> sucProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> phosphoProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> coinProdRules = new HashMap<String, String[]>();
-	Integer prodRulesLength = 5;
+	Integer prodRulesLength = 6;
     // Prod rules dialogs
     JFrame prodFrame = new JFrame("Production settings");
     JDialog prodDialog = new JDialog(prodFrame);
@@ -414,7 +414,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Production rules");
-    	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome/Batiment d'où la règle s'applique (\"+\" si alimentation requise)| Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas | Saison(s) si spécifique");
+    	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome/Batiment d'où la règle s'applique (\"+\" si alimentation requise)| Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas | Saison(s) si spécifique | Abondance");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 
