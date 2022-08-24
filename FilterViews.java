@@ -191,7 +191,7 @@ public class FilterViews {
 
     //IMAGE MANAGEMENT
     public void sizeImages() {
-    	imgEau = sizeImage("water.png");
+//    	imgEau = sizeImage("water.png");
     	imgForet = sizeImage("tree.png");
     	imgFarm = sizeImage("farm.png");
     	imgPort = sizeImage("port.png");
