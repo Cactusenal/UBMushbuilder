@@ -31,6 +31,11 @@ public class FilterViews {
     Image imgGenerator;
     Image imgConstruct;
     Image imgRuins;
+    Image imgMountain;
+    Image imgDesert;
+    Image imgHaze;
+    Image imgSwamp;
+    Image imgGrass;
 
 	public FilterViews(Settings settings) {
 		// Construction des hashmaps
@@ -56,16 +61,15 @@ public class FilterViews {
 		fiberDisplayed.put("Marais", true);
 		
 		sporeDisplayed.put("Brume", true);
-		sporeDisplayed.put("Foret", true);
+		sporeDisplayed.put("Hauteurs", true);
 		sporeDisplayed.put("Plaine", true);
-		sporeDisplayed.put("Marais", true);
 		
 		sucDisplayed.put("Brume", true);
-		sucDisplayed.put("Désert", true);
-		sucDisplayed.put("Hauteurs", true);
+		sucDisplayed.put("Marais", true);
+		sucDisplayed.put("Foret", true);
 		
 		phosphoDisplayed.put("Brume", true);
-		phosphoDisplayed.put("Désert", true);
+		phosphoDisplayed.put("Marais", true);
 		phosphoDisplayed.put("Hauteurs", true);
 		
 		sizeImages();
@@ -91,22 +95,22 @@ public class FilterViews {
 			case "Fibre":
 				int prodFibre = tuileCase.prodFibre;
 				caseBackground.setText("" + prodFibre);		
-				caseToBiomeColor(caseBackground, terrain, allDisplay);
+				caseToBiomeColor(caseBackground, terrain, fiberDisplayed);
 				break;
 			case "Spore":
 				int prodSpore = tuileCase.prodSpore;
 				caseBackground.setText("" + prodSpore);
-				caseToBiomeColor(caseBackground, terrain, allDisplay);
+				caseToBiomeColor(caseBackground, terrain, sporeDisplayed);
 				break;
 			case "Suc":
 				int prodSuc = tuileCase.prodSuc;
 				caseBackground.setText("" + prodSuc);
-				caseToBiomeColor(caseBackground, terrain, allDisplay);
+				caseToBiomeColor(caseBackground, terrain, sucDisplayed);
 				break;
 			case "Phosphorite":
 				int prodPhospho = tuileCase.prodPhospho;
 				caseBackground.setText("" + prodPhospho);
-				caseToBiomeColor(caseBackground, terrain, allDisplay);
+				caseToBiomeColor(caseBackground, terrain, phosphoDisplayed);
 				break;
 			case "MushCoins":
 				int prodCoins = tuileCase.prodCoins;
@@ -136,10 +140,22 @@ public class FilterViews {
 		} else {
 			switch(terrain) {
 		    	case "Brume":
-				    caseBackground.setIcon(new ImageIcon(imgEau));
+				    caseBackground.setIcon(new ImageIcon(imgHaze));
 					break;
 		    	case "Foret":
 				    caseBackground.setIcon(new ImageIcon(imgForet));
+					break;
+				case "Hauteurs":
+					caseBackground.setIcon(new ImageIcon(imgMountain));
+					break;
+				case "Désert":
+					caseBackground.setIcon(new ImageIcon(imgDesert));
+					break;
+				case "Marais":
+					caseBackground.setIcon(new ImageIcon(imgSwamp));
+					break;
+				case "Plaine":
+					caseBackground.setIcon(new ImageIcon(imgGrass));
 					break;
 			}
 			switch (tuileCase.building) {
@@ -182,6 +198,11 @@ public class FilterViews {
     	imgGenerator = sizeImage("generator.png");
     	imgConstruct = sizeImage("construct.png");
     	imgRuins = sizeImage("ruins.png");
+    	imgMountain = sizeImage("mountain.png");
+    	imgDesert = sizeImage("desert.png");
+    	imgHaze = sizeImage("haze.png");
+    	imgGrass = sizeImage("grass.png");
+    	imgSwamp = sizeImage("swamp.png");
     }
     
     Image sizeImage(String imagePath) {
