@@ -53,6 +53,7 @@ public class TuileCase {
     Integer sucLevel = 0;
     Boolean isSucFed = false;
     Boolean isActive = false;
+    Boolean isRuins = false;
     // For construction
     String inConstruction = "";
     Integer buildFibre = 0;
@@ -631,8 +632,8 @@ public class TuileCase {
 				buildingsPowered = new Object[0][0];
 				if (isSucFed) {Main.settings.AddDebugLog("[consumeSucAndSetActivity] Generator is out of suc! Desactivating powered buildings");}
 			} else if (!building.equals("")) {
-				// Desactivate the building from this TuileCase if it is powered
 				if (Main.settings.getPowerCons(building) > 0) {
+					// Desactivate the building from this TuileCase if it is powered
 					Integer[] sourcePositionMain = getBuildingPowerSourcePosition(building);
 					if (sourcePositionMain != null) {
 						TuileCase generatorSourceMain = Main.cartePanel.getTuileCase(sourcePositionMain[0], sourcePositionMain[1]);
@@ -650,16 +651,18 @@ public class TuileCase {
         						TuileCase generatorSourcePart = Main.cartePanel.getTuileCase(sourcePositionPart[0], sourcePositionPart[1]);
         						generatorSourcePart.removeBuildingPowered(buildingPart, getCaseXPos(), getCaseYPos());
         						Main.settings.AddDebugLog("[consumeSucAndSetActivity] Building part is out of suc! Desactivating power connection of " + getCaseXPos() + ";" + getCaseYPos() + " from " + sourcePositionPart[0] + ";" +sourcePositionPart[1]);
-        					}        					
+        					}
         				}
         			}
         		}
 			}
 			// Desactivate building
 			isSucFed = false;
+			isRuins = true;
 		} else {
 			sucLevel -= consumption;
 			isActive = true;
+			isRuins = false;
 		}
 		parentTuile.getAndUpdatePopulation();
 	}

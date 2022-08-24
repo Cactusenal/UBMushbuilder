@@ -30,6 +30,7 @@ public class FilterViews {
     Image imgPort;
     Image imgGenerator;
     Image imgConstruct;
+    Image imgRuins;
 
 	public FilterViews(Settings settings) {
 		// Construction des hashmaps
@@ -75,8 +76,6 @@ public class FilterViews {
 		JButton caseBackground = tuileCase.caseBackground;
 		Tuile parent = tuileCase.parentTuile;
 		String terrain = tuileCase.terrain;
-		String building = tuileCase.building;
-		String inConstruction = tuileCase.inConstruction;
 		
 		caseBackground.setIcon(null);
 		caseBackground.setText("");
@@ -87,7 +86,7 @@ public class FilterViews {
 				caseToPlayerView(caseBackground, playerColor);
 				break;			
 			case "Biome":
-				caseToBiomeView(caseBackground, terrain, building, inConstruction);
+				caseToBiomeView(tuileCase);
 		    	break;
 			case "Fibre":
 				int prodFibre = tuileCase.prodFibre;
@@ -125,29 +124,35 @@ public class FilterViews {
 		
 	}
 	
-	void caseToBiomeView(JButton caseBackground, String terrain, String building, String inConstruction) {
+	void caseToBiomeView(TuileCase tuileCase) {
+		JButton caseBackground = tuileCase.caseBackground;
+		String terrain = tuileCase.terrain;
 		caseToBiomeColor(caseBackground, terrain);
-		switch(terrain) {
-	    	case "Brume":
-			    caseBackground.setIcon(new ImageIcon(imgEau));
-				break;
-	    	case "Foret":
-			    caseBackground.setIcon(new ImageIcon(imgForet));
-				break;
-		}
-		switch (building) {
-			case "Ferme":
-			    caseBackground.setIcon(new ImageIcon(imgFarm));
-	    		break;
-			case "Port":
-			    caseBackground.setIcon(new ImageIcon(imgPort));
-	    		break;
-			case "Generateur":
-			    caseBackground.setIcon(new ImageIcon(imgGenerator));
-	    		break;
-		}
-		if (!inConstruction.equals("")) {
+
+		if (!tuileCase.inConstruction.equals("")) {
 		    caseBackground.setIcon(new ImageIcon(imgConstruct));	
+		} else if (tuileCase.isRuins) {
+		    caseBackground.setIcon(new ImageIcon(imgRuins));
+		} else {
+			switch(terrain) {
+		    	case "Brume":
+				    caseBackground.setIcon(new ImageIcon(imgEau));
+					break;
+		    	case "Foret":
+				    caseBackground.setIcon(new ImageIcon(imgForet));
+					break;
+			}
+			switch (tuileCase.building) {
+				case "Ferme":
+				    caseBackground.setIcon(new ImageIcon(imgFarm));
+		    		break;
+				case "Port":
+				    caseBackground.setIcon(new ImageIcon(imgPort));
+		    		break;
+				case "Generateur":
+				    caseBackground.setIcon(new ImageIcon(imgGenerator));
+		    		break;
+			}
 		}
 	}
 	
@@ -176,6 +181,7 @@ public class FilterViews {
     	imgPort = sizeImage("port.png");
     	imgGenerator = sizeImage("generator.png");
     	imgConstruct = sizeImage("construct.png");
+    	imgRuins = sizeImage("ruins.png");
     }
     
     Image sizeImage(String imagePath) {
