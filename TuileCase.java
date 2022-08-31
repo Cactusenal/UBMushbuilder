@@ -182,7 +182,7 @@ public class TuileCase {
 			roadLevel++;
 		} else if (building.equals("")) {
 			building = buildName;
-//			Main.settings.AddDebugLog("no building");
+			sucLevel = Main.settings.getSucStock(buildName);
 		} else {
 			String[] buildingReq = Main.settings.buildingConditions.get(buildName)[0].split(",");
 			if (buildingReq[0].equals(building)) {
@@ -190,16 +190,15 @@ public class TuileCase {
 			} else {
 				// Replace existing building ?
 				building = buildName;
+				sucLevel = Main.settings.getSucStock(buildName);
 				floorBuildingParts = Main.settings.emptyStringArray;
 				wallBuildingParts = Main.settings.emptyStringArray;
 				roofBuildingParts = Main.settings.emptyStringArray;
-				sucLevel = 0;
 			}
 		}
 		inConstruction = "";
 		isSucFed = true;
 		isActive = false;
-		sucLevel = Main.settings.maxSucLevel;
 		buildFibre = 0;
 		buildSpore = 0;
 		buildSuc = 0;
@@ -679,7 +678,7 @@ public class TuileCase {
 	}
 
 	public void feedSucStock() {
-		int maxSucLevel = Main.settings.maxSucLevel;
+		int maxSucLevel = Main.settings.getSucStock(building);
 		feedWithRessource("SucCons", remainingSuc, maxSucLevel);
 		Integer rangeIndex = 1;
 		while (rangeIndex <= Main.settings.constructRange && !isBuildingSucFilled(maxSucLevel)) {
@@ -731,7 +730,7 @@ public class TuileCase {
 	                numberOfLines++;
 	            }
     		}
-    		infoDialog.add(new JLabel("Suc Level: " + sucLevel + "/" + Main.settings.maxSucLevel));
+    		infoDialog.add(new JLabel("Suc Level: " + sucLevel + "/" + Main.settings.getSucStock(building)));
     		numberOfLines++;
         }
         if (roadLevel > 0) {

@@ -561,7 +561,7 @@ public class GameController {
         } else {
         	energyLabel = new JLabel("Alimenté depuis la case [" + powerPosition[0] + ", " + powerPosition[1] + "]");        	
         }
-        JLabel sucLevelLabel = new JLabel("Niveau de suc: " + tuileCase.sucLevel + "/" + settings.maxSucLevel);
+        JLabel sucLevelLabel = new JLabel("Niveau de suc: " + tuileCase.sucLevel + "/" + settings.getSucStock(tuileCase.building));
         JCheckBox sucCheckBox = new JCheckBox("Consommation de suc " + tuileCase.getSucTotalCons());
 		sucCheckBox.setSelected(tuileCase.isSucFed);
 

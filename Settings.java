@@ -30,7 +30,6 @@ public class Settings {
     //DATAS
     String[] directions = {"NO", "N", "NE", "O", "C", "E", "SO", "S", "SE"};
     Integer inhabitantWorkforce = 50;
-    Integer maxSucLevel = 100;
     
     //params selecteurs
     Sliders[] BiomeSliders;
@@ -80,13 +79,13 @@ public class Settings {
     String [] emptyStringArray = {};
 	// Rules
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
-	String[] dummyRule = {"Emp. modules (sol,mur,toit)", "En.requise", "En.produite", "distance", "Suc consumption"};
-	String[] farmRule = {"3,1,0","10", "", "", "10"};
-	String[] portRule = {"3,2,1","20", "", "", "5"};
-	String[] generatorRule = {"2,2,2", "0", "50", "3", "20"};
+	String[] dummyRule = {"Emp. modules (sol,mur,toit)", "En.requise", "En.produite", "distance", "Consommation de Suc", "Réserve de Suc"};
+	String[] farmRule = {"3,1,0","10", "", "", "10", "100"};
+	String[] portRule = {"3,2,1","20", "", "", "5", "200"};
+	String[] generatorRule = {"2,2,2", "0", "50", "3", "20", "500"};
 	String[] pierRule = {"-", "10", "", "", "5"};
 	String[] roadRule = {"-", "0", "", "", "0"};
-	Integer buildRulesLength = 5;
+	Integer buildRulesLength = 6;
 	Integer maxGeneratorDistance = 0;
 	// buildings dialog
     JFrame buildRulesFrame = new JFrame("Buildings position settings");
@@ -698,6 +697,14 @@ public class Settings {
 	public int getSucCons(String buildingName) {
 		if (buildingRules.containsKey(buildingName)) {
 			return Integer.parseInt(buildingRules.get(buildingName)[4]);			
+		} else {
+			return 0;
+		}
+	}
+	
+	public int getSucStock(String buildingName) {
+		if (buildingRules.containsKey(buildingName)) {
+			return Integer.parseInt(buildingRules.get(buildingName)[5]);			
 		} else {
 			return 0;
 		}
