@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 public class FilterViews {	
     String filterSelected = "Biome";
     String [] possibleFilters = {"Biome", "Player", "Routes", "Fibre", "Spore", "Suc", "Phosphorite", "MushCoins"};
-    String [] possibleActions = {"Pose de tuile", "Construire", "Voir"};
+    String [] possibleActions = {"Pose de tuile", "Construire", "Détails du batiment"};
     
     // Paramètres d'affichage
     HashMap<String, Color> biomeColors = new HashMap<String, Color>();
@@ -134,7 +134,7 @@ public class FilterViews {
 		caseToBiomeColor(caseBackground, terrain);
 
 		if (!tuileCase.inConstruction.equals("")) {
-		    caseBackground.setIcon(new ImageIcon(imgConstruct));	
+		    caseBackground.setIcon(new ImageIcon(imgConstruct));
 		} else if (tuileCase.isRuins) {
 		    caseBackground.setIcon(new ImageIcon(imgRuins));
 		} else {

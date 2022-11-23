@@ -756,6 +756,25 @@ public class TuileCase {
 		infoDialog.dispose();
 		infoDialog.removeAll();
 	}
+
+	public String getSaveInfo() {
+		String tuileCaseSave = terrain;
+		tuileCaseSave += "!" + building;
+		tuileCaseSave += "!" + isSucFed;
+		tuileCaseSave += "!" + sucLevel;
+		tuileCaseSave += "ç" + roadLevel;
+		return tuileCaseSave;
+	}
+	
+	public void setSaveInfo(String saveDatas) {
+        System.out.println("saveDatas: " + saveDatas);
+        terrain = saveDatas.split("!")[0];
+		building = saveDatas.split("!")[1];
+		isSucFed = Boolean.parseBoolean(saveDatas.split("!")[2]);
+		sucLevel = Integer.parseInt(saveDatas.split("!")[3].split("ç")[0]);
+		roadLevel = Integer.parseInt(saveDatas.split("ç")[1]);
+		System.out.println(terrain + ", " + building + ", " + roadLevel);
+	}
 }
 
 

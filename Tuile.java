@@ -340,4 +340,14 @@ public class Tuile {
 		}
 		return false;
 	}
+
+	public String getSaveInfo() {
+		String tuileSave = owner.playerName + "@";
+        for (TuileCase[] currentCaseLign : cases) {
+            for (TuileCase currentCase : currentCaseLign) {
+            	tuileSave += currentCase.getSaveInfo() + "-";
+            }
+        }
+		return tuileSave;
+	}
 }

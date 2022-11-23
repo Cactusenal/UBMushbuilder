@@ -242,6 +242,16 @@ public class Settings {
     	return null;
     }
     
+    public Player getPlayerfromName(String playerName) {
+    	for (Player player : players) {
+    		if(player.playerName.equals(playerName)) {
+    			return player;
+    		}
+    	}
+		AddDebugLog("Player " + playerName + " does not exist");
+		return null;
+    }
+    
     public Player getRandomPlayer() {
 		int Min = 0;
 		int Max = numberOfPlayers - 1;
@@ -628,7 +638,7 @@ public class Settings {
     	JPanel rightPanel = new JPanel();
     	
     	JLabel titleLabel = new JLabel("Building rules");
-    	JLabel rulesTemplateLabel = new JLabel("Nombres emplacements de modules (sol, mur, toit) | Energie requise | Energie produite | Portée | Consommation de Suc");
+    	JLabel rulesTemplateLabel = new JLabel("Nombres emplacements de modules (sol, mur, toit) | Energie requise | Energie produite | Portée | Consommation de Suc | Réserve de Suc");
     	leftPanel.add(titleLabel);
 		rightPanel.add(rulesTemplateLabel);
 
@@ -788,6 +798,32 @@ public class Settings {
 	        e.printStackTrace();
 	    }
 	}
+	
+	public void saveMap() {
+	    String saveName = "UBmapSave";
+	    String savePath = "C:\\UBsaves\\" + saveName + ".txt";
+		try {
+			File myObj = new File(savePath);
+			if (myObj.createNewFile()) {
+	        	System.out.println("File created: " + myObj.getName());
+			} else {
+				System.out.println("File already exists.");
+			}
+		} catch (IOException e) {
+	        System.out.println("An error occurred.");
+	        e.printStackTrace();
+		}
+	    try {
+	        FileWriter myWriter = new FileWriter(savePath);
+	        String saveContent = Main.cartePanel.createMapFile();
+	        myWriter.write(saveContent);
+	        myWriter.close();
+	        System.out.println("Successfully wrote to the file.");
+	    } catch (IOException e) {
+	        System.out.println("An error occurred.");
+	        e.printStackTrace();
+	    }		
+	}
 
 	private String createSaveFile() {
 		String saveContent = "";
@@ -847,6 +883,50 @@ public class Settings {
 	        System.out.println("An error occurred.");
 	        e.printStackTrace();
 	    }
+	}
+	public void readMapFile(String saveName) {
+		String savePath = "C:\\UBsaves\\" + saveName + ".txt";
+		Boolean firstLine = true;
+		Integer currentLign = 0;
+		Integer currentcolumn = 0;
+	    try {
+	        File myObj = new File(savePath);
+	        Scanner myReader = new Scanner(myObj);
+	        while (myReader.hasNextLine()) {
+	          String data = myReader.nextLine();
+	          System.out.println(data);
+	          if (firstLine) {
+	        	  String mapSize = data.split("-")[0];
+	        	  Main.gameController.timeIteration = Integer.parseInt(data.split("-")[1]);
+	        	  Main.cartePanel.resetSize(Integer.parseInt(mapSize.split(":")[0]), Integer.parseInt(mapSize.split(":")[1]));
+	        	  firstLine = false;
+	          } else {
+	        	  String[] lignData = data.split("@");
+	        	  String playerName = lignData[0];
+	        	  Player player = getPlayerfromName(playerName);
+	        	  //Tuile savedTuile = new Tuile(false, player, currentLign, currentcolumn);
+	        	  Tuile savedTuile = Main.cartePanel.tableauTuile[currentLign][currentcolumn];
+	        	  savedTuile.owner = player;
+	        	  String[] caseDatas = lignData[1].split("-");
+		          for (int xIndex = 0; xIndex < 3; xIndex++) {
+		        	  for (int yIndex = 0; yIndex < 3; yIndex++) {
+	        			  TuileCase currentCase = savedTuile.cases[xIndex][yIndex];
+	        			  currentCase.setSaveInfo(caseDatas[xIndex * 3 + yIndex]);
+	        		  }
+	        	  }
+	        	  //Main.cartePanel.tableauTuile[currentLign][currentcolumn].setCopiedTuile(savedTuile);
+	        	  currentcolumn++;
+	        	  if (currentcolumn == Main.cartePanel.column) {
+	        		  currentcolumn = 0;
+	        		  currentLign++;
+	        	  }
+	          }
+	        }
+	        myReader.close();
+	    } catch (FileNotFoundException e) {
+	        System.out.println("An error occurred.");
+	        e.printStackTrace();
+	    }		
 	}
 	
 	private void loadHashmapRulesFromString(String saveDatas) {

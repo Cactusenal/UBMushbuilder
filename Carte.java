@@ -157,4 +157,19 @@ public class Carte extends JLayeredPane {
 			}
 		}		
 	}
+
+	public String createMapFile() {
+		String mapFile = lign + ":" + column + "-" + Main.gameController.timeIteration + "\r\n";
+		for (Tuile[] tuileLign : tableauTuile) {
+			for (Tuile tuile : tuileLign) {
+				mapFile += tuile.getSaveInfo();
+				mapFile += "\r\n";
+			}
+		}
+		return mapFile;
+	}
+	
+	public void loadMapFile(String mapFile) {
+		
+	}
 }

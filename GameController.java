@@ -36,8 +36,9 @@ public class GameController {
     JMenu help = new JMenu("Aide");
     // Définir les sous-menus
     JMenuItem newf = new JMenuItem("Nouveau");
-    JMenuItem save = new JMenuItem("Enregistrer");
-    JMenuItem saveB = new JMenuItem("Sauvegarde des paramètres");
+    JMenuItem saveMap = new JMenuItem("Enregistrer la carte");
+    JMenuItem loadMap = new JMenuItem("Charger la carte");
+    JMenuItem saveRules = new JMenuItem("Sauvegarde des paramètres");
     JMenuItem loadB = new JMenuItem("Chargement de la sauvegarde");
     JMenuItem biomeMenu = new JMenuItem("Biomes");
     JMenuItem carteMenu = new JMenuItem("Carte");
@@ -66,8 +67,9 @@ public class GameController {
 		
 		// Construction des sous-menus
 	    file.add(newf);
-	    file.add(save);
-	    file.add(saveB);
+	    file.add(saveMap);
+	    file.add(loadMap);
+	    file.add(saveRules);
 	    file.add(loadB);
 	    setMenu.add(biomeMenu);
 	    setMenu.add(carteMenu);
@@ -76,10 +78,11 @@ public class GameController {
 	    setMenu.add(buildRulesMenu);
 	    menu.add(file);
 	    menu.add(setMenu);
-	    menu.add(help);
+	    // menu.add(help);
 	    
 	    // créer un panneau
 	    JPanel menuPanel = new JPanel();
+	    timeLabel.setForeground(Color.BLUE);
 	    menuPanel.add(menu);
 	    menuPanel.add(timeLabel);
 	    menuPanel.setLayout(new GridLayout(1, 2));
@@ -93,12 +96,18 @@ public class GameController {
 	    seasonSelector = new JComboBox<String>(Main.settings.possibleSeasons);
 	    overviewSelector = new JComboBox<String>(possibleViews);
 	    JPanel comboBoxesPanel = new JPanel();
+	    actionSelector.setBackground(Color.cyan);
+	    comboBoxesPanel.add(new JLabel("Action:"));
 	    comboBoxesPanel.add(actionSelector);
+	    comboBoxesPanel.add(new JLabel("Filtre séléctionné:"));
 	    comboBoxesPanel.add(filterSelector);
+	    comboBoxesPanel.add(new JLabel("Génération des cases:"));
 	    comboBoxesPanel.add(biomeSelector);
+	    comboBoxesPanel.add(new JLabel("Saison:"));
 	    comboBoxesPanel.add(seasonSelector);
+	    comboBoxesPanel.add(new JLabel("Infos sous la souris (tooltip):"));
 	    comboBoxesPanel.add(overviewSelector);
-	    comboBoxesPanel.setLayout(new GridLayout(2, 2));
+	    comboBoxesPanel.setLayout(new GridLayout(5, 2));
 	    controllerPanel.add(comboBoxesPanel);
 
 	    //Settings popup
@@ -209,11 +218,23 @@ public class GameController {
 		timeB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	IterateWorld();
-
             }
 
         });
-		saveB.addActionListener(new ActionListener() {
+		saveMap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	settings.saveMap();
+            }
+        });
+		loadMap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	settings.readMapFile("UBmapSave");
+            	Main.cartePanel.updateWorldProd();
+            	Main.cartePanel.updateWorldView();
+            	refreshTimeLabel();
+            }
+        });
+		saveRules.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	settings.saveRules();
             }
@@ -226,12 +247,13 @@ public class GameController {
 		
         // boutons
 		JPanel buttonPanel = new JPanel();
+		timeB.setBackground(Color.cyan);
+		buttonPanel.add(timeB);
 		buttonPanel.add(createB);
 		buttonPanel.add(turnRB);
-		buttonPanel.add(testB);
-		buttonPanel.add(clearB);
-		buttonPanel.add(giveRessourcesB);
-		buttonPanel.add(timeB);
+		//buttonPanel.add(testB);
+		//buttonPanel.add(clearB);
+		//buttonPanel.add(giveRessourcesB);
 		buttonPanel.setLayout(new GridLayout(4, 2));
 		
 		controllerPanel.add(buttonPanel);
@@ -267,7 +289,7 @@ public class GameController {
     		} else {
     			displayBuildingPopup(tuileCase);
     		}
-    	} else if (actionSelector.getItemAt(actionSelector.getSelectedIndex()).equals("Voir")) {
+    	} else if (actionSelector.getItemAt(actionSelector.getSelectedIndex()).equals("Détails du batiment")) {
     		if (!tuileCase.building.equals("") && settings.isGeneratingPower(tuileCase.building)) {
     			displayGeneratorPopup(tuileCase);    			
     		} else if (!tuileCase.building.equals("")) {
@@ -407,6 +429,13 @@ public class GameController {
     	JFrame generatorFrame = new JFrame("Generator energy");
         JDialog generatorDialog = new JDialog(generatorFrame);
         
+        // Construct header dialog
+        JLabel sucLevelLabel = new JLabel("Niveau de suc: " + tuileCase.sucLevel + "/" + settings.getSucStock(tuileCase.building));
+        JCheckBox sucCheckBox = new JCheckBox("Consommation de suc " + tuileCase.getSucTotalCons());
+		sucCheckBox.setSelected(tuileCase.isSucFed);
+		generatorDialog.add(sucLevelLabel);
+		generatorDialog.add(sucCheckBox);
+        
         // List of possible buildings to power creation
         List<Object[]> buildingsToPowerList = new ArrayList<Object[]>();
         
@@ -437,7 +466,7 @@ public class GameController {
         		}
         	}
         }
-        // Construct Dialog
+        // Construct footer dialog		
         if (buildingNumber == 0) {
     		JLabel noBuildingLabel = new JLabel("No building to power in the area");
     		generatorDialog.add(noBuildingLabel);
@@ -445,25 +474,35 @@ public class GameController {
         else {
         	buildingsToPower = new Object[buildingsToPowerList.size()][4];
         	buildingsToPowerList.toArray(buildingsToPower);
-        	JButton applyPower = new JButton("Apply power connections");
-    		generatorDialog.add(applyPower);
-    		generatorDialog.add(energyCounter);
-    		recomputeGeneratorEnergyCounter();
-    		// Apply button
-    		applyPower.addActionListener(new ActionListener(){
-    			// Apply the list of powered building to generator
-    			public void actionPerformed(ActionEvent e){
-    				applyGeneratorConnections(tuileCase);
-    				for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
-    					caseFromDistance.updateCaseProduction();
-    				}
-    				tuileCase.updateCaseProduction();
-    				settings.updatePlayersProd();
-    				generatorDialog.setVisible(false);
-    			}
-    		});
+        	generatorDialog.add(energyCounter);
+        	recomputeGeneratorEnergyCounter();
         }
-        generatorDialog.setLayout(new GridLayout(buildingNumber + 1, 2));
+    	JButton applyPower = new JButton("Apply power connections");
+		generatorDialog.add(applyPower);
+		// Apply button
+		applyPower.addActionListener(new ActionListener(){
+			// Apply the list of powered building to generator
+			public void actionPerformed(ActionEvent e){
+		        if (buildingNumber != 0) {
+		        	applyGeneratorConnections(tuileCase);
+		        }
+				if (sucCheckBox.isSelected() && tuileCase.sucLevel < 50 && !tuileCase.isActive) {
+		    		JOptionPane.showMessageDialog(Main.frame,
+		    			    "Not enough Suc to restart building",
+		    			    "Inane warning",
+		    			    JOptionPane.WARNING_MESSAGE);
+				} else {
+					tuileCase.isSucFed = sucCheckBox.isSelected();
+				}
+				for (TuileCase caseFromDistance : tuileCase.getCasesFromDistance(generatorRange)) {
+					caseFromDistance.updateCaseProduction();
+				}
+				tuileCase.updateCaseProduction();
+				settings.updatePlayersProd();
+				generatorDialog.setVisible(false);
+			}
+		});
+        generatorDialog.setLayout(new GridLayout(buildingNumber + 2, 2));
         Integer panelHeight = 100 + (50 * buildingNumber);
         generatorDialog.setBounds(200, 200, 500, panelHeight);
         generatorDialog.setVisible(true);
