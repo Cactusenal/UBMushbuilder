@@ -36,6 +36,7 @@ public class FilterViews {
     Image imgHaze;
     Image imgSwamp;
     Image imgGrass;
+    Image imgNewBuilding;
 
 	public FilterViews(Settings settings) {
 		// Construction des hashmaps
@@ -138,12 +139,27 @@ public class FilterViews {
 		} else if (tuileCase.isRuins) {
 		    caseBackground.setIcon(new ImageIcon(imgRuins));
 		} else {
-			switch(terrain) {
-		    	case "Brume":
-				    caseBackground.setIcon(new ImageIcon(imgHaze));
+			if (tuileCase.building.length() > 0) {
+				switch (tuileCase.building) {
+				case "Ferme":
+				    caseBackground.setIcon(new ImageIcon(imgFarm));
+		    		break;
+				case "Port":
+				    caseBackground.setIcon(new ImageIcon(imgPort));
+		    		break;
+				case "Generateur":
+				    caseBackground.setIcon(new ImageIcon(imgGenerator));
+		    		break;
+		    	default:
+				    caseBackground.setIcon(new ImageIcon(imgNewBuilding));
+				}
+			} else {
+				switch(terrain) {
+				case "Brume":
+					caseBackground.setIcon(new ImageIcon(imgHaze));
 					break;
-		    	case "Foret":
-				    caseBackground.setIcon(new ImageIcon(imgForet));
+				case "Foret":
+					caseBackground.setIcon(new ImageIcon(imgForet));
 					break;
 				case "Hauteurs":
 					caseBackground.setIcon(new ImageIcon(imgMountain));
@@ -157,17 +173,7 @@ public class FilterViews {
 				case "Plaine":
 					caseBackground.setIcon(new ImageIcon(imgGrass));
 					break;
-			}
-			switch (tuileCase.building) {
-				case "Ferme":
-				    caseBackground.setIcon(new ImageIcon(imgFarm));
-		    		break;
-				case "Port":
-				    caseBackground.setIcon(new ImageIcon(imgPort));
-		    		break;
-				case "Generateur":
-				    caseBackground.setIcon(new ImageIcon(imgGenerator));
-		    		break;
+				}		
 			}
 		}
 	}
@@ -203,6 +209,7 @@ public class FilterViews {
     	imgHaze = sizeImage("haze.png");
     	imgGrass = sizeImage("grass.png");
     	imgSwamp = sizeImage("swamp.png");
+    	imgNewBuilding = sizeImage("house.png");
     }
     
     Image sizeImage(String imagePath) {

@@ -736,7 +736,7 @@ public class Settings {
 			JTextArea[] textAreaArray = new JTextArea[rulesLength + 1];
 			textAreaArray[0] = ruleNameTextField;
 			for (Integer i = 0; i < rulesLength; i ++) {
-				// Get rules data to fill text area fields
+				// Get rules data to fill text area fields  
 				String ruleValue = i < ruleValues.length ? ruleValues[i] : "";
 				JTextArea ruleTextField = new JTextArea(ruleValue);
 				subProdPanel.add(ruleTextField);
