@@ -586,6 +586,7 @@ public class Settings {
         applyAndExitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	updateBuildingConditions();
+        		buildCondTableModel = setInputPanel(buildCondPanel, buildCondTableTitle, buildingConditions, buildConditionsLength);
             	buildCondDialog.setVisible(false);
             }
         });
@@ -726,8 +727,6 @@ public class Settings {
         subProdPanel.setLayout(new BorderLayout());
         if (displayHeader) {
         	subProdPanel.add(table.getTableHeader(), BorderLayout.PAGE_START);        	
-//        } else {
-//        	table.setTableHeader(null);        	
         }
         subProdPanel.add(table, BorderLayout.CENTER);
         
@@ -852,6 +851,7 @@ public class Settings {
 	          System.out.println(data);
 	          loadHashmapRulesFromString(data);
 	          Main.gameController.resetBiomeSelectorValues();
+	          Main.cartePanel.updateWorldView();
 	        }
 	        myReader.close();
 	    } catch (FileNotFoundException e) {
