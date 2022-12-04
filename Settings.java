@@ -10,8 +10,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -47,6 +49,10 @@ public class Settings {
     DefaultTableModel model = new DefaultTableModel(possibleBiomes, 0);
 	HashMap<String, Integer[]>  biomeTypes = new HashMap<String, Integer[]>();
 	Integer[] allBiomesType = {25, 25, 25, 25, 25, 25};
+	
+	// PRODUCTIONS
+    String[] prodRulesTableTitle = {"Nom de la règle", "Biome/Batiment d'où la règle s'applique (\"+\" si alimentation requise)", "Distance à laquelle la règle s'applique", "Production ajoutée aux cases", "Biomes où la production ne s'ajoute pas", "Saison(s) si spécifique", "Abondance"};
+    TableCustomModel prodRulesTableModel;
 	HashMap<String, String[]> fibreProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> sporeProdRules = new HashMap<String, String[]>();
 	HashMap<String, String[]> sucProdRules = new HashMap<String, String[]>();
@@ -57,27 +63,29 @@ public class Settings {
     JFrame prodFrame = new JFrame("Production settings");
     JDialog prodDialog = new JDialog(prodFrame);
     JPanel fibreProdPanel = new JPanel();
-	HashMap<String, JTextArea[]> fibreTextAreaFields = new HashMap<String, JTextArea[]>();
+    TableCustomModel fibreTableModel;
 	JPanel sporeProdPanel = new JPanel();
-	HashMap<String, JTextArea[]> sporeTextAreaFields = new HashMap<String, JTextArea[]>();
+	TableCustomModel sporeTableModel;
 	JPanel sucProdPanel = new JPanel();
-	HashMap<String, JTextArea[]> sucTextAreaFields = new HashMap<String, JTextArea[]>();
+	TableCustomModel sucTableModel;
 	JPanel phosphoProdPanel = new JPanel();
-	HashMap<String, JTextArea[]> phosphoTextAreaFields = new HashMap<String, JTextArea[]>();
+	TableCustomModel phosphoTableModel;
 	JPanel coinProdPanel = new JPanel();
-	HashMap<String, JTextArea[]> coinTextAreaFields = new HashMap<String, JTextArea[]>();
+	TableCustomModel coinTableModel;
 	// Tableau des infos de prod
 	Object[][] prodDatas = {
-			{"Production des fibres", fibreProdRules, fibreProdPanel, fibreTextAreaFields},
-			{"Production des spores", sporeProdRules, sporeProdPanel, sporeTextAreaFields},
-			{"Production du suc", sucProdRules, sucProdPanel, sucTextAreaFields},
-			{"Production de phosphorite", phosphoProdRules, phosphoProdPanel, phosphoTextAreaFields},
-			{"Production de Mushcoins", coinProdRules, coinProdPanel, coinTextAreaFields}
+			{"Production des fibres", fibreProdRules, fibreProdPanel, fibreTableModel},
+			{"Production des spores", sporeProdRules, sporeProdPanel, sporeTableModel},
+			{"Production du suc", sucProdRules, sucProdPanel, sucTableModel},
+			{"Production de phosphorite", phosphoProdRules, phosphoProdPanel, phosphoTableModel},
+			{"Production de Mushcoins", coinProdRules, coinProdPanel, coinTableModel}
 	};
 	
 	// building datas
     String [] emptyStringArray = {};
 	// Rules
+    String[] buildRulesTableTitle = {"Nom du batiment", "Nombres emplacements de modules (sol, mur, toit)","Energie requise", "Energie produite", "Portée", "Consommation de Suc", "Réserve de Suc"};
+    TableCustomModel buildRulesTableModel;
 	HashMap<String, String[]> buildingRules = new HashMap<String, String[]>();
 	String[] dummyRule = {"Emp. modules (sol,mur,toit)", "En.requise", "En.produite", "distance", "Consommation de Suc", "Réserve de Suc"};
 	String[] farmRule = {"3,1,0","10", "", "", "10", "100"};
@@ -91,8 +99,10 @@ public class Settings {
     JFrame buildRulesFrame = new JFrame("Buildings position settings");
     JDialog buildRulesDialog = new JDialog(buildRulesFrame);
     JPanel buildRulesPanel = new JPanel();
-	HashMap<String, JTextArea[]> buildRulesTextAreaFields = new HashMap<String, JTextArea[]>();
+
 	// Conditions
+	String[] buildCondTableTitle = {"Nom du batiment", "Biome/batiment où l'on peut poser le batiment", "Biome ou batiment devant se situer à côté", "Coût du batiment (F,Sp,Suc,Phos)"};
+	TableCustomModel buildCondTableModel;
 	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
 	String[] dummyCondition = {"biomes/buildings modules,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
 	String[] farmCondition = {"Plaine,Marais", "", "100,200,200,100"};
@@ -106,7 +116,6 @@ public class Settings {
     JFrame buildCondFrame = new JFrame("Buildings position settings");
     JDialog buildCondDialog = new JDialog(buildCondFrame);
     JPanel buildCondPanel = new JPanel();
-	HashMap<String, JTextArea[]> buildCondTextAreaFields = new HashMap<String, JTextArea[]>();
 
     // Debugger
     JTextArea debugText = new JTextArea();
@@ -422,11 +431,6 @@ public class Settings {
     	JPanel leftPanel = new JPanel();
     	JPanel rightPanel = new JPanel();
     	
-    	JLabel titleLabel = new JLabel("Production rules");
-    	JLabel rulesTemplateLabel = new JLabel("Nom de la règle | Biome/Batiment d'où la règle s'applique (\"+\" si alimentation requise)| Distance à laquelle la règle s'applique | Production ajoutée aux cases | Biomes où la production ne s'ajoute pas | Saison(s) si spécifique | Abondance");
-    	leftPanel.add(titleLabel);
-		rightPanel.add(rulesTemplateLabel);
-
     	for (Object [] prodData: prodDatas) {
     		// Sub-panel Name
     		JLabel subProductionLabel = new JLabel((String) prodData[0]);
@@ -435,7 +439,7 @@ public class Settings {
     		JPanel subProdPanel = (JPanel) prodData[2];
     		
     		// Get sub-panel content
-    		setInputPanel(subProdPanel, subProdRules, prodRulesLength);
+    		setInputPanel(subProdPanel, prodRulesTableTitle, subProdRules, prodRulesLength);
     		rightPanel.add(subProdPanel);
     	}
     	
@@ -444,11 +448,11 @@ public class Settings {
             public void actionPerformed(ActionEvent e) {
             	applyRulesAndUpdateProds();
             	// TODO: adding new rule field when new one is entered
-            	fibreTextAreaFields = setInputPanel(fibreProdPanel, fibreProdRules, prodRulesLength);
-            	sporeTextAreaFields = setInputPanel(sporeProdPanel, sporeProdRules, prodRulesLength);
-            	sucTextAreaFields = setInputPanel(sucProdPanel, sucProdRules, prodRulesLength);
-            	phosphoTextAreaFields = setInputPanel(phosphoProdPanel, phosphoProdRules, prodRulesLength);
-            	coinTextAreaFields = setInputPanel(coinProdPanel, coinProdRules, prodRulesLength);
+            	fibreTableModel = setInputPanel(fibreProdPanel, prodRulesTableTitle, fibreProdRules, prodRulesLength);
+            	sporeTableModel = setInputPanel(sporeProdPanel, prodRulesTableTitle, sporeProdRules, prodRulesLength, false);
+            	sucTableModel = setInputPanel(sucProdPanel, prodRulesTableTitle, sucProdRules, prodRulesLength, false);
+            	phosphoTableModel = setInputPanel(phosphoProdPanel, prodRulesTableTitle, phosphoProdRules, prodRulesLength, false);
+            	coinTableModel = setInputPanel(coinProdPanel, prodRulesTableTitle, coinProdRules, prodRulesLength, false);
             }
         });
 
@@ -460,8 +464,8 @@ public class Settings {
             }
         });
         
-        leftPanel.setLayout(new GridLayout(prodDatas.length + 1, 1));
-    	rightPanel.setLayout(new GridLayout(prodDatas.length + 1, 1));
+        leftPanel.setLayout(new GridLayout(prodDatas.length, 1));
+    	rightPanel.setLayout(new GridLayout(prodDatas.length, 1));
 
         // créer un séparateur de panneau
         JSplitPane sep = new JSplitPane(SwingConstants.VERTICAL, leftPanel, rightPanel); 
@@ -478,28 +482,27 @@ public class Settings {
         prodDialog.add(buttonPanel, BorderLayout.SOUTH);
     }
     
-    HashMap<String, String[]> getProdRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields) {
+    HashMap<String, String[]> getProdRulesFromTextAreas(TableCustomModel tableModel) {
 		HashMap<String, String[]> newProdRules = new HashMap<String, String[]>();
 		
-    	for (String ruleName : TextAreaFields.keySet()) {
-    		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
-    		if (ruleFromTextFields[1].getText().length() > 0 && ruleFromTextFields[2].getText().length() > 0 && ruleFromTextFields[3].getText().length() > 0) {
-    			String[] newRule = new String[prodRulesLength];
-    			for (Integer i = 0; i < prodRulesLength; i ++) {
-    				newRule[i] = ruleFromTextFields[i + 1].getText();
-    			}
-    			newProdRules.put(ruleFromTextFields[0].getText(), newRule);
-    		}
-    	}
+		for (int rowIndex = 0; rowIndex < tableModel.getRowCount(); rowIndex++) {
+			if (!tableModel.getValueAt(rowIndex, 1).equals("") && !tableModel.getValueAt(rowIndex, 2).equals("") && !tableModel.getValueAt(rowIndex, 3).equals("")) {
+				String[] newRule = new String[prodRulesLength];
+				for (int columnIndex = 1; columnIndex < tableModel.getColumnCount(); columnIndex++) {
+					newRule[columnIndex - 1] = tableModel.getValueAt(rowIndex, columnIndex);
+				}
+				newProdRules.put(tableModel.getValueAt(rowIndex, 0), newRule);				
+			}
+		}
     	return newProdRules;
     }
     
     void applyRulesAndUpdateProds() {
-    	fibreProdRules = getProdRulesFromTextAreas(fibreTextAreaFields);
-    	sporeProdRules = getProdRulesFromTextAreas(sporeTextAreaFields);
-    	sucProdRules = getProdRulesFromTextAreas(sucTextAreaFields);
-    	phosphoProdRules = getProdRulesFromTextAreas(phosphoTextAreaFields);
-    	coinProdRules = getProdRulesFromTextAreas(coinTextAreaFields);
+    	fibreProdRules = getProdRulesFromTextAreas(fibreTableModel);
+    	sporeProdRules = getProdRulesFromTextAreas(sporeTableModel);
+    	sucProdRules = getProdRulesFromTextAreas(sucTableModel);
+    	phosphoProdRules = getProdRulesFromTextAreas(phosphoTableModel);
+    	coinProdRules = getProdRulesFromTextAreas(coinTableModel);
 
     	for (Player player : players) {
     		player.tuileViewer.updateTuileProductions();
@@ -509,39 +512,73 @@ public class Settings {
     }
     
     public void showProdPopup() {
-    	fibreTextAreaFields = setInputPanel(fibreProdPanel, fibreProdRules, prodRulesLength);
-    	sporeTextAreaFields = setInputPanel(sporeProdPanel, sporeProdRules, prodRulesLength);
-    	sucTextAreaFields = setInputPanel(sucProdPanel, sucProdRules, prodRulesLength);
-    	phosphoTextAreaFields = setInputPanel(phosphoProdPanel, phosphoProdRules, prodRulesLength);
-    	coinTextAreaFields = setInputPanel(coinProdPanel, coinProdRules, prodRulesLength);
+    	fibreTableModel = setInputPanel(fibreProdPanel, prodRulesTableTitle, fibreProdRules, prodRulesLength);
+    	sporeTableModel = setInputPanel(sporeProdPanel, prodRulesTableTitle, sporeProdRules, prodRulesLength, false);
+    	sucTableModel = setInputPanel(sucProdPanel, prodRulesTableTitle, sucProdRules, prodRulesLength, false);
+    	phosphoTableModel = setInputPanel(phosphoProdPanel, prodRulesTableTitle, phosphoProdRules, prodRulesLength, false);
+    	coinTableModel = setInputPanel(coinProdPanel, prodRulesTableTitle, coinProdRules, prodRulesLength, false);
     	prodDialog.setVisible(true);
+    }
+    
+    
+    //BUILDINGS-Rules
+    public void createBuildRulesPopup() {
+    	buildRulesDialog.setBounds(50, 50, 1400, 700);
+    	
+		// Get sub-panel content
+		buildRulesTableModel = setInputPanel(buildRulesPanel, buildRulesTableTitle, buildingRules, buildRulesLength);
+    	
+        JButton applyButton = new JButton("Apply");
+        applyButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	updateBuildingRules();
+            	// TODO: adding new rule field when new one is entered
+        		buildRulesTableModel = setInputPanel(buildRulesPanel, buildRulesTableTitle, buildingRules, buildRulesLength);
+            }
+        });
+
+        JButton applyAndExitButton = new JButton("Apply and Exit");
+        applyAndExitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	updateBuildingRules();
+        		buildRulesTableModel = setInputPanel(buildRulesPanel, buildRulesTableTitle, buildingRules, buildRulesLength);
+            	buildRulesDialog.setVisible(false);
+            }
+        });
+        
+        buildRulesDialog.add(buildRulesPanel);
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(applyButton);    	
+        buttonPanel.add(applyAndExitButton);    	
+        buttonPanel.setLayout(new GridLayout(1, 2));
+        
+        buildRulesDialog.add(buttonPanel, BorderLayout.SOUTH);    	
+    }
+    
+    void updateBuildingRules() {
+    	buildingRules = getRulesFromTextAreas(buildRulesTableModel, buildRulesLength);
+    	computeMaxGeneratorDistance();
+    }
+
+    public void showBuildRulesPopup() {
+    	buildRulesTableModel = setInputPanel(buildRulesPanel, buildRulesTableTitle, buildingRules, buildRulesLength);
+    	buildRulesDialog.setVisible(true);
     }
     
     // BUILDINGS-Condition
     public void createBuildCondPopup() {
     	buildCondDialog.setBounds(50, 50, 1400, 700);
     	
-    	JPanel leftPanel = new JPanel();
-    	JPanel rightPanel = new JPanel();
-    	
-    	JLabel titleLabel = new JLabel("Building conditions");
-    	JLabel rulesTemplateLabel = new JLabel("Nom du batiment | Biome/batiment où l'on peut poser le batiment | Biome ou batiment devant se situer à côté | Coût du batiment (F,Sp,Suc,Phos)");
-    	leftPanel.add(titleLabel);
-		rightPanel.add(rulesTemplateLabel);
-
-		JLabel buildingRulesLabel = new JLabel("Conditions de placement des buildings");
-		leftPanel.add(buildingRulesLabel);
-		
 		// Get sub-panel content
-		buildCondTextAreaFields = setInputPanel(buildCondPanel, buildingConditions, buildConditionsLength);
-		rightPanel.add(buildCondPanel);
+		buildCondTableModel = setInputPanel(buildCondPanel, buildCondTableTitle, buildingConditions, buildConditionsLength);
     	
         JButton applyButton = new JButton("Apply");
         applyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	updateBuildingConditions();
             	// TODO: adding new rule field when new one is entered
-        		buildCondTextAreaFields = setInputPanel(buildCondPanel, buildingConditions, buildConditionsLength);
+        		buildCondTableModel = setInputPanel(buildCondPanel, buildCondTableTitle, buildingConditions, buildConditionsLength);
             }
         });
 
@@ -553,15 +590,7 @@ public class Settings {
             }
         });
         
-        leftPanel.setLayout(new GridLayout(2, 1));
-    	rightPanel.setLayout(new GridLayout(2, 1));
-
-        // créer un séparateur de panneau
-        JSplitPane sep = new JSplitPane(SwingConstants.VERTICAL, leftPanel, rightPanel); 
-        // définir l'orientation du séparateur
-        sep.setOrientation(SwingConstants.VERTICAL);
-        // Ajouter le séparateur
-        buildCondDialog.add(sep);
+        buildCondDialog.add(buildCondPanel);
         
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(applyButton);    	
@@ -571,29 +600,28 @@ public class Settings {
         buildCondDialog.add(buttonPanel, BorderLayout.SOUTH);    	
     }
 
-    HashMap<String, String[]> getRulesFromTextAreas(HashMap<String, JTextArea[]> TextAreaFields, Integer rulesLength) {
+    HashMap<String, String[]> getRulesFromTextAreas(TableCustomModel tableModel, Integer rulesLength) {
 		HashMap<String, String[]> newProdRules = new HashMap<String, String[]>();
 		
-    	for (String ruleName : TextAreaFields.keySet()) {
-    		JTextArea[] ruleFromTextFields = TextAreaFields.get(ruleName);
-    		// TODO: Check if ressource price is okay (3e field)
-    		if (ruleFromTextFields[1].getText().length() > 0) {
-    			String[] newRule = new String[rulesLength];
-    			for (Integer i = 0; i < rulesLength; i ++) {
-    				newRule[i] = ruleFromTextFields[i + 1].getText();
-    			}
-    			newProdRules.put(ruleFromTextFields[0].getText(), newRule);
-    		}
-    	}
+		for (int rowIndex = 0; rowIndex < tableModel.getRowCount(); rowIndex++) {
+			if (!tableModel.getValueAt(rowIndex, 1).equals("")) {
+				String[] newRule = new String[rulesLength];
+				for (int columnIndex = 1; columnIndex < tableModel.getColumnCount(); columnIndex++) {
+					newRule[columnIndex - 1] = tableModel.getValueAt(rowIndex, columnIndex);
+				}
+				newProdRules.put(tableModel.getValueAt(rowIndex, 0), newRule);				
+			}
+		}
+		
     	return newProdRules;
     }
     
     void updateBuildingConditions() {
-    	buildingConditions = getRulesFromTextAreas(buildCondTextAreaFields, buildConditionsLength);
+    	buildingConditions = getRulesFromTextAreas(buildCondTableModel, buildConditionsLength);
     }
     
     public void showBuildConditionPopup() {
-		buildCondTextAreaFields = setInputPanel(buildCondPanel, buildingConditions, buildConditionsLength);
+		buildCondTableModel = setInputPanel(buildCondPanel, buildCondTableTitle, buildingConditions, buildConditionsLength);
     	buildCondDialog.setVisible(true);
     }
     
@@ -629,71 +657,6 @@ public class Settings {
     	return nbPartsPostition;
     }
     
-    
-    //BUILDINGS-Rules
-    public void createBuildRulesPopup() {
-    	buildRulesDialog.setBounds(50, 50, 1400, 700);
-    	
-    	JPanel leftPanel = new JPanel();
-    	JPanel rightPanel = new JPanel();
-    	
-    	JLabel titleLabel = new JLabel("Building rules");
-    	JLabel rulesTemplateLabel = new JLabel("Nombres emplacements de modules (sol, mur, toit) | Energie requise | Energie produite | Portée | Consommation de Suc | Réserve de Suc");
-    	leftPanel.add(titleLabel);
-		rightPanel.add(rulesTemplateLabel);
-
-		JLabel buildingRulesLabel = new JLabel("Règles de gestion des buildings");
-		leftPanel.add(buildingRulesLabel);
-		
-		// Get sub-panel content
-		buildRulesTextAreaFields = setInputPanel(buildRulesPanel, buildingRules, buildRulesLength);
-		rightPanel.add(buildRulesPanel);
-    	
-        JButton applyButton = new JButton("Apply");
-        applyButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	updateBuildingRules();
-            	// TODO: adding new rule field when new one is entered
-        		buildRulesTextAreaFields = setInputPanel(buildRulesPanel, buildingRules, buildRulesLength);
-            }
-        });
-
-        JButton applyAndExitButton = new JButton("Apply and Exit");
-        applyAndExitButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	updateBuildingRules();
-            	buildRulesDialog.setVisible(false);
-            }
-        });
-        
-        leftPanel.setLayout(new GridLayout(2, 1));
-    	rightPanel.setLayout(new GridLayout(2, 1));
-
-        // créer un séparateur de panneau
-        JSplitPane sep = new JSplitPane(SwingConstants.VERTICAL, leftPanel, rightPanel); 
-        // définir l'orientation du séparateur
-        sep.setOrientation(SwingConstants.VERTICAL);
-        // Ajouter le séparateur
-        buildRulesDialog.add(sep);
-        
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(applyButton);    	
-        buttonPanel.add(applyAndExitButton);    	
-        buttonPanel.setLayout(new GridLayout(1, 2));
-        
-        buildRulesDialog.add(buttonPanel, BorderLayout.SOUTH);    	
-    }
-    
-    void updateBuildingRules() {
-    	buildingRules = getRulesFromTextAreas(buildRulesTextAreaFields, buildRulesLength);
-    	computeMaxGeneratorDistance();
-    }
-
-    public void showBuildRulesPopup() {
-    	buildRulesTextAreaFields = setInputPanel(buildRulesPanel, buildingRules, buildRulesLength);
-    	buildRulesDialog.setVisible(true);
-    }
-    
     // POWER
 	public int getPowerCons(String buildingName) {
 		if (buildingRules.containsKey(buildingName)) {
@@ -721,45 +684,57 @@ public class Settings {
 	}
 	
 	//MISC
-   HashMap<String, JTextArea[]> setInputPanel(JPanel subProdPanel, HashMap<String, String[]> prodRules, Integer rulesLength) {
-    	HashMap<String, JTextArea[]> TextAreaFields = new HashMap<String, JTextArea[]>();
-    	subProdPanel.removeAll();
+	TableCustomModel setInputPanel(JPanel subProdPanel, String[] tableTitle, HashMap<String, String[]> prodRules, Integer rulesLength) {
+		return setInputPanel(subProdPanel, tableTitle, prodRules, rulesLength, true);
+	}
+	
+	TableCustomModel setInputPanel(JPanel subProdPanel, String[] tableTitle, HashMap<String, String[]> prodRules, Integer rulesLength, Boolean displayHeader) {
+		subProdPanel.removeAll();
+    	
+        List<String[]> tableDataList = new ArrayList<String[]>();
     	
     	for (String ruleName : prodRules.keySet()) {
 			// Get present rules
     		String[] ruleValues = prodRules.get(ruleName);
-    		// Fill rule name
-			JTextArea ruleNameTextField = new JTextArea(ruleName);
-			ruleNameTextField.setFont(boldFont);
-			subProdPanel.add(ruleNameTextField);
 			// Create array with all text area fields
-			JTextArea[] textAreaArray = new JTextArea[rulesLength + 1];
-			textAreaArray[0] = ruleNameTextField;
+			String[] textAreaArray = new String[rulesLength + 1];
+			textAreaArray[0] = ruleName;
 			for (Integer i = 0; i < rulesLength; i ++) {
 				// Get rules data to fill text area fields  
 				String ruleValue = i < ruleValues.length ? ruleValues[i] : "";
-				JTextArea ruleTextField = new JTextArea(ruleValue);
-				subProdPanel.add(ruleTextField);
-				textAreaArray[i + 1] = ruleTextField;
+				textAreaArray[i + 1] = ruleValue;
 			}
-			TextAreaFields.put(ruleNameTextField.getText(), textAreaArray);
+			tableDataList.add(textAreaArray);
     	}
     	// Adding an empty line for a new rule
-		JTextArea[] emptyTextAreaArray = new JTextArea[rulesLength + 1];
-		JTextArea emptyTextAreaName = new JTextArea("New rule ?");
+		String[] emptyTextAreaArray = new String[rulesLength + 1];
+		String emptyTextAreaName = new String("New rule ?");
 		emptyTextAreaArray[0] = emptyTextAreaName;
-		emptyTextAreaName.setFont(boldFont);
-		subProdPanel.add(emptyTextAreaName);
 		for (Integer i = 0; i < rulesLength; i ++) {
-			JTextArea ruleTextField = new JTextArea("");
-			subProdPanel.add(ruleTextField);
+			String ruleTextField = new String("");
 			emptyTextAreaArray[i + 1] = ruleTextField;
 		}
-		TextAreaFields.put(emptyTextAreaName.getText(), emptyTextAreaArray);
+		tableDataList.add(emptyTextAreaArray);
 
-    	subProdPanel.setLayout(new GridLayout(prodRules.size() + 1, rulesLength + 1));
+    	Object[][] tableData = new Object[tableDataList.size()][rulesLength + 1];
+        tableDataList.toArray(tableData);
+
+        TableCustomModel dataModel = new TableCustomModel(tableTitle, tableData);
+        JTable table = new JTable(dataModel);
+
+                
+        subProdPanel.setLayout(new BorderLayout());
+        if (displayHeader) {
+        	subProdPanel.add(table.getTableHeader(), BorderLayout.PAGE_START);        	
+//        } else {
+//        	table.setTableHeader(null);        	
+        }
+        subProdPanel.add(table, BorderLayout.CENTER);
+        
+        table.setFillsViewportHeight(true);
+        
     	
-    	return TextAreaFields;
+    	return dataModel;
     }
 	   
 	Integer[] getSlidersValue(Sliders[] sliders) {
