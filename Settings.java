@@ -101,17 +101,18 @@ public class Settings {
     JPanel buildRulesPanel = new JPanel();
 
 	// Conditions
-	String[] buildCondTableTitle = {"Nom du batiment", "Biome/batiment où l'on peut poser le batiment", "Biome ou batiment devant se situer à côté", "Coût du batiment (F,Sp,Suc,Phos)"};
+	String[] buildCondTableTitle = {"Nom du batiment", "Type de batiment", "Biome/batiment où l'on peut poser le batiment", "Biome ou batiment devant se situer à côté", "Coût du batiment (F,Sp,Suc,Phos)"};
 	TableCustomModel buildCondTableModel;
 	HashMap<String, String[]> buildingConditions = new HashMap<String, String[]>();
-	String[] dummyCondition = {"biomes/buildings modules,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
-	String[] farmCondition = {"Plaine,Marais", "", "100,200,200,100"};
-	String[] portCondition = {"Brume", "Brume", "150,200,10,200"};
-	String[] pierCondition = {"Port,sol", "", "30,30,30,30"};
-	String[] roadCondition = {"Plaine,Désert,Foret,Hauteurs,Marais", "", "10,10,0,0"};
-	String[] generatorCondition = {"Désert,Plaine", "", "400,0,100,100"};
-	Integer buildConditionsLength = 3;
-	Integer constructRange = 3;
+//	String[] dummyCondition = {"biomes/buildings modules,were,to,place", "nearby,biomes,or,buildings", "price in ressources (F/Sp/Suc/Phos)"};
+	String[] farmCondition = {"Core", "Plaine,Marais", "", "100,200,200,100"};
+	String[] portCondition = {"Core", "Brume", "Brume", "150,200,10,200"};
+	String[] pierCondition = {"Sol", "Port", "", "30,30,30,30"};
+	String[] roadCondition = {"Autre", "Plaine,Désert,Foret,Hauteurs,Marais", "", "10,10,0,0"};
+	String[] generatorCondition = {"Core", "Désert,Plaine", "", "400,0,100,100"};
+	String[] lightHouseCondition = {"Toit", "Port", "Brume", "30,30,30,30"};
+	Integer buildConditionsLength = 4;
+	Integer constructRange = 5;
 	// buildings dialog
     JFrame buildCondFrame = new JFrame("Buildings position settings");
     JDialog buildCondDialog = new JDialog(buildCondFrame);
@@ -191,6 +192,7 @@ public class Settings {
     	buildingConditions.put("Generateur", generatorCondition);
     	buildingConditions.put("Jetée", pierCondition);
     	buildingConditions.put("Route", roadCondition);
+    	buildingConditions.put("Phare", lightHouseCondition);
     }
     
     void computeMaxGeneratorDistance() {
@@ -209,6 +211,7 @@ public class Settings {
     //DEBUG
     void AddDebugLog(String message) {
     	debugText.setText(debugText.getText() + message + "\r\n");
+    	System.out.println(message);
     }
     
     void ClearDebugLog() {
@@ -628,7 +631,7 @@ public class Settings {
     
     String getRessourcePrice(String buildingName) {
     	if (buildingConditions.containsKey(buildingName)) {
-    		String priceInRessource = buildingConditions.get(buildingName)[2];
+    		String priceInRessource = buildingConditions.get(buildingName)[3];
     		if (priceInRessource != null && !priceInRessource.equals("")) {
     			return priceInRessource;
     		} else {

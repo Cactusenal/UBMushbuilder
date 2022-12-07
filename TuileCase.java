@@ -149,7 +149,8 @@ public class TuileCase {
 			setConstructionStart(buildName);
 		} else {
 			// Terrain déjà occupé
-			if (Main.settings.buildingConditions.get(buildName)[0].split(",")[0].equals(building)) {
+			String[] buildingCondition = Main.settings.buildingConditions.get(buildName);
+			if (Arrays.stream(buildingCondition[1].split(",")).anyMatch(building::equals)) {
 				// Construction de module
 				setConstructionStart(buildName);
 			} else {
@@ -184,9 +185,9 @@ public class TuileCase {
 			building = buildName;
 			sucLevel = Main.settings.getSucStock(buildName);
 		} else {
-			String[] buildingReq = Main.settings.buildingConditions.get(buildName)[0].split(",");
-			if (buildingReq[0].equals(building)) {
-				addBuildingPart(buildName, buildingReq[1]);
+			String[] buildingCondition = Main.settings.buildingConditions.get(buildName);
+			if (Arrays.stream(buildingCondition[1].split(",")).anyMatch(building::equals)) {
+				addBuildingPart(buildName, buildingCondition[0]);
 			} else {
 				// Replace existing building ?
 				building = buildName;
@@ -211,6 +212,7 @@ public class TuileCase {
 	}
 	
 	public void addBuildingPart(String buildingPart, String localisation) {
+		localisation = localisation.toLowerCase();
 		String[] oldBuildingParts = getBuildingPartsList(localisation);
 		
 		Integer buildingPartLength = oldBuildingParts != null ? oldBuildingParts.length : 0;

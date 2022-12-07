@@ -333,18 +333,31 @@ public class GameController {
     	JFrame buildCondFrame = new JFrame("What to build?");
         JDialog buildCondDialog = new JDialog(buildCondFrame);
 
-        
         // List of possible buildings to construct
+        ArrayList<Object[]> possibleCoreBuildingsList = new ArrayList<Object[]>();
+        ArrayList<Object[]> possibleToitBuildingsList = new ArrayList<Object[]>();
+        ArrayList<Object[]> possibleMurBuildingsList = new ArrayList<Object[]>();
+        ArrayList<Object[]> possibleSolBuildingsList = new ArrayList<Object[]>();
+        ArrayList<Object[]> possibleOtherBuildingsList = new ArrayList<Object[]>();
+        
+        @SuppressWarnings("unchecked")
+		ArrayList<Object[]>[] possibleBuildingsLists = new ArrayList[5];
+        possibleBuildingsLists[0] = possibleToitBuildingsList;
+        possibleBuildingsLists[1] = possibleMurBuildingsList;
+        possibleBuildingsLists[2] = possibleSolBuildingsList;
+        possibleBuildingsLists[3] = possibleCoreBuildingsList;
+        possibleBuildingsLists[4] = possibleOtherBuildingsList;
+
         HashMap<String, String[]> buildingConditions = settings.buildingConditions;
         List<String> possibleBiomesList = Arrays.asList(settings.possibleBiomes);
         String[] directions = {"X+", "X-", "Y+", "Y-"};
-        Integer buildableNumber = 0;
         for (String buildCondName : buildingConditions.keySet()) {
-    		boolean isCurrentCaseOk = false;
+    		// BOUCLE: For every building
+        	boolean isCurrentCaseOk = false;
     		boolean isNearbyOk = true;
         	String[] buildCond = buildingConditions.get(buildCondName);
-    		String[] conditionsOnCurrentCase = buildCond[0].split(",");
-    		String[] nearbyRequired = buildCond[1].split(",");
+    		String[] conditionsOnCurrentCase = buildCond[1].split(",");
+    		String[] nearbyRequired = buildCond[2].split(",");
     		for (String condition : conditionsOnCurrentCase) {
 				if (possibleBiomesList.contains(condition)) {
 					if (condition.equals(tuileCase.terrain)) {
@@ -354,11 +367,14 @@ public class GameController {
 				} else {
 					if (condition.equals(tuileCase.building)) {
 						// Construction de module: Vérifier si emplacement de module libre
-						String partsPosition = conditionsOnCurrentCase[1];
-						Integer nbPartsPostition = settings.getNbBuildPartPosition(tuileCase.building, partsPosition);
-						String[] partList = tuileCase.getBuildingPartsList(partsPosition);
+						String partPosition = buildCond[0].toLowerCase();
+						Integer nbPartsPostition = settings.getNbBuildPartPosition(tuileCase.building, partPosition);
+						String[] partList = tuileCase.getBuildingPartsList(partPosition);
 						int nbPartsBuilt = (partList != null ? partList.length : 0);
-						if (nbPartsBuilt < nbPartsPostition) {
+						
+						int nbFreePosition = nbPartsPostition - nbPartsBuilt;
+						
+						if (nbFreePosition > 0) {
 							isCurrentCaseOk = true;
 							break;
 						}
@@ -391,9 +407,9 @@ public class GameController {
     			}
     		}
     		if (isCurrentCaseOk && isNearbyOk && !buildCondName.equals(tuileCase.building)) {
-    			JLabel buildingName = new JLabel(buildCondName);
-    			JButton buidButton = new JButton("Construire");
-    			buidButton.addActionListener(new ActionListener() {
+    			JLabel buildingLabel = new JLabel(buildCondName);
+    			JButton buildButton = new JButton("Construire");
+    			buildButton.addActionListener(new ActionListener() {
     	            public void actionPerformed(ActionEvent e) {
     	            	tuileCase.startConstruction(buildCondName);
     	            	buildCondDialog.setVisible(false);
@@ -410,17 +426,72 @@ public class GameController {
     	        		tuileCase.updateFilterView();
     	            }
     	        });	
-    			buildCondDialog.add(buildingName);
-    			buildCondDialog.add(buidButton);
-    			buildableNumber++;
+    			
+    			String buildType = buildCond[0];
+    			Object[] possibleBuildDatas = {buildingLabel, buildType, buildButton};
+    			switch (buildType.toLowerCase()) {
+	    			case "toit":
+	    				possibleToitBuildingsList.add(possibleBuildDatas);
+	    				break;
+    				case "mur":
+    					possibleMurBuildingsList.add(possibleBuildDatas);
+    					break;
+        			case "sol":
+        				possibleSolBuildingsList.add(possibleBuildDatas);
+        				break;
+        			case "core":
+        				possibleCoreBuildingsList.add(possibleBuildDatas);
+            			break;
+        			default:
+        				possibleOtherBuildingsList.add(possibleBuildDatas);
+        				
+    			}
     		}
+    		// END BOUCLE: For every building
         }
-        if (buildableNumber == 0) {
-        	buildCondDialog.add(new JLabel("No possible buildings"));
-        	buildableNumber = 1;
-        }
-        buildCondDialog.setLayout(new GridLayout(buildableNumber, 2));
-        buildCondDialog.setBounds(200, 200, 500, 50 + buildableNumber * 50);
+        int dialogSize = 0;
+    	for (ArrayList<Object[]> possibleBuildingList : possibleBuildingsLists) {
+    		if (possibleBuildingList.size() > 0) {
+    			String typeTitle = (String) possibleBuildingList.get(0)[1];
+    			switch (typeTitle) {
+    			case "Core":
+    				if (!tuileCase.building.equals("")) {
+    					typeTitle += " (remplace le batiment existant)";
+    				}
+    				break;
+    			case "Toit":
+    			case "Mur":
+    			case "Sol":
+					String partPosition = typeTitle.toLowerCase();
+					Integer nbPartsPostition = settings.getNbBuildPartPosition(tuileCase.building, partPosition);
+					String[] partList = tuileCase.getBuildingPartsList(partPosition);
+					int nbPartsBuilt = (partList != null ? partList.length : 0);
+					int nbFreePosition = nbPartsPostition - nbPartsBuilt;
+					typeTitle += " (" + nbFreePosition + "/" + nbPartsPostition + " positions libres)";
+    				break;
+    			case "Autre":
+    				break;
+    			default:
+    				settings.AddDebugLog("[displayBuildingPopup] position unknown: " + typeTitle);
+    			}
+    			buildCondDialog.add(new JLabel(typeTitle));
+    			dialogSize++;
+    			for (Object[] possibleBuilding: possibleBuildingList) {
+    				JPanel possibleBuildingSubPanel = new JPanel();
+    				possibleBuildingSubPanel.add((JLabel) possibleBuilding[0]);
+    				possibleBuildingSubPanel.add((JButton) possibleBuilding[2]);
+    				possibleBuildingSubPanel.setLayout(new GridLayout(1, 2));
+    				buildCondDialog.add(possibleBuildingSubPanel);
+    				dialogSize++;
+    			}
+    		}
+    	}
+    	if (dialogSize == 0) {
+			buildCondDialog.add(new JLabel("No possible building to construct here"));
+			dialogSize = 1;
+    	}
+    	buildCondDialog.setLayout(new GridLayout(dialogSize, 1));
+        buildCondDialog.setBounds(200, 200, 500, 50 + dialogSize * 50);
         buildCondDialog.setVisible(true);
 	}
 	
